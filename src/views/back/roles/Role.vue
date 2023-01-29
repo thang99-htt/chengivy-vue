@@ -1,0 +1,110 @@
+<template>
+    <section class="content">  
+      <div class="row center-block">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Danh sách vai trò</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="dataTables_wrapper dt-bootstrap" id="example1_wrapper">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div id="example1_length" class="dataTables_length">
+  
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="row">
+                    <div class="mb-5 col-4">              
+                        <div class="d-flex align-items-center">
+                            <button class="btn me-4 btn-primary" @click="refreshList()">
+                                <i class="fas fa-redo"></i> Làm mới
+                            </button>
+                            <button class="btn me-3 btn-success" @click="goToAddRole">
+                                <i class="fas fa-plus"></i> Thêm mới
+                            </button>
+                            <button
+                                class="btn me-3 btn-danger"
+                                @click="removeAllRoles"
+                            >
+                                <i class="fas fa-trash"></i> Xóa tất cả
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 table-responsive">
+                    <RoleList
+                        v-if="filteredRolesCount > 0"
+                        :roles="filteredRoles"
+                    />
+                    <p v-else>Không có liên hệ nào.</p>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+ <!-- end dashboard inner -->
+</template>
+<script>
+    import RoleList from "@/components/back/roles/RoleList.vue";
+    import RoleService from "@/services/back/role.service";
+
+    export default {
+        components: {
+            RoleList,
+        },
+        name: 'role',
+        data() {
+            return {
+                roles: [],
+            };
+        },
+        computed: {
+            // Trả về các role có chứa thông tin cần tìm kiếm.
+            filteredRoles() {
+                return this.roles;
+            },
+            filteredRolesCount() {
+                return this.filteredRoles.length;
+            },
+        },
+        methods: {
+            async retrieveRoles() {
+                try {
+                    this.roles = await RoleService.getAll();
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            refreshList() {
+                this.retrieveRoles();
+            },
+            async removeAllRoles() {
+                if (confirm("Bạn muốn xóa tất cả Vai trò?")) {
+                    try {
+                        await RoleService.deleteAll();
+                        this.refreshList();
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+            },
+            goToAddRole() {
+                this.$router.push({ name: "role.add" });
+            },
+        },
+        mounted() {
+            this.refreshList();
+        },
+    };
+</script>
+<style scoped>
+    
+</style>

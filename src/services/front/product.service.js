@@ -1,0 +1,20 @@
+import createApiClient from "../api.service";
+class ProductService {
+    constructor(baseUrl = "/api/products") {
+        this.api = createApiClient(baseUrl);
+    }
+    async getAll() {
+        return (await this.api.get("/")).data;
+    }
+    async getType() {
+        return (await this.api.get("/type")).data;
+    }
+    async getListing(url) {
+        return (await this.api.get(`/${url}`)).data;
+    }
+    async getDetail(id) {
+        return (await this.api.get(`/detail/${id}`)).data;
+    }
+    
+}
+export default new ProductService();
