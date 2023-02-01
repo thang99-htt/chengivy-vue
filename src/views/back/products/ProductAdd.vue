@@ -29,6 +29,7 @@
 <script>
     import ProductForm from "@/components/back/products/ProductForm.vue";
     import ProductService from "@/services/back/product.service";
+
     export default {
         components: {
             ProductForm,
@@ -38,7 +39,15 @@
         },
         data() {
             return {
-                product: null,
+                product: {
+                    'categoy_id': "",
+                    'name': "",
+                    'description': "",
+                    'purchase_price': "",
+                    'price': "",
+                    'type_id': "",
+                    'discount_percent': "",
+                },
             };
         },
         methods: {

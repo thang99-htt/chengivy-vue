@@ -43,7 +43,6 @@
 <script>
 import LoginForm from '@/components/auth/LoginForm.vue';
 import AuthService from "@/services/back/auth.service";
-import axios from 'axios';
 
 export default {
   components: { 
@@ -60,8 +59,10 @@ export default {
     async createLogin(form) {
         try {
             await AuthService.login(form).then((response) => {
-                console.log(response);
-                localStorage.setItem('tokenAdmin', response);
+                // console.log(response);
+                localStorage.setItem('tokenAdmin', response.token);
+                this.$store.dispatch('user', response.staff);
+                
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -78,11 +79,6 @@ export default {
                     icon: 'success',
                     title: 'Đăng nhập thành công.'
                 })
-    
-                axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;
-                axios.get(`http://127.0.0.1:8000/api/admin/staff`).then((response) => {
-                    this.currentUser = response.data;
-                });
 
                 this.$router.push({ name: "dashboard" });
             });

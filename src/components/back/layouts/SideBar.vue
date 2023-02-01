@@ -7,7 +7,7 @@
           </div>
           <div class="pull-left info">
             <div class="user_info">
-              <h6>{{ currentUser.name }}</h6>
+              <h6 v-if="user">{{ user.name }}</h6>
               <p><span class="online_animation"></span> Online</p>
             </div>
           </div>
@@ -37,31 +37,32 @@
     </aside>
 </template>
 <script>
-  import SidebarMenu from './SidebarMenu.vue'
+  import SidebarMenu from './SidebarMenu.vue';
   import axios from 'axios';
+  import {mapGetters} from 'vuex';
 
   export default {
     name: 'Sidebar',
-    props: ['user'],
     components: { 
-        SidebarMenu 
+      SidebarMenu 
     },
     data() {
       return {
-        currentUser: [],
-        token: localStorage.getItem('token'),
+        token: localStorage.getItem('tokenAdmin'),
       };
     },
-    mounted() {
-      if(this.token) {
-        axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;
-        axios.get(`http://127.0.0.1:8000/api/admin/staff`).then((response) => {
-        this.currentUser = response.data;
+    async created() {
+      await axios.get(`http://127.0.0.1:8000/api/user`, {
+        headers: {
+          Authorization: `Bearer ${this.token}`
+        }
+      }).then((response) => {
+        this.$store.dispatch('user', response.data)
       });
-      } else {
-        this.currentUser = "";
-      }
     },
+    computed: {
+      ...mapGetters(['user'])
+    }
     
   }
 </script>

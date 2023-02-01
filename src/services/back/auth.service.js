@@ -9,8 +9,5 @@ class LoginService {
     async logout() {
         return (await this.api.post(`/logout`)).data;
     }
-    async getUser() {
-        return (await this.api.get("/user")).data;
-    }
 }
 export default new LoginService();

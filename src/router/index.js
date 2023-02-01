@@ -8,6 +8,12 @@ const routes = [
                 path: "dashboard",
                 name: "dashboard",
                 component: () => import("../views/back/Dashboard.vue"),
+                beforeEnter: (to, from, next) => {
+                    const isAuthenticated = localStorage.getItem('tokenAdmin') ? true : false;
+                    if(to.name !== 'login.admin' && !isAuthenticated)
+                        next({ name: 'login.admin'})
+                    else next();
+                }
             },
             {
                 path: "tables",
@@ -82,6 +88,17 @@ const routes = [
         component: () => import("../components/front/layouts/Layout.vue"),
         children: [
             {
+                path: "admin/login",
+                name: "login.admin",
+                component: () => import("../views/back/auth/Login.vue"),
+                beforeEnter: (to, from, next) => {
+                    const isAuthenticated = localStorage.getItem('tokenAdmin') ? true : false;
+                    if(to.name == 'login.admin' && isAuthenticated)
+                        next({ name: 'dashboard'})
+                    else next();
+                }
+            },
+            {
                 path: "/:pathMatch(.*)*",
                 name: "NotFound",
                 component: () => import("@/views/NotFound.vue"),
@@ -89,13 +106,7 @@ const routes = [
             {
                 path: "home",
                 name: "home",
-                component: () => import("../views/front/Home.vue"),
-                beforeEnter: (to, from, next) => {
-                    const isAuthenticated = localStorage.getItem('token') ? true : false;
-                    if(to.name !== 'login' && !isAuthenticated)
-                        next({ name: 'login'})
-                    else next();
-                }
+                component: () => import("../views/front/Home.vue"),                
             },
             {
                 path: "products/:url",
@@ -113,23 +124,13 @@ const routes = [
                 path: "login",
                 name: "login",
                 component: () => import("../views/front/auth/Login.vue"),
-                beforeEnter: (to, from, next) => {
-                    const isAuthenticated = localStorage.getItem('token') ? true : false;
-                    if(to.name == 'login' && isAuthenticated)
-                        next({ name: 'home'})
-                    else next();
-                }
             },
             {
                 path: "register",
                 name: "register",
                 component: () => import("../views/front/auth/Register.vue")
             },
-            {
-                path: "admin/login",
-                name: "login.admin",
-                component: () => import("../views/back/auth/Login.vue"),
-            },
+            
         ]
     },
         

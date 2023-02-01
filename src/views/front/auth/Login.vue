@@ -31,7 +31,7 @@
             <div class="alt-option">
                 <span>Or</span>
             </div>
-            <p class="te" v-if="error" > {{  error }}</p>
+            <p class="text-danger" v-if="error" > {{  error }}</p>
             <LoginForm
                 @submit:login="createLogin"
             />

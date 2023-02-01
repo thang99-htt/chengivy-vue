@@ -30,7 +30,10 @@
         },
         data() {
             return {
-                role: null,
+                role: {
+                    'name': "",
+                    'description': "",
+                },
             };
         },
         methods: {

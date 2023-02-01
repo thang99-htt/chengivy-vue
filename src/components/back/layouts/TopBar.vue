@@ -1,56 +1,3 @@
-<script>
-    import axios from 'axios';
-
-    export default {
-        name: 'TopBar',
-        data() {
-            return {
-                currentUser: [],
-                token: localStorage.getItem('tokenAdmin'),
-            };
-        },
-        mounted() {
-            if(this.token) {
-                axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;
-                axios.get(`http://127.0.0.1:8000/api/admin/staff`).then((response) => {
-                    this.currentUser = response.data;
-                });
-            } else {
-                this.currentUser = "";
-            }
-        },
-        methods: {
-            async logout() {
-                try {
-                    axios.post(`http://127.0.0.1:8000/api/admin/logout`).then((response) => {
-                        Swal.fire({
-                        title: 'Bạn có chắc?',
-                        text: false,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Đăng xuất',
-                        cancelButtonText: 'Hủy'
-                    }).then((result) => {
-                        if (result.value) {
-                            localStorage.removeItem('tokenAdmin');
-                            Swal.fire('Đăng xuất thành công!','','success');
-                            this.currentUser = "";
-                            this.$router.push({ name: "login.admin" });
-                        }
-                    })
-            
-                    });
-                    
-                } catch (error) {            
-                    console.log(error);
-                }
-            },
-        },
-    };
-</script>
-
 <template>
     <header class="main-header">
         <span class="logo-mini">
@@ -78,7 +25,7 @@
                         <li>
                             <a class="dropdown-toggle" data-toggle="dropdown">
                                 <img class="img-responsive rounded-circle" src="/images/admin/photos/6215.jpg" alt="#" />
-                                <span class="name_user">{{ currentUser.name }}</span>
+                                <span class="name_user" v-if="user">{{ user.name }}</span>
                             </a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#" @click="logout">
@@ -93,3 +40,63 @@
         </nav>
     </header>
 </template>
+
+<script>
+    import axios from 'axios';
+    import {mapGetters} from 'vuex';
+
+    export default {
+        name: 'TopBar',
+        data() {
+            return {
+                currentUser: [],
+                token: localStorage.getItem('tokenAdmin'),
+            };
+        },
+        async created() {
+            await axios.get(`http://127.0.0.1:8000/api/user`, {
+                headers: {
+                Authorization: `Bearer ${this.token}`
+                }
+            }).then((response) => {
+                this.$store.dispatch('user', response.data)
+            });
+        },
+        methods: {
+            async logout() {
+                try {
+                    axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;
+                    await axios.post(`http://127.0.0.1:8000/api/admin/logout`)
+                    .then((response) => {
+                        localStorage.removeItem('tokenAdmin');
+                        this.$store.dispatch('user', null);
+                        this.$router.push({ name: "login.admin" });
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+            
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Đăng xuất thành công.'
+                        })
+                    });
+                    
+                } catch (error) {            
+                    console.log(error);
+                }
+            },
+        },
+        computed: {
+      ...mapGetters(['user'])
+    }
+    };
+</script>
