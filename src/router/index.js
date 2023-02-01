@@ -3,17 +3,14 @@ const routes = [
     {
         path:"/admin",
         component: () => import("../components/back/layouts/Layout.vue"),
+        meta: {
+            authenticatedAdmin: true
+        },
         children: [
             {
                 path: "dashboard",
                 name: "dashboard",
                 component: () => import("../views/back/Dashboard.vue"),
-                beforeEnter: (to, from, next) => {
-                    const isAuthenticated = localStorage.getItem('tokenAdmin') ? true : false;
-                    if(to.name !== 'login.admin' && !isAuthenticated)
-                        next({ name: 'login.admin'})
-                    else next();
-                }
             },
             {
                 path: "tables",
@@ -25,79 +22,82 @@ const routes = [
                 path: "roles",
                 name: "role",
                 component: () => import("../views/back/roles/Role.vue"),
-                meta: {description: 'Vai trò'}
+                meta: {
+                    description: 'Vai trò',
+                },
             },
             {
                 path: "roles/:id",
                 name: "role.edit",
                 component: () => import("@/views/back/roles/RoleEdit.vue"),
-                props: true
+                props: true,
             },
             {
                 path: "roles/add",
                 name: "role.add",
                 component: () => import("@/views/back/roles/RoleAdd.vue"),
-                props: true
             },   
             {
                 path: "categories",
                 name: "category",
                 component: () => import("../views/back/categories/Category.vue"),
-                meta: {description: 'Danh mục'}
+                meta: {
+                    description: 'Danh mục',
+                }
             },
             {
                 path: "categories/:id",
                 name: "category.edit",
                 component: () => import("@/views/back/categories/CategoryEdit.vue"),
-                props: true
+                props: true,
             },
             {
                 path: "categories/add",
                 name: "category.add",
                 component: () => import("@/views/back/categories/CategoryAdd.vue"),
-                props: true
             },   
             {
                 path: "products",
                 name: "product",
                 component: () => import("../views/back/products/Product.vue"),
-                meta: {description: 'Sản phẩm'}
+                meta: {
+                    description: 'Sản phẩm',
+                }
             },
             {
                 path: "products/view/:id",
                 name: "product.view",
                 component: () => import("@/views/back/products/ProductView.vue"),
-                props: true
+                props: true,
             },
             {
                 path: "products/:id",
                 name: "product.edit",
                 component: () => import("@/views/back/products/ProductEdit.vue"),
-                props: true
+                props: true,
             },
             {
                 path: "products/add",
                 name: "product.add",
                 component: () => import("@/views/back/products/ProductAdd.vue"),
-                props: true
             }, 
         ]
     },
     {
+        path: "/admin/login",
+        name: "login.admin",
+        component: () => import("../views/back/auth/Login.vue"),
+        meta: {
+            authenticatedAdmin: false
+        }
+    },
+    {
         path:"/",
         component: () => import("../components/front/layouts/Layout.vue"),
+        meta: {
+            authenticated: false
+        },
         children: [
-            {
-                path: "admin/login",
-                name: "login.admin",
-                component: () => import("../views/back/auth/Login.vue"),
-                beforeEnter: (to, from, next) => {
-                    const isAuthenticated = localStorage.getItem('tokenAdmin') ? true : false;
-                    if(to.name == 'login.admin' && isAuthenticated)
-                        next({ name: 'dashboard'})
-                    else next();
-                }
-            },
             {
                 path: "/:pathMatch(.*)*",
                 name: "NotFound",
@@ -112,13 +112,13 @@ const routes = [
                 path: "products/:url",
                 name: "product.category",
                 component: () => import("@/views/front/products/Product.vue"),
-                props: true
+                props: true,
             },
             {
                 path: "products/detail/:id",
                 name: "product.detail",
                 component: () => import("@/views/front/products/ProductDetail.vue"),
-                props: true
+                props: true,
             },
             {
                 path: "login",
@@ -128,7 +128,22 @@ const routes = [
             {
                 path: "register",
                 name: "register",
-                component: () => import("../views/front/auth/Register.vue")
+                component: () => import("../views/front/auth/Register.vue"),
+            },
+            
+        ]
+    },
+    {
+        path:"/",
+        component: () => import("../components/front/layouts/Layout.vue"),
+        meta: {
+            authenticated: true
+        },
+        children: [
+            {
+                path: "profiles",
+                name: "profile",
+                component: () => import("@/views/front/profiles/Profile.vue"),
             },
             
         ]
@@ -140,4 +155,18 @@ const router = createRouter({
     routes,
 });
 
+router.beforeEach((to, from, next) => {
+    const adminAuthenticated = localStorage.getItem('tokenAdmin') ? true : false;
+    const userAuthenticated = localStorage.getItem('token') ? true : false;
+
+    if (to.meta.authenticated && !userAuthenticated) {
+        next({ name: 'login'});
+    } else if (to.meta.authenticatedAdmin && !adminAuthenticated) {
+        next({ name: 'login.admin'});
+    } else {
+        next();
+    }
+    
+    
+});
 export default router;
