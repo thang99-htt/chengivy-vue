@@ -100,7 +100,7 @@ const routes = [
         children: [
             {
                 path: "/:pathMatch(.*)*",
-                name: "NotFound",
+                name: "notfound",
                 component: () => import("@/views/NotFound.vue"),
             },
             {
@@ -144,6 +144,11 @@ const routes = [
                 path: "profiles",
                 name: "profile",
                 component: () => import("@/views/front/profiles/Profile.vue"),
+            },
+            {
+                path: "cart",
+                name: "cart",
+                component: () => import("@/views/front/carts/Cart.vue"),
             },
             
         ]

@@ -7194,43 +7194,43 @@ blockquote span {
   font-size: 15px;
 }
 
-.detail .detail-info .info-quantity {
+.info-quantity {
   margin: 10px 0 25px 0;
 }
 
-.detail .detail-info .info-quantity p {
+.info-quantity p {
   color: #000;
 }
 
-.detail .detail-info .info-quantity input[type="number"],
+.info-quantity input[type="number"],
 .cart-list input[type="number"] {
   -webkit-appearance: textfield;
   -moz-appearance: textfield;
   appearance: textfield;
 }
 
-.detail .detail-info .info-quantity input[type=number]::-webkit-inner-spin-button,
-.detail .detail-info .info-quantity input[type=number]::-webkit-outer-spin-button,
+.info-quantity input[type=number]::-webkit-inner-spin-button,
+.info-quantity input[type=number]::-webkit-outer-spin-button,
 .cart-list input[type=number]::-webkit-inner-spin-button,
 .cart-list input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
 
-.detail .detail-info .info-quantity .number-input,
+.info-quantity .number-input,
 .cart-list .number-input {
   border: 1px solid #ddd;
   display: inline-flex;
   margin-left: 20px;
 }
 
-.detail .detail-info .info-quantity .number-input,
-.detail .detail-info .info-quantity .number-input *,
+.info-quantity .number-input,
+.info-quantity .number-input *,
 .cart-list .number-input,
 .cart-list .number-input * {
   box-sizing: border-box;
 }
 
-.detail .detail-info .info-quantity .number-input a,
+.info-quantity .number-input a,
 .cart-list .number-input button {
   outline:none;
   -webkit-appearance: none;
@@ -7247,12 +7247,12 @@ blockquote span {
   color: #b1aeae;
 }
 
-.detail .detail-info .info-quantity .number-input button.plus:after,
+.info-quantity .number-input button.plus:after,
 .cart-list .number-input button.plus:after {
   transform: translate(-50%, -50%) rotate(90deg);
 }
 
-.detail .detail-info .info-quantity .number-input input[type=number],
+.info-quantity .number-input input[type=number],
 .cart-list .number-input input[type=number] {
   max-width: 50px;
   height: 40px;
@@ -7275,7 +7275,8 @@ blockquote span {
   border: 1px solid #000;
 }
 
-.detail .detail-info .info-add .bag {
+.bag,
+.bag:hover {
   color: #fff;
   background-color: #000;
   padding: 10px;

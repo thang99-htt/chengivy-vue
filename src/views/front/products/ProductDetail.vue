@@ -1,19 +1,44 @@
 <template>
     <section class="section mt-50">
         <div v-if="product">
-            <ProductDetailItem
-                :product="product"
-                @submit:product="createCart"
-            />  
+            <div class="detail">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-8">
+                            <ProductDetailImage
+                                :product="product"
+                            /> 
+                        </div>
+                        <div class="col-4">
+                            <ProductDetailInfor
+                                :product="product"
+                            /> 
+                            <ProductDetailAddCart
+                                :product="product"
+                                :cart="cart"
+                                @submit:cart="addToCart"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </template>
 <script>
-    import ProductDetailItem from "@/components/front/products/ProductDetailItem.vue";
+    import ProductDetailImage from "@/components/front/products/ProductDetailImage.vue";
+    import ProductDetailInfor from "@/components/front/products/ProductDetailInfor.vue";
+    import ProductDetailAddCart from "@/components/front/products/ProductDetailAddCart.vue";
+
     import ProductService from "@/services/front/product.service";
+    import CartService from "@/services/front/cart.service";
+    import store from "/src/vuex";
+    
     export default {
         components: {
-            ProductDetailItem,
+            ProductDetailImage,
+            ProductDetailInfor,
+            ProductDetailAddCart
         },
         props: {
             id: { type: String, required: true },
@@ -21,6 +46,12 @@
         data() {
             return {
                 product: null,
+                cart: {
+                    'user_id': store.state.userId,
+                    'product_id': this.id,
+                    'size': "",
+                    'quantity': 1,
+                },
             };
         },
         methods: {
@@ -40,9 +71,8 @@
                     });
                 }
             },
-            async createCart(data) {
+            async addToCart(data) {
                 try {
-                    await RoleService.create(data);
                     const Toast = Swal.mixin({
                         toast: true,
                         position: 'top-end',
@@ -55,12 +85,23 @@
                         }
                     })
 
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Sản phẩm đã được thêm vào giỏ hàng.'
-                    })
+                    await CartService.create(data).then((response) => {
+                        if(response == true) {
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Sản phẩm đã được thêm vào giỏ hàng.'
+                            })
+                        } else if (response == false) {
+                            Toast.fire({
+                                icon: 'warning',
+                                title: 'Số lượng không được phép.'
+                            })
+                        }
+                        console.log(response)
+                    });
+
                 } catch (error) {
-                    console.log(error);
+                    console.log(error.response);
                 }
             },
         },

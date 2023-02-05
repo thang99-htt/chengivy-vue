@@ -9,9 +9,10 @@
             </label>       
             <Field 
                 name="category_id" as="select"
-                 class="form-control"
+                 class="form-control select"
                  v-model="productLocal.category_id"
             >
+                <option disabled value="">Chọn danh mục</option>
                 <option v-for="(category, index) in products.categories"
                     :key="category" 
                     :value="category.id"
@@ -231,5 +232,8 @@
     .img-edit {
         width: 100px;
         margin: 10px 0 0 0;
+    }
+    .select {
+        appearance: auto;
     }
 </style>

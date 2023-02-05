@@ -4,8 +4,10 @@ class ProductService {
         this.api = createApiClient(baseUrl);
     }
     async create(data) {
-        return (await this.api.post("/", data)).data;
+        return (await this.api.post("/add", data)).data;
     }
-    
+    async getCart() {
+        return (await this.api.get("/")).data;
+    }
 }
 export default new ProductService();

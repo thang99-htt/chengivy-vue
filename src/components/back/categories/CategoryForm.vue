@@ -9,9 +9,10 @@
             </label>       
             <Field 
                 name="parent_id" as="select"
-                 class="form-control"
+                 class="form-control select"
                 v-model="categoryLocal.parent_id"
             >
+                <option disabled value="">Chọn danh mục cha</option>
                 <option value="0">NULL</option>
                 <option v-for="(category, index) in categories"
                     :key="category" 
@@ -173,5 +174,9 @@
     .img-edit {
         width: 100px;
         margin: 10px 0 0 0;
+    }
+
+    .select {
+        appearance: auto;
     }
 </style>
