@@ -7,7 +7,7 @@
             <p>{{ product.category.name }}</p>
         </div>
         <div class="info-price">
-            <p>{{ product.price }}</p>
+            <p>{{ product.final_price }} VNĐ</p>
         </div>
         <hr>
         <div class="info-des">

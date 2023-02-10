@@ -41,6 +41,8 @@
 
 
 <style>
+@import "@/assets/admin.css";
+
 .wrapper.fixed_layout .main-header {
   position: fixed;
   width: 100%;

@@ -7,7 +7,6 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 
 import './assets/main.css';
-import './assets/admin.css';
 import './assets/style.css';
 import './assets/styles.css';
 import './assets/responsive.css';

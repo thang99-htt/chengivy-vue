@@ -33,6 +33,7 @@
     import ProductService from "@/services/front/product.service";
     import CartService from "@/services/front/cart.service";
     import store from "/src/vuex";
+    import axios from 'axios';
     
     export default {
         components: {
@@ -45,9 +46,9 @@
         },
         data() {
             return {
+                token: localStorage.getItem('token'),
                 product: null,
                 cart: {
-                    'user_id': store.state.userId,
                     'product_id': this.id,
                     'size': "",
                     'quantity': 1,
@@ -85,23 +86,31 @@
                         }
                     })
 
-                    await CartService.create(data).then((response) => {
-                        if(response == true) {
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Sản phẩm đã được thêm vào giỏ hàng.'
-                            })
-                        } else if (response == false) {
-                            Toast.fire({
-                                icon: 'warning',
-                                title: 'Số lượng không được phép.'
-                            })
+                    await axios.get(`/api/user`, {
+                        headers: {
+                            Authorization: `Bearer ${this.token}`
                         }
-                        console.log(response)
+                    }).then(async (response) => {
+                        await CartService.create(response.data.id, data).then((response) => {
+                            if(response == true) {
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Sản phẩm đã được thêm vào giỏ hàng.'
+                                })
+                            } else if (response == false) {
+                                Toast.fire({
+                                    icon: 'warning',
+                                    title: 'Số lượng không được phép.'
+                                })
+                            }
+                            console.log(response)
+                        });
                     });
 
+                    
+
                 } catch (error) {
-                    console.log(error.response);
+                    console.log(error);
                 }
             },
         },

@@ -95,16 +95,60 @@
                         </div>
                         <div class="navbar-cart">
                             <div class="cart-items">
-                                <a href="" class="main-btn">
+                                <router-link :to="{ name: 'cart' }" class="main-btn">
                                     <svg x.ms-automns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
                                         <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
                                     </svg>
-                                </a>
-                                <div class="shopping-item">
+                                    <span class="total-items">{{ carts.count_item }}</span>
+                                </router-link>
+                                
+                                <div 
+                                    v-if="carts.count_item > 0"
+                                    class="shopping-item"
+                                >
+                                    <div class="dropdown-cart-header d-flex justify-content-between">
+                                        <h6>Cart</h6>
+                                        <span>{{ carts.count_item }} Items</span>
+                                    </div>
+                                    <ul class="shopping-list">
+                                        <li 
+                                            v-for="(cart, index) in carts.getCartItems"
+                                            :key="cart"
+                                        >  
+                                            <div class="cart-img-head">
+                                                <a class="cart-img" href="product-details.html">
+                                                    <img v-if="cart.product.image" :src="getImage(cart.product.image)" alt="#" />
+                                                </a>
+                                            </div>
+                                            <div class="">
+                                                <h6><a href="product-details.html">{{ cart.product.name }}</a></h6>
+                                                <p>Size: {{ cart.size }}</p>
+                                                <p class="quantity">
+                                                    {{ cart.quantity }} x - {{ formatPrice(cart.final_price) }}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <div class="bottom mt-4">
+                                        <div class="total">
+                                            <span>Total</span>
+                                            <span class="total-amount">{{ formatPrice(carts.into_money) }} VĐN</span>
+                                        </div>
+                                        <div class="button">
+                                            <a href="{{ url('carts') }}" class="btn animate">View Cart</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div 
+                                    v-else
+                                    class="shopping-item"
+                                >
                                     <h6>CART</h6>
-                                    <img src="" alt="" />
+                                    <img src="/images/cart/empty-cart.svg" alt="" />
                                     <p class="m-3 text-center text-dark">You have no items in your shopping cart.</p>
                                 </div>
+                                
                             </div>
                         </div>
                         <div class="navbar-user">
@@ -131,7 +175,7 @@
                                            </a>
                                         </li>
                                         <li class="nav-item">
-                                            <router-link to="profiles">
+                                            <router-link :to="{ name: 'profile' }">
                                                 Hồ sơ
                                             </router-link>
                                         </li>
@@ -171,17 +215,16 @@
 </template>
 <script>
     import CategoryService from "@/services/front/category.service";
+    import CartService from "@/services/front/cart.service";
     import axios from 'axios';
     import {mapGetters} from 'vuex'
 
     export default {
         name: 'Header',
-        props: {
-            categories: { type: Array, default: [] },
-        },
         data() {
             return {
                 categories: [],
+                carts: [],
                 token: localStorage.getItem('token'),
             };
         },
@@ -189,6 +232,7 @@
             CategoryService.getCategory().then((response) => {
                 this.categories = response;
             });
+            this.refreshList();
         },
         async created() {
             await axios.get(`/api/user`, {
@@ -201,6 +245,25 @@
             });
         },
         methods: {
+            async retrieveCarts() {
+                try {
+                    await axios.get(`/api/user`, {
+                        headers: {
+                            Authorization: `Bearer ${this.token}`
+                        }
+                    }).then(async (response) => {
+                        this.carts = await CartService.getCart(response.data.id);
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            refreshList() {
+                this.retrieveCarts();
+            },
+            getImage(image){
+                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
+            },
             async logout() {
                 try {
                     axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;
@@ -232,6 +295,10 @@
                     console.log(error);
                 }
             },
+            formatPrice(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            }
         },
         computed: {
             ...mapGetters(['user'])

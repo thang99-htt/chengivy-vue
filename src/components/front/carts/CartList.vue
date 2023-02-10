@@ -1,62 +1,187 @@
+<template>
+    <div class="table-responsive overflow-hidden p-3">
+        <div class="row">
+            <div class="col-8">
+                <table
+                    class="table table-hover"
+                >
+                <thead>
+                    <tr role="row">
+                        <th colspan="1" rowspan="1" aria-controls="example1">Sản phẩm</th>
+                        <th colspan="1" rowspan="1" aria-controls="example1">Đơn giá</th>
+                        <th colspan="1" rowspan="1" aria-controls="example1">Số lượng</th>
+                        <th colspan="1" rowspan="1" aria-controls="example1">Số tiền</th>
+                    </tr>
+                </thead>
+                <tbody> 
+                    <tr role="row"
+                        v-for="(cart, index) in carts.getCartItems"
+                        :key="cart"
+                    >
+                        <td>
+                            <div class="d-flex">
+                                <div class="me-4">
+                                    <router-link 
+                                        :to="{
+                                            name: 'product.detail',
+                                            params: { id: cart.product.id },
+                                        }" 
+                                        class="text-dark"
+                                    >
+                                        <img width="100" v-if="cart.product.image" :src="getImage(cart.product.image)" alt="" />    
+                                    </router-link>
+                                </div>
+                                <div>
+                                    <input type="hidden" name="cart_product_id" id="" :value="cart.product_id">
+                                    <router-link 
+                                        :to="{
+                                            name: 'product.detail',
+                                            params: { id: cart.product.id },
+                                        }" 
+                                        class="text-dark"
+                                    >
+                                        {{ cart.product.name }}
+                                    </router-link>
+                                    <input type="hidden" name="cart_size_id" id="" :value="cart.size.id">
+                                    <p>Size: {{ cart.size }}</p>
+                                </div>
+                            </div>    
+                        </td>
+                        <td >{{ formatPrice(cart.final_price) }}</td>
+                        <td>
+                            <div class="number-input ms-0">
+                                <button @click="reduce(cart)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                                    </svg>
+                                </button>
+                                <input class="quantity" min="1" name="cart_quantity" :value="cart.quantity" type="number">
+                                <button @click="increase(cart)" class="plus">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="position-relative">   
+                            <p>{{ formatPrice(cart.total_price) }}</p>    
+                            <div class="position-absolute bottom-0 right-0">
+                                <button
+                                    type="button"
+                                    class="me-2 btn"
+                                    @click="deleteProduct(cart.id)"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                </button>
+                            </div> 
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+
+                <div class="d-flex justify-content-end">
+                    <a href=""><button class="btn btn-dark mt-4" >THANH TOÁN</button></a>
+                </div>
+            </div>
+            <div class="col-4 provisional">
+                <h6>TẠM TÍNH</h6>
+                <div class="row">
+                    <div class="col-6">
+                        <p>Tổng đơn đặt hàng</p>
+                    </div>
+                    <div class="col-6">
+                        {{ formatPrice(carts.into_money) }} VĐN
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    
+</template>
+
 <script>
     import $ from 'jquery'
-    import ProductService from "@/services/back/product.service";
+    import CartService from "@/services/front/cart.service";
     import 'datatables.net'
     import 'datatables.net-bs'
-    import { ref } from 'vue'
-    
+    import axios from 'axios';
+
     export default {
-        name: 'ProductList',
-        props: {
-            products: { type: Array, default: [] },
-            activeIndex: { type: Number, default: -1 },
-        },
-        mounted() {
-            ProductService.getAll().then((response) => {
-                this.products = response;
-                this.$nextTick(() => {
-                    $('.example1').DataTable()
-                })
-            });
-        },
+        name: 'CartList',
         data() {
             return {
-                products: [],
-                status: 0,
+                token: localStorage.getItem('token'),
+                carts: [],
             };
         },
-        beforeUpdate() {
-            $('.example1').DataTable().destroy();
+        async mounted() {
+            await axios.get(`/api/user`, {
+                    headers: {
+                        Authorization: `Bearer ${this.token}`
+                    }
+            }).then(async (response) => {
+                await CartService.getCart(response.data.id).then((response) => {
+                    this.carts = response;
+                    this.$nextTick(() => {
+                        $('.example1').DataTable()
+                    })
+                });
+            });
+            
         },
         methods: {
             getImage(image){
                 return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
             },
-            statusUpdate(product) {
+            reduce(cart) {
+                if (cart.quantity > 1) {
+                    try {
+                        cart.quantity--;
+                        CartService.updateQuantity(cart.id, cart.quantity)
+                        .then( (response) => {
+                            this.refreshList();
+                        })                  
+
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+            },
+            increase(cart) {
                 try {
-                    console.log(product.status);
-                    ProductService.updateStatus(product.id, product.status)
+                    cart.quantity++;
+                    CartService.updateQuantity(cart.id, cart.quantity)
                     .then( (response) => {
                         this.refreshList();
-                        console.log(response.product.status);
                     })                  
 
                 } catch (error) {
                     console.log(error);
-                }   
+                } 
             },
-            async retrieveProducts() {
+            formatPrice(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
+            async retrieveCarts() {
                 try {
-                    this.products = await ProductService.getAll();
-                    this.$nextTick(() => {
-                        $('.example1').DataTable()
-                    })
+                    await axios.get(`/api/user`, {
+                        headers: {
+                            Authorization: `Bearer ${this.token}`
+                        }
+                    }).then(async (response) => {
+                        this.carts = await CartService.getCart(response.data.id);
+                    });
                 } catch (error) {
                     console.log(error);
                 }
             },
             refreshList() {
-                this.retrieveProducts();
+                this.retrieveCarts();
             },
             deleteProduct(id) {
                 Swal.fire({
@@ -70,7 +195,7 @@
                     cancelButtonText: 'Hủy'
                 }).then((result) => {
                     if (result.value) {
-                        ProductService.delete(id).then((res) => {
+                        CartService.delete(id).then((res) => {
                             if(res.success) {
                                 this.refreshList();
                             }
@@ -79,127 +204,6 @@
                     }
                 })
             },
-            deleteAll(id){
-                alert(id)
-            }
         },
-        setup () {
-            return {
-                selection: ref([ 1, 2 ])
-            }
-        }
-        
     };
 </script>
-<template>
-    <div class="q-px-sm">
-      The model data: <strong>{{ selection }}</strong>
-    </div>
-    <table
-        aria-describedby="example1_info" role="grid" 
-        id="" class=" example1 table table-bordered table-striped dataTable"
-    >
-      <thead>
-        <tr role="row">
-            <th aria-label="Rendering engine: activate to sort column descending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0">
-                <input
-                    v-model="selection"
-                    type="checkbox"
-                    class="form-check-input"
-                />
-            </th>
-            <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Danh mục</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">Tên</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mô tả</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Giá mua (VNĐ)</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Giá bán (VNĐ)</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Hình ảnh</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Thể loại</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Phần trăm giảm giá (%)</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Trạng thái</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày tạo</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting" style="width: 150px;">Tùy chọn</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr role="row"
-            v-for="(product, index) in products"
-            :key="product"
-        >
-            <td>
-                <input
-                    :value="product.id" 
-                    label="product.name" 
-                    v-model="selection"
-                    type="checkbox"
-                    class="form-check-input"
-                />
-            </td>
-            <td class="sorting_1" >
-                {{ index + 1 }}
-            </td>
-            <td>{{  product.category.name  }}</td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.description.substring(0,50) }}......</td>
-            <td>{{ product.purchase_price }}</td>
-            <td>{{ product.price }}</td>
-            <td>
-                <img v-if="product.image" :src="getImage(product.image)"
-                 alt="Image" class="img-responsive center-block">
-            </td>
-            <td>{{ product.type.name }}</td>
-            <td>{{ product.discount_percent }}</td>
-            <td>
-                <button
-                    class="btn-sm"
-                    :class="[product.status == 1 ? 'btn-show' : 'btn-hide']"
-                    @click="statusUpdate(product)"
-                >
-                {{product.status == 1 ? 'Hiện' : 'Ẩn'}}
-                </button>                    
-            </td>
-            <td>{{ new Date(product.created_at).toLocaleString() }}</td>
-            <td>
-                <button
-                    type="button"
-                    class="me-2 btn btn-primary"
-                >
-                    <router-link
-                          :to="{
-                              name: 'product.view',
-                              params: { id: product.id },
-                          }" 
-                    >
-                        <i class="fa fa-eye"></i>
-                    </router-link>
-                </button>
-                <button
-                    type="button"
-                    class="me-2 btn btn-success"
-                >
-                    <router-link
-                          :to="{
-                              name: 'product.edit',
-                              params: { id: product.id },
-                          }" 
-                    >
-                        <i class="fa fa-pen"></i>
-                    </router-link>
-                </button>
-                <button
-                    v-if="product.id"
-                    type="button"
-                    class="me-2 btn btn-danger"
-                >
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-      </tbody>
-    </table>
-</template>
-
-<style>
-   
-</style>

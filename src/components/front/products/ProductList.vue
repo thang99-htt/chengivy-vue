@@ -36,6 +36,12 @@
                     <div class="single-product">
                         <div class="product-image">
                             <img :src="getImage(product.image)" alt="#" />
+                            <span 
+                                v-if="product.discount_percent > 0"
+                                class="sale-tag"
+                            >
+                                SALE
+                            </span>
                             <div class="button">
                                 <a href="product-details.html" class="btn"><i class="fa fa-cart"></i>Thêm vào giỏ hàng</a>
                             </div>
@@ -61,7 +67,14 @@
                                 <li><span>5.0 Review(s)</span></li>
                             </ul>
                             <div class="price">
-                                <span>{{ product.price }} VNĐ</span>
+                                <span >
+                                    {{ formatPrice(product.final_price) }} VNĐ
+                                </span>
+                                <span class="text-decoration-line-through float-end text-secondary"
+                                    v-if="product.discount_percent > 0" 
+                                >
+                                    {{ formatPrice(product.price) }} VNĐ
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -86,6 +99,10 @@
             getImage(image){
                 return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
             },
+            formatPrice(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            }
         },
     };
 </script>
