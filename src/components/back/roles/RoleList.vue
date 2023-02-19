@@ -78,13 +78,6 @@
     >
       <thead>
         <tr role="row">
-            <th aria-label="Rendering engine: activate to sort column descending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" style="width: 10px;">
-                <input
-                    v-model="deleteAll"
-                    type="checkbox"
-                    class="form-check-input"
-                />
-            </th>
             <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">Vai Trò</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mô Tả</th>
@@ -98,14 +91,6 @@
             :key="role"
             :class="{ active: index === activeIndex }"
         >
-            <td>
-                <input
-                    :value="role.id" 
-                    v-model="deleteAll"
-                    type="checkbox"
-                    class="form-check-input"
-                />
-            </td>
             <td class="sorting_1" >
                 {{ index + 1 }}
             </td>

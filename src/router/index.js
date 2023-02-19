@@ -150,6 +150,11 @@ const routes = [
                 name: "cart",
                 component: () => import("@/views/front/carts/Cart.vue"),
             },
+            {
+                path: "checkout",
+                name: "checkout",
+                component: () => import("@/views/front/checkouts/Checkout.vue"),
+            },
             
         ]
     },

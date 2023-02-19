@@ -107,8 +107,8 @@
                                     class="shopping-item"
                                 >
                                     <div class="dropdown-cart-header d-flex justify-content-between">
-                                        <h6>Cart</h6>
-                                        <span>{{ carts.count_item }} Items</span>
+                                        <h6>Giỏ hàng</h6>
+                                        <span>{{ carts.count_item }} sản phẩm</span>
                                     </div>
                                     <ul class="shopping-list">
                                         <li 
@@ -131,11 +131,16 @@
                                     </ul>
                                     <div class="bottom mt-4">
                                         <div class="total">
-                                            <span>Total</span>
+                                            <span>Tổng tiền</span>
                                             <span class="total-amount">{{ formatPrice(carts.into_money) }} VĐN</span>
                                         </div>
                                         <div class="button">
-                                            <a href="{{ url('carts') }}" class="btn animate">View Cart</a>
+                                            <router-link 
+                                                :to="{ name: 'cart' }" 
+                                                class="btn animate"
+                                            >
+                                                Xem giỏ hàng
+                                            </router-link>
                                         </div>
                                     </div>
                                 </div>
@@ -171,7 +176,7 @@
                                     >
                                         <li class="nav-item">
                                            <a href="">
-                                                {{ user.name }}
+                                                {{ user }}
                                            </a>
                                         </li>
                                         <li class="nav-item">

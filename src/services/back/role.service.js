@@ -18,5 +18,8 @@ class RoleService {
     async delete(id) {
         return (await this.api.delete(`/${id}`)).data;
     }
+    async deleteAll() {
+        return (await this.api.delete("/")).data;
+    }
 }
 export default new RoleService();

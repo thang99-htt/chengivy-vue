@@ -46,6 +46,18 @@
                 />
                 <ErrorMessage name="quantity" class="error-feedback" />
             </div>
+            <div class="form-group mt-size">
+                <label for="stock">Tồn kho
+                    <span class="error-feedback">*</span>
+                </label>
+                <Field 
+                    name="stock"
+                    type="number"
+                    class="form-control"
+                    v-model="productLocal.stock"
+                />
+                <ErrorMessage name="stock" class="error-feedback" />
+            </div>
         </div>
 
         <div class="form-group">
@@ -90,7 +102,11 @@
                 .required("Size phải được chọn."),
                 quantity: yup
                 .string()
-                .required("Số lượng phải có giá trị.")
+                .required("Số lượng phải có giá trị."),
+                stock: yup
+                .string()
+                .required("Số lượng tồn kho phải có giá trị.")
+                .oneOf([yup.ref('quantity'), null], 'Số lượng tồn kho phải khớp.'),
             });
             return {
                 productLocal: this.product,
@@ -110,11 +126,8 @@
     };
 </script>
 <style scoped>
-    .h-form-item {
-        height: 250px;
-    }
     
     .mt-size {
-        padding: 16px 0;
+        padding: 2px 0;
     }
 </style>

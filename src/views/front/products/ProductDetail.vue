@@ -32,7 +32,6 @@
 
     import ProductService from "@/services/front/product.service";
     import CartService from "@/services/front/cart.service";
-    import store from "/src/vuex";
     import axios from 'axios';
     
     export default {
@@ -73,19 +72,18 @@
                 }
             },
             async addToCart(data) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
                 try {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
                     await axios.get(`/api/user`, {
                         headers: {
                             Authorization: `Bearer ${this.token}`
@@ -101,15 +99,17 @@
                                 Toast.fire({
                                     icon: 'warning',
                                     title: 'Số lượng không được phép.'
-                                })
+                                });
                             }
                             console.log(response)
                         });
                     });
-
-                    
-
                 } catch (error) {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Bạn phải là thành viên.'
+                    });
+                    this.$router.push({ name: "login" });
                     console.log(error);
                 }
             },

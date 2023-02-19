@@ -41,7 +41,7 @@
                         v-if="filteredCategoriesCount > 0"
                         :categories="filteredCategories"
                     />
-                    <p v-else>Không có liên hệ nào.</p>
+                    <p v-else>Không có danh mục nào.</p>
                     </div>
                 </div>
               </div>

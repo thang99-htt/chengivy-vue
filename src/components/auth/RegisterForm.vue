@@ -107,7 +107,8 @@
                 .string()
                 .required("Mật khẩu phải có giá trị.")
                 .min(6, "Mật khẩu phải ít nhất 6 ký tự.")
-                .max(30, "Mật khẩu có nhiều nhất 30 ký tự."),
+                .max(30, "Mật khẩu có nhiều nhất 30 ký tự.")
+                .oneOf([yup.ref('password'), null], 'Mật khẩu phải khớp'),
             });
             return {
                 registerFormSchema,

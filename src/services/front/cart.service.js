@@ -1,5 +1,5 @@
 import createApiClient from "../api.service";
-class ProductService {
+class CartService {
     constructor(baseUrl = "/api/cart") {
         this.api = createApiClient(baseUrl);
     }
@@ -16,4 +16,4 @@ class ProductService {
         return (await this.api.delete(`/${id}`)).data;
     }
 }
-export default new ProductService();
+export default new CartService();

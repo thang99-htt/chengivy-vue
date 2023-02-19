@@ -26,7 +26,7 @@
                             {{ size.name }} 
                         </option>
                     </Field>      
-                    <p v-if="selected" class="text-secondary">{{ selected }} sản phẩm có sẵn.</p>
+                    <!-- <p class="text-secondary">{{ size.pivot.stock }}  sản phẩm có sẵn.</p> -->
                     <ErrorMessage name="size_id" class="error-feedback" />
                 </div>
             </div>
@@ -74,7 +74,7 @@
             Form,
             Field,
             ErrorMessage,
-            },
+        },
         props: {
             product: { type: Object, required: true },
             cart: { type: Object, required: true },
@@ -91,7 +91,6 @@
                 cartLocal: this.cart,
                 productFormSchema,
                 products: [],
-                selected: '',
             };
         },
         methods: {

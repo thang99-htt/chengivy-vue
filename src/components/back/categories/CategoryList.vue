@@ -1,20 +1,10 @@
 <template>
-    <div class="q-px-sm">
-      The model data: <strong>{{ selection }}</strong>
-    </div>
     <table
         aria-describedby="example1_info" role="grid" 
-        id="" class="example1 table table-bordered table-striped dataTable table-hover"
+        id="" class="example1 table table-bordered table-striped dataTable"
     >
       <thead>
         <tr role="row">
-            <th aria-label="Rendering engine: activate to sort column descending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0">
-                <input
-                    v-model="selection"
-                    type="checkbox"
-                    class="form-check-input"
-                />
-            </th>
             <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Danh mục cha</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">Tên</th>
@@ -31,15 +21,6 @@
             v-for="(category, index) in categories"
             :key="category"
         >
-            <td>
-                <input
-                    :value="category.id" 
-                    label="category.name" 
-                    v-model="selection"
-                    type="checkbox"
-                    class="form-check-input"
-                />
-            </td>
             <td class="sorting_1" >
                 {{ index + 1 }}
             </td>
@@ -107,7 +88,6 @@
     import CategoryService from "@/services/back/category.service";
     import 'datatables.net'
     import 'datatables.net-bs'
-    import { ref } from 'vue'
     
     export default {
         name: 'CategoryList',
@@ -186,11 +166,6 @@
                 alert(id)
             }
         },
-        setup () {
-            return {
-                selection: ref([ 1, 2 ])
-            }
-        }
         
     };
 </script>

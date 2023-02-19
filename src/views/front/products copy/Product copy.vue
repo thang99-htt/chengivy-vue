@@ -36,12 +36,6 @@
                     <div class="single-product">
                         <div class="product-image">
                             <img :src="getImage(product.image)" alt="#" />
-                            <span 
-                                v-if="product.discount_percent > 0"
-                                class="sale-tag"
-                            >
-                                SALE
-                            </span>
                             <div class="button">
                                 <a href="product-details.html" class="btn"><i class="fa fa-cart"></i>Thêm vào giỏ hàng</a>
                             </div>
@@ -67,14 +61,7 @@
                                 <li><span>5.0 Review(s)</span></li>
                             </ul>
                             <div class="price">
-                                <span >
-                                    {{ formatPrice(product.final_price) }} VNĐ
-                                </span>
-                                <span class="text-decoration-line-through float-end text-secondary"
-                                    v-if="product.discount_percent > 0" 
-                                >
-                                    {{ formatPrice(product.price) }} VNĐ
-                                </span>
+                                <span>{{ product.price }} VNĐ</span>
                             </div>
                         </div>
                     </div>
@@ -82,26 +69,38 @@
             </div>
         </div> 
     </section>
+    
 </template>
 <script>
+    import ProductList from "@/components/front/products/ProductList.vue";
+    import ProductService from "@/services/front/product.service";
 
     export default {
+        components: {
+            ProductList,
+        },
         props: {
-            product: { type: Object, required: true },
+            url: { type: String, required: true },
         },
         data() {
             return {
-                productLocal: this.product,
-                products: [],
+                product: null,
             };
         },
         methods: {
             getImage(image){
                 return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
             },
-            formatPrice(value) {
-                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
+            async getProduct(url) {
+                try {
+                    this.product = await ProductService.getListing(url);
+                } catch (error) {
+                    console.log(error.response.data.message);
+                }
+            },
+        },
+        created() {
+            this.getProduct(this.url);
         },
     };
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="table-responsive overflow-hidden p-3">
         <div class="row">
-            <div class="col-8">
+            <div class="col-9">
                 <table
                     class="table table-hover"
                 >
@@ -82,7 +82,7 @@
                 </tbody>
                 </table>
             </div>
-            <div class="col-4 provisional">
+            <div class="col-3 provisional">
                 <h6>TẠM TÍNH</h6>
                 <div class="row total mt-2">
                     <div class="col-6">
@@ -118,7 +118,10 @@
 </template>
 
 <script>
+    import $ from 'jquery'
     import CartService from "@/services/front/cart.service";
+    import 'datatables.net'
+    import 'datatables.net-bs'
     import axios from 'axios';
 
     export default {
@@ -137,6 +140,9 @@
             }).then(async (response) => {
                 await CartService.getCart(response.data.id).then((response) => {
                     this.carts = response;
+                    this.$nextTick(() => {
+                        $('.example1').DataTable()
+                    })
                 });
             });
             
@@ -221,10 +227,6 @@
     background-color: #000;
     padding: 10px;
     margin-top: 20px;
- }
-
- .checkout:hover {
-    background-color: #003469;
  }
 
  .checkout a {

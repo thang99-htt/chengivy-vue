@@ -1,5 +1,5 @@
 import createApiClient from "../api.service";
-class LoginService {
+class AuthService {
     constructor(baseUrl = "/api") {
         this.api = createApiClient(baseUrl);
     }
@@ -16,4 +16,4 @@ class LoginService {
         return (await this.api.get("/user")).data;
     }
 }
-export default new LoginService();
+export default new AuthService();

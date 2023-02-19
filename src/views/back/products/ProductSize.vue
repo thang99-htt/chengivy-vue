@@ -8,6 +8,7 @@
                 <th>#</th>
                 <th>Size</th>
                 <th>Số lượng</th>
+                <th>Tồn kho</th>
                 <th>Tùy chọn</th>
             </tr>
         </thead>
@@ -25,6 +26,9 @@
                 </td>
                 <td>
                     {{ size.pivot.quantity }}
+                </td>
+                <td>
+                    {{ size.pivot.stock }}
                 </td>
                 <td>
                     <button

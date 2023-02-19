@@ -7,7 +7,7 @@
             <p>{{ product.category.name }}</p>
         </div>
         <div class="info-price">
-            <p>{{ product.final_price }} VNĐ</p>
+            <p>{{ formatPrice(product.final_price) }} VNĐ</p>
         </div>
         <hr>
         <div class="info-des">
@@ -19,6 +19,11 @@
     export default {
         props: {
             product: { type: Object, required: true },
+        },
+        methods: {
+            formatPrice(value) {
+                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            }
         },
     };
 </script>

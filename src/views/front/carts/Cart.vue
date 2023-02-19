@@ -34,8 +34,6 @@
             </div>
         </div>
     </div>
-    
-     <!-- end dashboard inner -->
 </template>
 <script>
         import CartList from "@/components/front/carts/CartList.vue";

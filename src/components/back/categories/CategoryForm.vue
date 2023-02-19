@@ -106,7 +106,7 @@
             Form,
             Field,
             ErrorMessage,
-            },
+        },
         emits: ["submit:category", "delete:category"],
         props: {
             category: { type: Object, required: true },

@@ -41,7 +41,7 @@
                         v-if="filteredRolesCount > 0"
                         :roles="filteredRoles"
                     />
-                    <p v-else>Không có liên hệ nào.</p>
+                    <p v-else>Không có vai trò nào.</p>
                     </div>
                 </div>
               </div>
@@ -87,14 +87,25 @@
                 this.retrieveRoles();
             },
             async removeAllRoles() {
-                if (confirm("Bạn muốn xóa tất cả Vai trò?")) {
-                    try {
-                        await RoleService.deleteAll();
-                        this.refreshList();
-                    } catch (error) {
-                        console.log(error);
+                Swal.fire({
+                    title: 'Bạn muốn xóa tất cả Vai trò?',
+                    text: "Bạn sẽ không thể hoàn tác lại điều này!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.value) {
+                        RoleService.deleteAll().then((res) => {
+                            if(res.success) {
+                                this.refreshList();
+                            }
+                        })
+                        Swal.fire('Đã xóa thành công!','','success')
                     }
-                }
+                })
             },
             goToAddRole() {
                 this.$router.push({ name: "role.add" });
