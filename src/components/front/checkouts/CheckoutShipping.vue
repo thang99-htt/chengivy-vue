@@ -16,7 +16,7 @@
                                     v-for="(address, index) in addresses"
                                     :key="address"
                                 >
-                                    <Field name="address" type="radio" :value="address.pivot.id" v-model="addess_checked.contact_id"/>
+                                    <Field name="address" type="radio" :value="address.pivot.id" v-model="orderLocal.contact_id"/>
                                         <span class="text-bold ms-3">{{ user.name }}</span>
                                         <p class="ms-address">Địa chỉ:
                                             {{ address.pivot.address }}, {{ address.name }}, 
@@ -45,7 +45,7 @@
                                         Giao hàng tiêu chuẩn
                                     </p>
                                     <p>Ghi chú đơn hàng</p>
-                                    <textarea name="" id="" cols="50" rows="3"></textarea>
+                                    <textarea name="" id="" cols="50" rows="3" v-model="orderLocal.note"></textarea>
                                 </li>
                             </ul>
                         </div>
@@ -69,13 +69,13 @@
             ErrorMessage,
         },
         props: {
-            addess_check: { type: Object, required: true },
+            order: { type: Object, required: true },
         },
         data() {
             return {
                 token: localStorage.getItem('token'),
                 addresses: [],
-                addess_checked: this.addess_check,
+                orderLocal: this.order,
             };
         },
         async mounted() {

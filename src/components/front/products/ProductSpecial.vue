@@ -29,6 +29,9 @@
                     console.log(error);
                 }
             },
+            formatPrice(value) {
+                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            }
         },
         
     };
@@ -73,7 +76,12 @@
                                      <li><span>5.0 Review(s)</span></li>
                                  </ul>
                                  <div class="price">
-                                     <span>{{ product.price }} VNĐ</span>
+                                     <span>{{ formatPrice(product.final_price) }} VNĐ</span>
+                                     <span class="text-decoration-line-through float-end text-secondary"
+                                        v-if="product.discount_percent > 0" 
+                                    >
+                                        {{ formatPrice(product.price) }} VNĐ
+                                    </span>
                                  </div>
                              </div>
                          </div>
@@ -90,7 +98,12 @@
                          <h2><a href="/product/">{{ product.name }}</a></h2>
                          <p>{{ product.description }}</p>
                          <div class="price">
-                             <span>{{ product.price }} VNĐ</span>
+                            <span>{{ formatPrice(product.final_price) }} VNĐ</span>
+                            <span class="text-decoration-line-through float-end text-secondary"
+                                v-if="product.discount_percent > 0" 
+                            >
+                                {{ formatPrice(product.price) }} VNĐ
+                            </span>
                          </div>
                          <div class="button">
                              <a href="/product/" class="btn">Mua ngay</a>
@@ -119,7 +132,12 @@
                              <li><span>5.0 Review(s)</span></li>
                          </ul>
                          <div class="price">
-                             <span>{{ product.price }} VNĐ</span>
+                            <span>{{ formatPrice(product.final_price) }} VNĐ</span>
+                            <span class="text-decoration-line-through float-end text-secondary"
+                                v-if="product.discount_percent > 0" 
+                            >
+                                {{ formatPrice(product.price) }} VNĐ
+                            </span>
                          </div>
                          <p>{{ product.description }}</p>
                          <div class="button">
@@ -132,4 +150,6 @@
     </div> 
 
 </template>
+
+
 

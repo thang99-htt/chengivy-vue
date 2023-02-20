@@ -176,7 +176,7 @@
                                     >
                                         <li class="nav-item">
                                            <a href="">
-                                                {{ user }}
+                                                {{ user.name }}
                                            </a>
                                         </li>
                                         <li class="nav-item">

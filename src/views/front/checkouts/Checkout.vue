@@ -61,27 +61,23 @@
                         </div>
                     </div>
                 </div> 
-                <div class="mt-5">
-                    <p>UserID: {{ userId }} </p>
-                    <p>ĐC: {{ addess_check }} </p>
-                    <p>PTTT: {{ payment_check }}</p>
-                </div>
                 <CheckoutShipping 
                     v-if="stepCheck == 0"
-                    :addess_check="addess_check"
+                    :order="order"
                 />
                 <CheckoutPayment 
                     v-if="stepCheck == 1"
-                    :addess_check="addess_check"
-                    :payment_check="payment_check"
+                    :carts="filteredCarts"
+                    :order="order"
+                    @submit:order="createOrder"
                 />
                 <CheckoutComplete v-if="stepCheck == 2"/>
                 <div class="button-container">
                     <div v-if="stepCheck == 0" class="btn btn-prev disabled" @click="shipping">Trước đó</div>
                     <div v-if="stepCheck == 1" class="btn btn-prev" @click="shipping">Trước đó</div>
                     <div v-if="stepCheck == 0" class="btn btn-next" @click="payment">Tiếp tục</div>
-                    <div v-if="stepCheck == 1" class="btn btn-next" @click="complete">Hoàn tất thanh toán</div>
-                    <div v-if="stepCheck == 2" class="btn btn-next" @click="payment">Tiếp tục mua sắp</div>
+                    <!-- <div v-if="stepCheck == 1" class="btn btn-next" @click="complete">Hoàn tất thanh toán</div> -->
+                    <!-- <div v-if="stepCheck == 2" class="btn btn-next" @click="payment">Tiếp tục mua sắp</div> -->
                 </div>
             </div>
         </div>
@@ -91,6 +87,9 @@
     import CheckoutShipping from "@/components/front/checkouts/CheckoutShipping.vue";
     import CheckoutPayment from "@/components/front/checkouts/CheckoutPayment.vue";
     import CheckoutComplete from "@/components/front/checkouts/CheckoutComplete.vue";
+    import OrderService from "@/services/front/order.service";
+    import CartService from "@/services/front/cart.service";
+    import axios from 'axios';
     import {mapGetters} from 'vuex';
     export default {
         components: {
@@ -101,12 +100,12 @@
         data() {
             return {
                 stepCheck: 0,
-                token: localStorage.getItem('token'),
-                addess_check: {
+                token: localStorage.getItem('token'),                
+                carts: [],
+                order: {
                     'contact_id': 0,
-                },
-                payment_check: {
                     'payment_id': 1,
+                    'note': ""
                 },
             }
         },
@@ -120,10 +119,58 @@
             shipping() {
                 this.stepCheck = 0;
             },
+            async retrieveCarts() {
+                try {
+                    await axios.get(`/api/user`, {
+                        headers: {
+                            Authorization: `Bearer ${this.token}`
+                        }
+                    }).then(async (response) => {
+                        this.carts = await CartService.getCart(response.data.id);
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async createOrder(data) {
+                try {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+                    await OrderService.create(this.userId, data).then((response) => {
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Đặt hàng thành công.'
+                        })
+                        // this.$router.push({name: "home"});
+                        // console.log(response)
+                    });
+                    this.stepCheck = 2;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            refreshList() {
+                this.retrieveCarts();
+            },
         },
         computed: {
-            ...mapGetters(['userId'])
-        }
+            filteredCarts() {
+                return this.carts;
+            },
+            ...mapGetters(['userId', 'user']),
+        },
+        mounted() {
+            this.refreshList();
+        },
     }
 </script>
     
