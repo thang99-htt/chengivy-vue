@@ -27,7 +27,7 @@
             };
         },
         beforeUpdate() {
-            $('.example1').DataTable().destroy();
+            $('.example1').DataTable().refreshList();
         },
         methods: {
             async retrieveRoles() {

@@ -149,9 +149,9 @@
                                     v-else
                                     class="shopping-item"
                                 >
-                                    <h6>CART</h6>
+                                    <h6>GIỎ HÀNG</h6>
                                     <img src="/images/cart/empty-cart.svg" alt="" />
-                                    <p class="m-3 text-center text-dark">You have no items in your shopping cart.</p>
+                                    <p class="m-3 text-center text-dark">Bạn chưa có sản phẩm nào trong giỏ hàng của mình.</p>
                                 </div>
                                 
                             </div>

@@ -1,11 +1,13 @@
 <template>
-    <Profile/>  
+    <div class="section">
+        Profile
+    </div>
 </template>
 <script>
-    import Profile from "@/components/front/profiles/Profile.vue";
     export default {
         components: {
-            Profile,
+            
+            
         },
     };
 </script>

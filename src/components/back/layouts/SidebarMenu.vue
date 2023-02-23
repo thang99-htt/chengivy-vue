@@ -61,7 +61,7 @@
       </a>
       <ul class="treeview-menu">
         <li>
-          <router-link to="/admin/status">
+          <router-link to="/admin/statuses">
             Trạng thái
           </router-link>
         </li>

@@ -81,6 +81,20 @@ const routes = [
                 name: "product.add",
                 component: () => import("@/views/back/products/ProductAdd.vue"),
             }, 
+            {
+                path: "orders",
+                name: "order",
+                component: () => import("../views/back/orders/Order.vue"),
+                meta: {
+                    description: 'Đơn hàng',
+                }
+            },
+            {
+                path: "orders/:id",
+                name: "order.detail",
+                component: () => import("@/views/back/orders/OrderDetail.vue"),
+                props: true,
+            },
         ]
     },
     {
@@ -104,7 +118,7 @@ const routes = [
                 component: () => import("@/views/NotFound.vue"),
             },
             {
-                path: "home",
+                path: "/",
                 name: "home",
                 component: () => import("../views/front/Home.vue"),                
             },
@@ -142,8 +156,25 @@ const routes = [
         children: [
             {
                 path: "profiles",
-                name: "profile",
-                component: () => import("@/views/front/profiles/Profile.vue"),
+                component: () => import("../components/front/profiles/Profile.vue"),
+                children: [
+                    {
+                        path: "/profiles",
+                        name: "profile",
+                        component: () => import("@/views/front/profiles/Profile.vue"),
+                    },
+                    {
+                        path: "purchases",
+                        name: "purchase",
+                        component: () => import("@/views/front/purchases/Purchase.vue"),
+                    },
+                    {
+                        path: "purchases/:id",
+                        name: "purchase.detail",
+                        component: () => import("@/views/front/purchases/PurchaseDetail.vue"),
+                        props: true,
+                    },
+                ]
             },
             {
                 path: "cart",

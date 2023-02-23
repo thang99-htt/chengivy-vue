@@ -4,7 +4,7 @@
         <div class="col-md-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Danh sách sản phẩm</h3>
+              <h3 class="box-title">Danh sách đơn hàng</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -23,12 +23,9 @@
                             <button class="ms-4 btn btn-primary" @click="refreshList()">
                                 <i class="fas fa-redo"></i> Làm mới
                             </button>
-                            <button class="ms-3 btn btn-success" @click="goToAddProduct">
-                                <i class="fas fa-plus"></i> Thêm mới
-                            </button>
                             <button
                                 class="ms-3 btn btn-danger"
-                                @click="removeAllProducts"
+                                @click="removeAllOrders"
                             >
                                 <i class="fas fa-trash"></i> Xóa tất cả
                             </button>
@@ -37,11 +34,11 @@
                 </div>
                 <div class="row">
                   <div class="col-sm-12 table-responsive">
-                    <ProductList
-                        v-if="filteredProductsCount > 0"
-                        :products="filteredProducts"
+                    <OrderList
+                        v-if="filteredOrdersCount > 0"
+                        :orders="filteredOrders"
                     />
-                    <p v-else>Không có sản phẩm nào.</p>
+                    <p v-else>Không có đơn hàng nào.</p>
                     </div>
                 </div>
               </div>
@@ -50,53 +47,49 @@
         </div>
       </div>
     </section>
- <!-- end dashboard inner -->
 </template>
 <script>
-    import ProductList from "@/components/back/products/ProductList.vue";
-    import ProductService from "@/services/back/product.service";
+    import OrderList from "@/components/back/orders/OrderList.vue";
+    import OrderService from "@/services/back/order.service";
 
     export default {
         components: {
-            ProductList,
+            OrderList,
         },
-        name: 'product',
+        name: 'order',
         data() {
             return {
-                products: [],
+                orders: [],
             };
         },
         computed: {
-            filteredProducts() {
-                return this.products;
+            filteredOrders() {
+                return this.orders;
             },
-            filteredProductsCount() {
-                return this.filteredProducts.length;
+            filteredOrdersCount() {
+                return this.filteredOrders.length;
             },
         },
         methods: {
-            async retrieveProducts() {
+            async retrieveOrders() {
                 try {
-                    this.products = await ProductService.getAll();
+                    this.orders = await OrderService.getAll();
                 } catch (error) {
                     console.log(error);
                 }
             },
             refreshList() {
-                this.retrieveProducts();
+                this.retrieveOrders();
             },
-            async removeAllProducts() {
+            async removeAllOrders() {
                 if (confirm("Bạn muốn xóa tất cả Vai trò?")) {
                     try {
-                        await ProductService.deleteAll();
+                        await OrderService.deleteAll();
                         this.refreshList();
                     } catch (error) {
                         console.log(error);
                     }
                 }
-            },
-            goToAddProduct() {
-                this.$router.push({ name: "product.add" });
             },
         },
         mounted() {

@@ -1,10 +1,22 @@
 import createApiClient from "../api.service";
-class CartService {
+class OrderService {
     constructor(baseUrl = "/api/orders") {
         this.api = createApiClient(baseUrl);
+    }
+    async getAll() {
+        return (await this.api.get("/")).data;
     }
     async create(id, data) {
         return (await this.api.post(`/add/${id}`, data)).data;
     }
+    async getAllPurchase(id) {
+        return (await this.api.get(`purchases/user-${id}`)).data;
+    }
+    async getPurchase(user, id) {
+        return (await this.api.get(`purchase/user-${user}/order-${id}`)).data;
+    }
+    async updateStatus(id, status, data) {
+        return (await this.api.put(`/${id}/${status}`, data)).data;
+    }
 }
-export default new CartService();
+export default new OrderService();
