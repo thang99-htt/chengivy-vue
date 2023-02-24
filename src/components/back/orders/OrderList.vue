@@ -7,12 +7,13 @@
       <thead>
         <tr role="row">
             <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mã đơn hàng</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày đặt</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Khách hàng</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Email</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Số điện thoại</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Tổng tiền (VNĐ)</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Phương thức thanh Toán</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Tổng giá trị</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Phương thức thanh toán</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Trạng thái</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting" style="width: 150px;">Tùy chọn</th>
         </tr>
@@ -25,11 +26,12 @@
             <td class="sorting_1" >
                 {{ index + 1 }}
             </td>
+            <td>{{ order.id }}</td>
             <td>{{ order.order_date }}</td>
             <td>{{ order.user.name  }}</td>
             <td>{{ order.user.email  }}</td>
             <td>{{ order.contact.phone  }}</td>
-            <td>{{ formatPrice(order.total_price) }}</td>
+            <td>{{ formatPrice(order.total_price) }} đ</td>
             <td>{{ order.payment.name }}</td>
             <td>
                 <button
@@ -86,6 +88,12 @@
                 >
                     {{ order.status.name }}
                 </button>  
+                <button
+                    v-if="order.status.id == 10" class="btn-order-status order-status10"
+                    @click="statusUpdate(order)"
+                >
+                    {{ order.status.name }}
+                </button>
             </td>
             <td>
                 <button
@@ -271,5 +279,9 @@
 
     .order-status9 {
         background-color: #00b90c;
+    }
+
+    .order-status10 {
+        background-color: #676767e7;
     }
 </style>

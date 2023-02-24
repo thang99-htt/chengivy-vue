@@ -47,18 +47,6 @@
             <ErrorMessage name="description" class="error-feedback" />
         </div>
         <div class="form-group">
-            <label for="purchase_price">Giá Mua
-                <span class="error-feedback">*</span>
-            </label>
-            <Field
-                name="purchase_price"
-                type="number"
-                class="form-control"
-                v-model="productLocal.purchase_price"
-            />
-            <ErrorMessage name="purchase_price" class="error-feedback" />
-        </div>
-        <div class="form-group">
             <label for="price">Giá Bán
                 <span class="error-feedback">*</span>
             </label>
@@ -174,9 +162,6 @@
                 .required("Mô tả phải có giá trị.")
                 .min(2, "Mô tả phải ít nhất 2 ký tự.")
                 .max(1000, "Mô tả có nhiều nhất 1000 ký tự."),
-                purchase_price: yup
-                .string()
-                .required("Giá mua phải có giá trị."),
                 price: yup
                 .string()
                 .required("Giá Bán phải có giá trị."),
@@ -212,7 +197,6 @@
                 this.productLocal.name = "";
                 this.productLocal.img = "";
                 this.productLocal.description = "";
-                this.productLocal.purchase_price = "";
                 this.productLocal.price = "";
                 this.productLocal.type_id = "";
                 this.productLocal.discount_percent = "0";

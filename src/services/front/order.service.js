@@ -15,8 +15,8 @@ class OrderService {
     async getPurchase(user, id) {
         return (await this.api.get(`purchase/user-${user}/order-${id}`)).data;
     }
-    async updateStatus(id, status, data) {
-        return (await this.api.put(`/${id}/${status}`, data)).data;
+    async cancleOrder(id, data) {
+        return (await this.api.put(`purchase/cancle-${id}`, data)).data;
     }
 }
 export default new OrderService();

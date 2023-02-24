@@ -5,13 +5,10 @@
     >
       <thead>
         <tr role="row">
-            <th>#</th>
+            <th>Đơn hàng</th>
             <th>Ngày đặt</th>
-            <th>Khách hàng</th>
-            <th>Email</th>
-            <th>Số điện thoại</th>
-            <th>Tổng tiền (VNĐ)</th>
-            <th>Phương thức thanh Toán</th>
+            <th>Gửi đến</th>
+            <th>Tổng đơn đặt hàng</th>
             <th>Trạng thái</th>
             <th style="width: 150px;">Tùy chọn</th>
         </tr>
@@ -21,15 +18,12 @@
             v-for="(order, index) in purchases"
             :key="order"
         >
-            <td class="sorting_1" >
-                {{ index + 1 }}
+            <td >
+                {{ order.id }}
             </td>
             <td>{{ order.order_date }}</td>
             <td>{{ order.user.name  }}</td>
-            <td>{{ order.user.email  }}</td>
-            <td>{{ order.contact.phone  }}</td>
-            <td>{{ formatPrice(order.total_price) }}</td>
-            <td>{{ order.payment.name }}</td>
+            <td>{{ formatPrice(order.total_price) }} đ</td>
             <td>{{ order.status.name }}</td>
             <td>
                 <router-link

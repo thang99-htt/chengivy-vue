@@ -150,3 +150,8 @@ label {
   color: red;
 }
 
+
+table.dataTable thead > tr > th {
+  width: 200px !important;
+}
+

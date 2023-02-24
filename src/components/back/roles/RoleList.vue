@@ -27,14 +27,14 @@
             };
         },
         beforeUpdate() {
-            $('.example1').DataTable().refreshList();
+            $('.example1').DataTable().destroy();
         },
         methods: {
             async retrieveRoles() {
                 try {
                     this.roles= await RoleService.getAll();
                     this.$nextTick(() => {
-                        $('.example1').DataTable()
+                        $('.example1').DataTable();
                     })
                 } catch (error) {
                     console.log(error);
@@ -157,4 +157,5 @@
     select.input-sm {
         line-height: unset;
     }
+    
 </style>

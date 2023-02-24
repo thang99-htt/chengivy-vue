@@ -79,7 +79,7 @@
                 </div>
                 <div class="col-4">
                     <div class="top-middle">
-                        <a class="navbar-brand" href="/home">
+                        <a class="navbar-brand" href="/">
                             <img src="/images/logo/logo.jpg" alt="Logo" />
                         </a>
                     </div>

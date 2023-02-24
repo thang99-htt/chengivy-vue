@@ -2,7 +2,12 @@
     <div class="sidebar">
         <nav class="navbar"> 
             <div class="navbar-nav w-100">
-                <a href="" class="nav-item nav-link"><i class="fa fa-user"></i>Tài khoản</a>
+                <router-link 
+                    :to="{ name: 'profile' }"
+                    class="nav-item nav-link"
+                >
+                    <i class="fa fa-user"></i>Tài khoản
+                </router-link>
                 <router-link 
                     :to="{ name: 'purchase' }"
                     class="nav-item nav-link"

@@ -9,7 +9,7 @@
             </label>       
             <Field 
                 name="parent_id" as="select"
-                 class="form-control select"
+                class="form-control select"
                 v-model="categoryLocal.parent_id"
             >
                 <option disabled value="">Chọn danh mục cha</option>

@@ -43,10 +43,9 @@
                     'categoy_id': "",
                     'name': "",
                     'description': "",
-                    'purchase_price': "",
                     'price': "",
                     'type_id': "",
-                    'discount_percent': "",
+                    'discount_percent': 0,
                 },
             };
         },

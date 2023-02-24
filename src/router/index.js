@@ -169,7 +169,7 @@ const routes = [
                         component: () => import("@/views/front/purchases/Purchase.vue"),
                     },
                     {
-                        path: "purchases/:id",
+                        path: "purchase/:id",
                         name: "purchase.detail",
                         component: () => import("@/views/front/purchases/PurchaseDetail.vue"),
                         props: true,
@@ -186,7 +186,12 @@ const routes = [
                 name: "checkout",
                 component: () => import("@/views/front/checkouts/Checkout.vue"),
             },
-            
+            {
+                path: "modal",
+                name: "modal",
+                component: () => import("@/components/Modal.vue"),
+                props: true,
+            },
         ]
     },
         

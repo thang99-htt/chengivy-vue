@@ -5,7 +5,6 @@
                 <div class="box-header with-border p-0 mb-4">
                     <h3 class="box-title">Chi Tiết Đơn hàng</h3>
                 </div>
-                
                 <div class="row column1 social_media_section">
                     <div class="col-6">
                         <div class="full socile_icons tw margin_bottom_30">
@@ -21,6 +20,14 @@
                                 <p>Ngày dự kiến giao: {{ order.estimate_date }}</p>
                                 <p>Ngày hủy: {{ order.cancle_date }}</p>
                                 <p>Ngày nhận: {{ order.receipt_date }}</p>
+                                <button
+                                    v-if="order.status.id == 1"
+                                    type="button"
+                                    class="btn btn-danger d-flex ms-2 mt-3"
+                                    @click="cancleOrder(order)"
+                                >
+                                    Hủy đơn
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -95,6 +102,39 @@
                     });
                 }
             },
+            cancleOrder(order) {
+                try {
+                    OrderService.cancleOrder(order.id)
+                    .then( (response) => {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        if(response.success) {
+                            this.refreshList();
+                        }
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Đơn hàng đã được hủy.'
+                        })
+                    })                  
+
+                } catch (error) {
+                    console.log(error);
+                }   
+            },
+            refreshList() {
+                this.getPurchase(this.id);
+            },
             formatPrice(value) {
                 return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             }
@@ -110,7 +150,7 @@
         padding: 30px;
     }
     .social_cont {
-        height: 180px;
+        height: 230px;
     }
     .social_cont p {
         text-align: left;

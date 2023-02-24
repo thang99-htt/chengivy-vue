@@ -1,31 +1,34 @@
-<script>
-export default {
-  data() {
-    return {
-      open: false
+<template>
+    <div class="modal d-block">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateAddressModalLabel">EDIT ADDRESS</h5>
+                    <button type="button" class="btn-close"  @click="closeModel"></button>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+  </template>
+  
+  <script>
+  import $ from 'jquery'
+  export default {
+    mounted(){
+        $('.btn-close').click(function() {
+            $('.modal').toggleClass('d-none');
+        });
     }
   }
-}
-</script>
-
-<template>
-  <button @click="open = true">Open Modal</button>
-
-<Teleport to="body">
-  <div v-if="open" class="modal">
-    <p>Hello from the modal!</p>
-    <button @click="open = false">Close</button>
-  </div>
-</Teleport>
-</template>
-
-<style scoped>
-.modal {
-  position: fixed;
-  z-index: 999;
-  top: 20%;
-  left: 50%;
-  width: 300px;
-  margin-left: -150px;
-}
-</style>
+  </script>
+  
+  <style lang="scss" scoped>
+  
+  </style>

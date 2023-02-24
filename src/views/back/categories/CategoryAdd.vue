@@ -17,8 +17,8 @@
                     
                     <div class="box-body offset-3 col-6">
                         <CategoryForm
-                        :category="category"
-                        @submit:category="createCategory"
+                            :category="category"
+                            @submit:category="createCategory"
                         />
                     </div>
                 </div>

@@ -11,10 +11,10 @@
 <template>
     <div class="container mt-100 profiles">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-3">
                 <ProfileNavigation/>
             </div>
-            <div class="col-lg-9">
+            <div class="col-9">
                 <router-view></router-view>
             </div>
         </div>

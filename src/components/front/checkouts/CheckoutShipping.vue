@@ -29,9 +29,28 @@
                         <div class="item_more">
                             <div class="center">
                                 Bạn muốn giao hàng đến địa chỉ khác?
-                                <a class="main_bt read_bt" href="#">
+                                <a class="main_bt read_bt" @click="openModel">
                                     Thêm địa chỉ giao hàng mới
                                 </a>
+                            </div>
+                            <div v-if="myModel">
+                                <div class="modal d-block">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="updateAddressModalLabel">Thêm địa chỉ mới</h5>
+                                                <button type="button" class="btn-close"  @click="closeModel"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <AddressForm 
+                                                    :cities="cities"
+                                                    :contact="contact"
+                                                    @submit:contact="createContact"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="list_cont">
@@ -61,12 +80,14 @@
     import axios from 'axios';
     import {mapGetters} from 'vuex';
     import { Form, Field, ErrorMessage } from "vee-validate";
+    import AddressForm from "@/components/front/checkouts/AddressForm.vue";
 
     export default {
         components: {
             Form,
             Field,
             ErrorMessage,
+            AddressForm
         },
         props: {
             order: { type: Object, required: true },
@@ -75,21 +96,102 @@
             return {
                 token: localStorage.getItem('token'),
                 addresses: [],
+                cities: [],
                 orderLocal: this.order,
+                myModel: false,
+                contact: {
+                    'ward_id': "",
+                    'address': "",
+                    'phone': ""
+                },
             };
         },
         async mounted() {
             await axios.get(`/api/user`, {
-                    headers: {
-                        Authorization: `Bearer ${this.token}`
-                    }
+                headers: {
+                    Authorization: `Bearer ${this.token}`
+                }
             }).then(async (response) => {
                 this.$store.dispatch('user', response.data);
                 await AddressService.getAddresses(response.data.id).then((response) => {
                     this.addresses = response;
                 });
             });
-            
+            this.refreshList();
+        },
+        methods: { 
+            openModel() {
+                this.myModel = true;
+            },
+            closeModel() {
+                this.myModel = false;
+            },
+            async retrieveCities() {
+                try {
+                    this.cities = await AddressService.getCities();
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async retrieveAddressByUser() {
+                await axios.get(`/api/user`, {
+                    headers: {
+                        Authorization: `Bearer ${this.token}`
+                    }
+                }).then(async (response) => {
+                    this.$store.dispatch('user', response.data);
+                    await AddressService.getAddresses(response.data.id).then((response) => {
+                        this.addresses = response;
+                    });
+                });
+            },
+            refreshList() {
+                this.retrieveAddressByUser();
+                this.retrieveCities();
+            },
+            async createContact(data) {
+                try {      
+                    await axios.get(`/api/user`, {
+                            headers: {
+                                Authorization: `Bearer ${this.token}`
+                            }
+                    }).then(async (response) => {
+                        this.$store.dispatch('user', response.data);
+                        await AddressService.createNewAddress(response.data.id, data).then((response) => {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+
+                            if(response.success == true) {
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Địa chỉ được thêm thành công.'
+                                })
+
+                                this.refreshList();
+                            } 
+
+                            if(response.success == false) {
+                                Toast.fire({
+                                    icon: 'warning',
+                                    title: 'Địa chỉ đã tồn tại.'
+                                })
+                            }
+        
+                        });
+                    });           
+                } catch (error) {
+                    console.log(error);
+                }
+            },
         },
         computed: {
             ...mapGetters(['user'])
@@ -166,6 +268,7 @@
         color: #000;
         font-weight: 700;
         text-decoration: underline;
+        cursor: pointer;
     }
     .ms-address {
         margin-left: 29px;
