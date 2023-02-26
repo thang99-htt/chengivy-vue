@@ -27,27 +27,6 @@
                                                 {{ payment.description }}
                                             </label>
                                         </div>
-                                        <div v-if="orderLocal.payment_id == 3" id="paypal-button-container">
-                                            <!-- <a class="paypal-btn" @click="openModel">
-                                                <i class="bi bi-paypal"></i> 
-                                                <span>Thanh toán PayPal</span>
-                                            </a>
-                                            <div v-if="myModel">
-                                                <div class="modal d-block">
-                                                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="updateAddressModalLabel">Thanh toán với PayPal</h5>
-                                                                <button type="button" class="btn-close"  @click="closeModel"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> -->
-                                        </div>
                                     </div>
                                     <div class="list_cont">
                                         <p>Gửi đến</p>
@@ -114,14 +93,21 @@
                                                         <span>Tổng đơn đặt hàng</span>
                                                         <span class="total-amount">{{ formatPrice(cartLocal.into_money + 25000) }} VĐN</span>
                                                     </div>
+                                                    <Field    
+                                                        hidden
+                                                        name="order_total_price" type="number"
+                                                        class="form-control select" id="order_total_price"
+                                                       :value="((cartLocal.into_money+25000)/23795).toFixed()"
+                                                    />
                                                 </div>
+                                                <div v-show="orderLocal.payment_id == 3 && paymentStatus !== 'paid'" class="mt-4 text-center" id="paypal-button" @click="paypalCheckout()"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="button-container btn-submit-order">
-                                <button v-if="address_order != null && orderLocal.payment_id != 3" class="btn btn-next" @click="complete">Hoàn tất thanh toán</button>
+                                <button v-if="address_order != null && orderLocal.payment_id != 3 || paymentStatus === 'paid'" class="btn btn-next" @click="complete">Hoàn tất thanh toán</button>
                             </div>
                         </Form>
                     </div>
@@ -154,58 +140,13 @@
                 payments: [],
                 cartLocal: this.carts,
                 orderLocal: this.order,
-                field : this.carts.into_money,
                 myModel: false,
+                paymentStatus: ''
             };
         },
         async mounted() {
             this.refreshList();
-            paypal.Buttons({
-                // Order is created on the server and the order id is returned
-                createOrder() {
-                return fetch("/my-server/create-paypal-order", {
-                    method: "POST",
-                    headers: {
-                    "Content-Type": "application/json",
-                    },
-                    // use the "body" param to optionally pass additional order information
-                    // like product skus and quantities
-                    body: JSON.stringify({
-                    cart: [
-                        {
-                        sku: "YOUR_PRODUCT_STOCK_KEEPING_UNIT",
-                        quantity: "YOUR_PRODUCT_QUANTITY",
-                        },
-                    ],
-                    }),
-                })
-                .then((response) => response.json())
-                .then((order) => order.id);
-                },
-                // Finalize the transaction on the server after payer approval
-                onApprove(data) {
-                return fetch("/my-server/capture-paypal-order", {
-                    method: "POST",
-                    headers: {
-                    "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                    orderID: data.orderID
-                    })
-                })
-                .then((response) => response.json())
-                .then((orderData) => {
-                    // Successful capture! For dev/demo purposes:
-                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-                    const transaction = orderData.purchase_units[0].payments.captures[0];
-                    alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
-                    // When ready to go live, remove the alert and show a success message within this page. For example:
-                    // const element = document.getElementById('paypal-button-container');
-                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
-                    // Or go to another URL:  window.location.href = 'thank_you.html';
-                });
-                }
-            }).render('#paypal-button-container');
+            this.paypalCheckout();
         },
         emits: ["submit:order"],
         methods: {
@@ -246,6 +187,64 @@
             closeModel() {
                 this.myModel = false;
             },
+            async paypalCheckout() {
+                var order_total_price = $("#order_total_price").val();
+                await paypal.Button.render({
+                    // Configure environment
+                    env: 'sandbox',
+                    client: {
+                        sandbox: 'AT5pO4SLjEoDt65gg6gzPGMAp4Ml1XpOkoeWr7_G-qa3moiSJJFkdqDIBxh1ytFYbCLXHRoT1MsJSur1',
+                        production: 'demo_production_client_id'
+                    },
+                    // Customize button (optional)
+                    locale: 'en_US',
+                    style: {
+                        size: 'large',
+                        color: 'gold',
+                        shape: 'pill',
+                    },
+
+                    // Enable Pay Now checkout flow (optional)
+                    commit: true,
+
+                    // Set up a payment
+                    payment: function(data, actions) {
+                        return actions.payment.create({
+                            transactions: [{
+                                amount: {
+                                    // total: order_total_price,
+                                    total: '0.01',
+                                    currency: 'USD'
+                                }
+                            }]
+                        });
+                    },
+                    // Execute the payment
+                    onAuthorize: (data, actions) => {
+                        return actions.payment.execute()
+                            .then(() => {
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                });
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Thanh toán thành công. Hoàn tất đơn hàng ngay.'
+                                })
+                                this.paymentStatus = 'paid';
+                            });
+                    }
+                        
+                }, '#paypal-button');
+                
+            }
         },
          
      };
@@ -362,5 +361,10 @@
     .paypal-btn span {
         color: #fff;
         font-size: 16px;
+    }
+
+    .SingleShippingAddress_shipping-addresses_19Ila {
+        display: none !important;
+        background: #000 !important;
     }
 </style>

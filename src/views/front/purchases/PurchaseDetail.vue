@@ -28,6 +28,13 @@
                                 >
                                     Hủy đơn
                                 </button>
+                                <button
+                                    v-if="order.payment.id == 3"
+                                    type="button"
+                                    class="btn btn-success d-flex ms-2 mt-3"
+                                >
+                                    Thanh toán ngay
+                                </button>
                             </div>
                         </div>
                     </div>

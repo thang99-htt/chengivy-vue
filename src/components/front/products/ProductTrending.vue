@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <div id="carouselExampleControls" class="carousel slide slider-trending" data-bs-ride="carousel" data-bs-interval="500">
+        <div id="carouselExampleControls" class="carousel slide slider-trending" data-bs-ride="carousel" data-bs-interval="1000">
             <div class="carousel-inner">
                 <div 
                     v-for="(product, index) in products.trendingProducts"

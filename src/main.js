@@ -20,3 +20,5 @@ import router from "./router";
 
 // Vue.config.productionTip = false;
 createApp(App).use(router).use(store).use(VueSweetalert2).mount('#app');
+
+

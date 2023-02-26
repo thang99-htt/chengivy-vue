@@ -104,7 +104,7 @@
                 carts: [],
                 order: {
                     'contact_id': 0,
-                    'payment_id': 3,
+                    'payment_id': 1,
                     'note': ""
                 },
             }
