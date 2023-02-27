@@ -1,10 +1,9 @@
 <template>
-    <section class="content">
-        <div v-if="product">
-            <ProductList
-                :product="product"
-            />  
-        </div>
+    <section class="product-list section filter_products mb-5">
+        <ProductList
+            v-if="product"
+            :product="product"
+        />  
     </section>
 </template>
 <script>
@@ -20,6 +19,7 @@
         data() {
             return {
                 product: null,
+                itemsPerPage: 5,
             };
         },
         methods: {

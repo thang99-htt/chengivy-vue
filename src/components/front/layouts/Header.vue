@@ -180,6 +180,11 @@
                                            </a>
                                         </li>
                                         <li class="nav-item">
+                                            <router-link :to="{ name: 'purchase' }">
+                                                Đơn mua
+                                            </router-link>
+                                        </li>
+                                        <li class="nav-item">
                                             <router-link :to="{ name: 'profile' }">
                                                 Hồ sơ
                                             </router-link>
@@ -233,11 +238,14 @@
                 token: localStorage.getItem('token'),
             };
         },
+        // beforeUpdate() {
+        //     this.retrieveCarts();
+        // },
         mounted() {
             CategoryService.getCategory().then((response) => {
                 this.categories = response;
             });
-            this.refreshList();
+            this.retrieveCarts();
         },
         async created() {
             await axios.get(`/api/user`, {
@@ -262,9 +270,6 @@
                 } catch (error) {
                     console.log(error);
                 }
-            },
-            refreshList() {
-                this.retrieveCarts();
             },
             getImage(image){
                 return 'http://127.0.0.1:8000/storage/uploads/products/'+image;

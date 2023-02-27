@@ -2213,7 +2213,7 @@ ol {
   width: 130px;
   min-width: 130px;
   background: #fff;
-  padding: 20px 25px;
+  padding: 15px 20px;
   -webkit-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
   z-index: 99;
@@ -2228,7 +2228,6 @@ ol {
 }
 .navbar-nav .nav-item .sub-menu .nav-item {
   width: 100%;
-  margin-bottom: 10px;
 }
 .navbar-nav .nav-item .sub-menu .nav-item:last-child {
   margin: 0;
