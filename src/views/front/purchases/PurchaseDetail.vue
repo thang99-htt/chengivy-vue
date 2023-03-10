@@ -29,11 +29,12 @@
                                     Hủy đơn
                                 </button>
                                 <button
-                                    v-if="order.payment.id == 3"
+                                    v-if="order.status.id == 7"
                                     type="button"
                                     class="btn btn-success d-flex ms-2 mt-3"
+                                    @click="receiptOrder(order)"
                                 >
-                                    Thanh toán ngay
+                                    Đã nhận hàng
                                 </button>
                             </div>
                         </div>
@@ -132,6 +133,36 @@
                         Toast.fire({
                             icon: 'success',
                             title: 'Đơn hàng đã được hủy.'
+                        })
+                    })                  
+
+                } catch (error) {
+                    console.log(error);
+                }   
+            },
+            receiptOrder(order) {
+                try {
+                    OrderService.receiptOrder(order.id)
+                    .then( (response) => {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        if(response.success) {
+                            this.refreshList();
+                        }
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Cảm ơn bạn đã mua hàng.'
                         })
                     })                  
 

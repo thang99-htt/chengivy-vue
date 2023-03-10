@@ -1,7 +1,7 @@
 <template>
     <div class="section">
         <div class="cart-list list">
-            <div class='container mt-30'>
+            <div class='container mt-100'>
                 <div class="d-flex justify-content-between">
                     <h5 class="mb-4">
                         <svg class="d-inline me-2 bi bi-bag" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">

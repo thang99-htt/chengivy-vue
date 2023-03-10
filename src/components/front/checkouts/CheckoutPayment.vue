@@ -202,6 +202,7 @@
                         size: 'large',
                         color: 'gold',
                         shape: 'pill',
+                        tagline : 'false',
                     },
 
                     // Enable Pay Now checkout flow (optional)

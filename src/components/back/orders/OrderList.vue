@@ -72,7 +72,7 @@
                 </button> 
                 <button
                     v-if="order.status.id == 7" class="btn-order-status order-status7"
-                    @click="statusUpdate(order)"
+                    @click="waitReceiptOrder()"
                 >
                     {{ order.status.name }}
                 </button> 
@@ -178,6 +178,24 @@
                 } catch (error) {
                     console.log(error);
                 }   
+            },
+            waitReceiptOrder() {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Chờ khách hàng xác nhận đã nhận.'
+                })
             },
             deleteOrder(id) {
                 Swal.fire({

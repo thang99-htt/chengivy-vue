@@ -18,5 +18,8 @@ class OrderService {
     async cancleOrder(id, data) {
         return (await this.api.put(`purchase/cancle-${id}`, data)).data;
     }
+    async receiptOrder(id, data) {
+        return (await this.api.put(`purchase/receipt-${id}`, data)).data;
+    }
 }
 export default new OrderService();

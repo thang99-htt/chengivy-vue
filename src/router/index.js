@@ -123,6 +123,17 @@ const routes = [
                 component: () => import("../views/front/Home.vue"),                
             },
             {
+                path: "/search",
+                name: "search",
+                component: () => import("../views/front/products/Search.vue"),                
+            },
+            {
+                path: "products/all",
+                name: "product.all",
+                component: () => import("@/views/front/products/Product.vue"),
+                props: true,
+            },
+            {
                 path: "products/:url",
                 name: "product.category",
                 component: () => import("@/views/front/products/Product.vue"),

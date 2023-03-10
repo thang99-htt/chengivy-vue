@@ -12,6 +12,9 @@ class ProductService {
     async getListing(url) {
         return (await this.api.get(`/${url}`)).data;
     }
+    async getListingAll() {
+        return (await this.api.get(`/all`)).data;
+    }
     async getDetail(id) {
         return (await this.api.get(`/detail/${id}`)).data;
     }

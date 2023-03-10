@@ -1,32 +1,29 @@
 <template>
     <div class="container-fluid">
-        <div class="container-fluid">
-            <div class="mt-100 mb-5">
-                <div class="row">
-                    <div class="offset-10"> 
-                        <form action="" class="sortProducts" id="sortProducts">
-                            <input type="hidden" id="url" name="url" value="{{ $url }}">
-                            <div class="toolbar-sorter">
-                                <div class="select-box-wrapper">
-                                    <label for="sort" class="text-dark me-2">Sắp xếp</label>
-                                    <select v-model="sortOrder">
-                                        <option value="default" selected>Mặc định</option>
-                                        <option value="asc">Giá: Thấp đến cao</option>
-                                        <option value="desc">Giá: Cao đến thấp</option>
-                                        <option value="ascName">Tên: A đến Z</option>
-                                        <option value="descName">Tên: Z đến A</option>
-                                    </select>
-                                </div>
+        <div class="mt-60 mb-4">
+            <div class="row">
+                <div class="offset-10"> 
+                    <form action="" class="sortProducts" id="sortProducts">
+                        <input type="hidden" id="url" name="url" value="{{ $url }}">
+                        <div class="toolbar-sorter">
+                            <div class="select-box-wrapper">
+                                <label for="sort" class="text-dark me-2">Sắp xếp</label>
+                                <select v-model="sortOrder">
+                                    <option value="ascName">Tên: A đến Z</option>
+                                    <option value="descName">Tên: Z đến A</option>
+                                    <option value="default" selected>Mặc định</option>
+                                    <option value="asc">Giá: Thấp đến cao</option>
+                                    <option value="desc">Giá: Cao đến thấp</option>
+                                </select>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-        
         <div class="row">
             <div 
-                class="col-lg-3 col-md- col-12 mb-5"
+                class="col-lg-3 col-md-4 col-12"
                 v-for="(product, index) in displayedProducts"
                 :key="product"
             >
@@ -78,24 +75,32 @@
             </div>
         </div>
     </div> 
-    <div class="container">
+    <div class="me-3 mt-5">
         <div class="row">
-            <div class="col-md-12">
-                <ul class="pagination justify-content-center">
+            <div class="col-12">
+                <ul class="pagination justify-content-end">
                     <li class="page-item" :class="{ disabled: currentPage <= 1 }">
-                        <a class="page-link" href="#" @click.prevent="currentPage = 1">Trang đầu</a>
+                        <a class="page-link" href="#" @click.prevent="currentPage = 1">
+                            <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                        </a>
                     </li>
                     <li class="page-item" :class="{ disabled: currentPage <= 1 }">
-                        <a class="page-link" href="#" @click.prevent="currentPage--">Trước đó</a>
+                        <a class="page-link" href="#" @click.prevent="currentPage--">
+                            <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        </a>
                     </li>
                     <li class="page-item" v-for="pageNumber in totalPages" :key="pageNumber" :class="{ active: currentPage === pageNumber }">
                         <a class="page-link" href="#" @click.prevent="currentPage = pageNumber">{{ pageNumber }}</a>
                     </li>
                     <li class="page-item" :class="{ disabled: currentPage >= totalPages }">
-                        <a class="page-link" href="#" @click.prevent="currentPage++">Tiếp theo</a>
+                        <a class="page-link" href="#" @click.prevent="currentPage++">
+                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        </a>
                     </li>
                     <li class="page-item" :class="{ disabled: currentPage >= totalPages }">
-                        <a class="page-link" href="#" @click.prevent="currentPage = totalPages">Trag cuối</a>
+                        <a class="page-link" href="#" @click.prevent="currentPage = totalPages">
+                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -111,11 +116,11 @@
             Paginate
         },
         props: {
-            product: { type: Object, required: true },
+            products: { type: Object, required: true },
         },
         data() {
             return {
-                products: this.product,
+                products: this.products,
                 currentPage: 1,
                 itemsPerPage: 8,
                 sortOrder: 'default',
@@ -168,3 +173,10 @@
     };
 </script>
 
+<style>
+    .page-link {
+        margin: 0 8px;
+        padding: 10px 20px;
+        border-radius: 6px;
+    }
+</style>
