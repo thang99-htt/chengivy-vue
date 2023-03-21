@@ -4,7 +4,19 @@
         :validation-schema="contactFormSchema"
     > 
         <div class="form-group">
-            <label for="name">Số điện thoại
+            <label for="name">Họ Tên
+                <span class="error-feedback">*</span>
+            </label>
+            <Field 
+                name="name"
+                type="text"
+                class="form-control"
+                v-model="contactLocal.name"
+            />
+            <ErrorMessage name="name" class="error-feedback" />
+        </div>
+        <div class="form-group">
+            <label for="phone">Số điện thoại
                 <span class="error-feedback">*</span>
             </label>
             <Field 
@@ -16,7 +28,7 @@
             <ErrorMessage name="phone" class="error-feedback" />
         </div>
         <div class="form-group">
-            <label for="name">Địa chỉ cụ thể
+            <label for="address">Địa chỉ cụ thể
                 <span class="error-feedback">*</span>
             </label>
             <Field 
@@ -125,11 +137,6 @@
                 activeDistrict: "",
                 activeWard: "",
             };
-        },
-        mounted() {
-            // CategoryService.getAdd().then((response) => {
-            //     this.products = response;
-            // });
         },
         methods: {
             submitContact() {

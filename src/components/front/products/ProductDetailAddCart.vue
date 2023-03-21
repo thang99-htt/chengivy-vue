@@ -10,10 +10,12 @@
                         Size
                         <span class="error-feedback">*</span>
                     </p>
-                    <p class="guide">Hướng dẫn</p>
+                    <p v-if="product_stock" class="guide">{{ product_stock }} sản phẩm có sẵn</p>
+                    <p v-if="product_stock == 0" class="guide text-danger">Hết hàng</p>
                 </div>
                 <div class="form-group">
                     <Field 
+                        @change="changeSize($event)"
                         name="size_id" as="select"
                         class="form-control select"
                         v-model="cartLocal.size"
@@ -68,7 +70,7 @@
 <script>
     import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
-
+    import ProductService from "@/services/front/product.service";
     export default {
         components: {
             Form,
@@ -91,6 +93,7 @@
                 cartLocal: this.cart,
                 productFormSchema,
                 products: [],
+                product_stock: null
             };
         },
         methods: {
@@ -102,7 +105,13 @@
             },
             increase() {
                 this.cartLocal.quantity++;
-            }
+            },
+            async changeSize(event) {
+                await ProductService.getStock(this.productLocal.id, event.target.value).then((response) => {
+                    this.product_stock = response;
+                    console.log(response);
+                });
+            },
         },
     };
 </script>

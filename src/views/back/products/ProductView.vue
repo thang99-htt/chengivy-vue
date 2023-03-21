@@ -117,6 +117,7 @@
                                 icon: 'success',
                                 title: "Size được thêm thành công!"
                             })
+                            this.getProduct(this.id);
                         }
                         if(response == false) {
                             Toast.fire({
@@ -153,6 +154,7 @@
                         title: 'Hình ảnh được thêm thành công.'
                     })
 
+                    this.getProduct(this.id);
                     
                     
                 } catch (error) {

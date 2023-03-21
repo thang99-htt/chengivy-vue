@@ -12,7 +12,7 @@
                         <div class="col-4">
                             <ProductDetailInfor
                                 :product="product"
-                            /> 
+                            />
                             <ProductDetailAddCart
                                 :product="product"
                                 :cart="cart"
@@ -58,6 +58,7 @@
             async getProduct(id) {
                 try {
                     this.product = await ProductService.getDetail(id);
+                    console.log(this.cart.size);
                 } catch (error) {
                     console.log(error);
                     // Chuyển sang trang NotFound đồng thời giữ cho URL không đổi
@@ -98,10 +99,10 @@
                             } else if (response == false) {
                                 Toast.fire({
                                     icon: 'warning',
-                                    title: 'Số lượng không được phép.'
+                                    title: 'Số lượng của sản phẩm này đã được bán hết.'
                                 });
                             }
-                            console.log(response)
+                            // console.log(response);
                         });
                     });
                 } catch (error) {

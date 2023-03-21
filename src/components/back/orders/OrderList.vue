@@ -10,7 +10,6 @@
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mã đơn hàng</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày đặt</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Khách hàng</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Email</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Số điện thoại</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Tổng giá trị</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Phương thức thanh toán</th>
@@ -28,9 +27,8 @@
             </td>
             <td>{{ order.id }}</td>
             <td>{{ order.order_date }}</td>
-            <td>{{ order.user.name  }}</td>
-            <td>{{ order.user.email  }}</td>
-            <td>{{ order.contact.phone  }}</td>
+            <td>{{ order.user_name  }}</td>
+            <td>{{ order.user_phone  }}</td>
             <td>{{ formatPrice(order.total_price) }} đ</td>
             <td>{{ order.payment.name }}</td>
             <td>

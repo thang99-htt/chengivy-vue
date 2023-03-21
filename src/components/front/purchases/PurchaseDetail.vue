@@ -3,7 +3,7 @@
         aria-describedby="example1_info" role="grid" 
         id="" class=" example1 table table-bordered table-striped dataTable"
     >
-        <thead>
+        <thead> 
             <tr role="row">
                 <th>#</th>
                 <th>Sản phẩm</th>
@@ -21,15 +21,15 @@
                     :value="order.id"
             >
                 <td>{{ index + 1 }}</td>
-                <td>{{ order.product_detail.name }}</td>
+                <td>{{ order.product_name }}</td>
                 <td>
-                    <img v-if="order.product_detail.image" :src="getImage(order.product_detail.image)"
+                    <img v-if="order.product_image" :src="getImage(order.product_image)"
                     alt="Image" class="img-responsive center-block" width="100">
                 </td>
-                <td>{{ order.size }}</td>
-                <td>{{ formatPrice(order.product_detail.price) }}</td>
-                <td>{{ order.quantity }}</td>
-                <td>{{ formatPrice(order.price) }}</td>
+                <td>{{ order.product_size }}</td>
+                <td>{{ formatPrice(order.product_price) }}</td>
+                <td>{{ order.product_quantity }}</td>
+                <td>{{ formatPrice(order.product_into_money) }}</td>
             </tr>
         </tbody>
     </table>
@@ -42,7 +42,7 @@
         
         data() {
             return {
-                orderLocal: this.order.order_product,
+                orderLocal: this.order.order_details,
             };
         },
         methods: {

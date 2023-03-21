@@ -16,13 +16,13 @@
                                     v-for="(address, index) in addresses"
                                     :key="address"
                                 >
-                                    <Field name="address" type="radio" :value="address.pivot.id" v-model="orderLocal.contact_id"/>
+                                    <Field name="address" type="radio" :value="address.id" v-model="orderLocal.contact_id"/>
                                         <span class="text-bold ms-3">{{ user.name }}</span>
                                         <p class="ms-address">Địa chỉ:
-                                            {{ address.pivot.address }}, {{ address.name }}, 
-                                            {{ address.district.name }}, {{ address.district.city.name }}
+                                            {{ address.address }}, {{ address.name }}, 
+                                            {{ address.district }}, {{ address.district.city }}
                                         </p>
-                                        <p class="ms-address">Điện thoại: {{ address.pivot.phone }}</p>
+                                        <p class="ms-address">Điện thoại: {{ address.phone }}</p>
                                 </li>
                             </ul>
                         </div>
@@ -101,6 +101,7 @@
                 myModel: false,
                 contact: {
                     'ward_id': "",
+                    'name': "",
                     'address': "",
                     'phone': ""
                 },

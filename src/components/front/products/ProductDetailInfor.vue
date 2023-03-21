@@ -16,6 +16,8 @@
     </div>
 </template>
 <script>
+    import { formatPrice } from '../../../shared';
+
     export default {
         props: {
             product: { type: Object, required: true },
@@ -24,7 +26,7 @@
             formatPrice(value) {
                 return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             }
-        },
+        }
     };
 </script>
 

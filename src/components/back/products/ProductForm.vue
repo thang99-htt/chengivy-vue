@@ -134,7 +134,7 @@
             Form,
             Field,
             ErrorMessage,
-            },
+        },
         emits: ["submit:product", "delete:product"],
         props: {
             product: { type: Object, required: true },

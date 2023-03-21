@@ -41,11 +41,11 @@
                                         v-else
                                         class="dash_main ps-4"
                                     >
-                                        <p>{{ address_order.user.name }} </p>
+                                        <p>{{ address_order.name }} </p>
                                         <p>Điện thoại: {{ address_order.phone }} </p>
                                         <p>Địa chỉ:
-                                            {{ address_order.address }}, {{  address_order.ward.name }}, 
-                                            {{  address_order.ward.district.name }}, {{  address_order.ward.district.city.name }}
+                                            {{ address_order.address }}, {{  address_order.ward }}, 
+                                            {{  address_order.district }}, {{  address_order.city }}
                                         </p>
                                     </div>
                                 </div>
@@ -213,8 +213,7 @@
                         return actions.payment.create({
                             transactions: [{
                                 amount: {
-                                    // total: order_total_price,
-                                    total: '0.01',
+                                    total: order_total_price,
                                     currency: 'USD'
                                 }
                             }]

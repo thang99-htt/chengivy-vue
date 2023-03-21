@@ -46,12 +46,12 @@
                                 Thông tin vận chuyển
                             </div>
                             <div class="social_cont">
-                                <p>Họ tên: {{ order.user.name }}</p>
-                                <p>Điện thoại: {{ order.contact.phone }}</p>
-                                <p>Địa chỉ: {{ order.contact.address }}</p>
-                                <p>Phường/Xã: {{ order.contact.address_detail.name }}</p>
-                                <p>Quận/Huyện: {{ order.contact.address_detail.district.name }}</p>
-                                <p>Tỉnh/Thành Phố: {{ order.contact.address_detail.district.city.name }}</p>
+                                <p>Họ tên: {{ order.user_name }}</p>
+                                <p>Điện thoại: {{ order.user_phone }}</p>
+                                <p>Địa chỉ: {{ order.user_address }}</p>
+                                <p>Phường/Xã: {{ order.ward }}</p>
+                                <p>Quận/Huyện: {{ order.district }}</p>
+                                <p>Tỉnh/Thành Phố: {{ order.city }}</p>
                             </div>
                         </div>
                     </div>
@@ -90,13 +90,7 @@
         methods: {
             async getPurchase(id) {
                 try {
-                    await axios.get(`/api/user`, {
-                        headers: {
-                            Authorization: `Bearer ${this.token}`
-                        }
-                    }).then(async (response) => {
-                        this.order = await OrderService.getPurchase(response.data.id, id);
-                    });
+                    this.order = await OrderService.getPurchase(id);
                 } catch (error) {
                     console.log(error);
                     // Chuyển sang trang NotFound đồng thời giữ cho URL không đổi

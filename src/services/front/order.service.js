@@ -12,8 +12,8 @@ class OrderService {
     async getAllPurchase(id) {
         return (await this.api.get(`purchases/user-${id}`)).data;
     }
-    async getPurchase(user, id) {
-        return (await this.api.get(`purchase/user-${user}/order-${id}`)).data;
+    async getPurchase(id) {
+        return (await this.api.get(`purchase/order-${id}`)).data;
     }
     async cancleOrder(id, data) {
         return (await this.api.put(`purchase/cancle-${id}`, data)).data;
