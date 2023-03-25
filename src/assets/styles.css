@@ -155,3 +155,7 @@ table.dataTable thead > tr > th {
   width: 200px !important;
 }
 
+table.dataTable thead > tr > th:last-child {
+  width: 230px !important;
+}
+

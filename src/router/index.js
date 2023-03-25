@@ -2,7 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 const routes = [
     {
         path:"/admin",
-        component: () => import("../components/back/layouts/Layout.vue"),
+        component: () => import("../components/admin/layouts/Layout.vue"),
         meta: {
             authenticatedAdmin: true
         },
@@ -10,7 +10,7 @@ const routes = [
             {
                 path: "dashboard",
                 name: "dashboard",
-                component: () => import("../views/back/Dashboard.vue"),
+                component: () => import("../views/admin/Dashboard.vue"),
             },
             {
                 path: "tables",
@@ -21,7 +21,7 @@ const routes = [
             {
                 path: "roles",
                 name: "role",
-                component: () => import("../views/back/roles/Role.vue"),
+                component: () => import("../views/admin/roles/Role.vue"),
                 meta: {
                     description: 'Vai trò',
                 },
@@ -29,18 +29,64 @@ const routes = [
             {
                 path: "roles/:id",
                 name: "role.edit",
-                component: () => import("@/views/back/roles/RoleEdit.vue"),
+                component: () => import("@/views/admin/roles/RoleEdit.vue"),
                 props: true,
             },
             {
                 path: "roles/add",
                 name: "role.add",
-                component: () => import("@/views/back/roles/RoleAdd.vue"),
+                component: () => import("@/views/admin/roles/RoleAdd.vue"),
+            },  
+            {
+                path: "permissions",
+                name: "permission",
+                component: () => import("../views/admin/permissions/Permission.vue"),
+                meta: {
+                    description: 'Quyền',
+                },
+            },
+            {
+                path: "permissions/:id",
+                name: "permission.edit",
+                component: () => import("@/views/admin/permissions/PermissionEdit.vue"),
+                props: true,
+            },
+            {
+                path: "permissions/add",
+                name: "permission.add",
+                component: () => import("@/views/admin/permissions/PermissionAdd.vue"),
             },   
+            {
+                path: "staffs",
+                name: "staff",
+                component: () => import("../views/admin/staffs/Staff.vue"),
+                meta: {
+                    description: 'Nhân viên',
+                },
+            },
+            {
+                path: "staffs/add",
+                name: "staff.add",
+                component: () => import("@/views/admin/staffs/StaffAdd.vue"),
+            },  
+            {
+                path: "staffs/:id",
+                name: "staff.edit",
+                component: () => import("@/views/admin/staffs/StaffEdit.vue"),
+                props: true,
+            },
+            {
+                path: "authorization",
+                name: "authorization",
+                component: () => import("../views/admin/authorizations/Authorization.vue"),
+                meta: {
+                    description: 'Phân quyền',
+                },
+            },
             {
                 path: "categories",
                 name: "category",
-                component: () => import("../views/back/categories/Category.vue"),
+                component: () => import("../views/admin/categories/Category.vue"),
                 meta: {
                     description: 'Danh mục',
                 }
@@ -48,18 +94,18 @@ const routes = [
             {
                 path: "categories/:id",
                 name: "category.edit",
-                component: () => import("@/views/back/categories/CategoryEdit.vue"),
+                component: () => import("@/views/admin/categories/CategoryEdit.vue"),
                 props: true,
             },
             {
                 path: "categories/add",
                 name: "category.add",
-                component: () => import("@/views/back/categories/CategoryAdd.vue"),
+                component: () => import("@/views/admin/categories/CategoryAdd.vue"),
             },   
             {
                 path: "products",
                 name: "product",
-                component: () => import("../views/back/products/Product.vue"),
+                component: () => import("../views/admin/products/Product.vue"),
                 meta: {
                     description: 'Sản phẩm',
                 }
@@ -67,24 +113,24 @@ const routes = [
             {
                 path: "products/view/:id",
                 name: "product.view",
-                component: () => import("@/views/back/products/ProductView.vue"),
+                component: () => import("@/views/admin/products/ProductView.vue"),
                 props: true,
             },
             {
                 path: "products/:id",
                 name: "product.edit",
-                component: () => import("@/views/back/products/ProductEdit.vue"),
+                component: () => import("@/views/admin/products/ProductEdit.vue"),
                 props: true,
             },
             {
                 path: "products/add",
                 name: "product.add",
-                component: () => import("@/views/back/products/ProductAdd.vue"),
+                component: () => import("@/views/admin/products/ProductAdd.vue"),
             }, 
             {
                 path: "orders",
                 name: "order",
-                component: () => import("../views/back/orders/Order.vue"),
+                component: () => import("../views/admin/orders/Order.vue"),
                 meta: {
                     description: 'Đơn hàng',
                 }
@@ -92,7 +138,7 @@ const routes = [
             {
                 path: "orders/:id",
                 name: "order.detail",
-                component: () => import("@/views/back/orders/OrderDetail.vue"),
+                component: () => import("@/views/admin/orders/OrderDetail.vue"),
                 props: true,
             },
         ]
@@ -100,14 +146,14 @@ const routes = [
     {
         path: "/admin/login",
         name: "login.admin",
-        component: () => import("../views/back/auth/Login.vue"),
+        component: () => import("../views/admin/auth/Login.vue"),
         meta: {
             authenticatedAdmin: false
         }
     },
     {
         path:"/",
-        component: () => import("../components/front/layouts/Layout.vue"),
+        component: () => import("../components/user/layouts/Layout.vue"),
         meta: {
             authenticated: false
         },
@@ -120,69 +166,69 @@ const routes = [
             {
                 path: "/",
                 name: "home",
-                component: () => import("../views/front/Home.vue"),                
+                component: () => import("../views/user/Home.vue"),                
             },
             {
                 path: "/search",
                 name: "search",
-                component: () => import("../views/front/products/Search.vue"),                
+                component: () => import("../views/user/products/Search.vue"),                
             },
             {
                 path: "products/all",
                 name: "product.all",
-                component: () => import("@/views/front/products/Product.vue"),
+                component: () => import("@/views/user/products/Product.vue"),
                 props: true,
             },
             {
                 path: "products/:url",
                 name: "product.category",
-                component: () => import("@/views/front/products/Product.vue"),
+                component: () => import("@/views/user/products/Product.vue"),
                 props: true,
             },
             {
                 path: "products/detail/:id",
                 name: "product.detail",
-                component: () => import("@/views/front/products/ProductDetail.vue"),
+                component: () => import("@/views/user/products/ProductDetail.vue"),
                 props: true,
             },
             {
                 path: "login",
                 name: "login",
-                component: () => import("../views/front/auth/Login.vue"),
+                component: () => import("../views/user/auth/Login.vue"),
             },
             {
                 path: "register",
                 name: "register",
-                component: () => import("../views/front/auth/Register.vue"),
+                component: () => import("../views/user/auth/Register.vue"),
             },
             
         ]
     },
     {
         path:"/",
-        component: () => import("../components/front/layouts/Layout.vue"),
+        component: () => import("../components/user/layouts/Layout.vue"),
         meta: {
             authenticated: true
         },
         children: [
             {
                 path: "profiles",
-                component: () => import("../components/front/profiles/Profile.vue"),
+                component: () => import("../components/user/profiles/Profile.vue"),
                 children: [
                     {
                         path: "/profiles",
                         name: "profile",
-                        component: () => import("@/views/front/profiles/Profile.vue"),
+                        component: () => import("@/views/user/profiles/Profile.vue"),
                     },
                     {
                         path: "purchases",
                         name: "purchase",
-                        component: () => import("@/views/front/purchases/Purchase.vue"),
+                        component: () => import("@/views/user/purchases/Purchase.vue"),
                     },
                     {
                         path: "purchase/:id",
                         name: "purchase.detail",
-                        component: () => import("@/views/front/purchases/PurchaseDetail.vue"),
+                        component: () => import("@/views/user/purchases/PurchaseDetail.vue"),
                         props: true,
                     },
                 ]
@@ -190,12 +236,12 @@ const routes = [
             {
                 path: "cart",
                 name: "cart",
-                component: () => import("@/views/front/carts/Cart.vue"),
+                component: () => import("@/views/user/carts/Cart.vue"),
             },
             {
                 path: "checkout",
                 name: "checkout",
-                component: () => import("@/views/front/checkouts/Checkout.vue"),
+                component: () => import("@/views/user/checkouts/Checkout.vue"),
             },
             {
                 path: "modal",
