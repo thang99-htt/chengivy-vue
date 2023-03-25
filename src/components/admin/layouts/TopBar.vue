@@ -49,18 +49,9 @@
         name: 'TopBar',
         data() {
             return {
-                currentUser: [],
                 token: localStorage.getItem('tokenAdmin'),
+                authorization: []
             };
-        },
-        async created() {
-            await axios.get(`http://127.0.0.1:8000/api/user`, {
-                headers: {
-                Authorization: `Bearer ${this.token}`
-                }
-            }).then((response) => {
-                this.$store.dispatch('user', response.data)
-            });
         },
         methods: {
             async logout() {
@@ -96,7 +87,7 @@
             },
         },
         computed: {
-      ...mapGetters(['user'])
-    }
+            ...mapGetters(['userId', 'user'])
+        }
     };
 </script>

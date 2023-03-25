@@ -9,6 +9,9 @@ class AuthorizationService {
     async getByStaff() {
         return (await this.api.get("/by-staff")).data;
     }
+    async getStaff(id) {
+        return (await this.api.get(`/by-staff/${id}`)).data;
+    }
     async getRoleStaff(id) {
         return (await this.api.get(`/role-staff/${id}`)).data;
     }

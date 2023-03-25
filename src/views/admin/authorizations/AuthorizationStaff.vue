@@ -1,5 +1,5 @@
 <template>
-    <h5 class="my-3">Phân theo nhân viên</h5>
+    <h3 class="my-3">Phân theo nhân viên</h3>
     <table
         aria-describedby="example1_info" role="grid" 
         id="" class="example1 table table-bordered table-striped dataTable"

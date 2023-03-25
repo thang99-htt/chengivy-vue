@@ -13,7 +13,7 @@
         <span class="page">Tables</span>
       </router-link>
     </li>
-    <li class="treeview pageLink">
+    <li class="treeview pageLink" v-if="test3">
       <a href="#">
         <i class="fa fa-user"></i>
         <span class="treeview-title">Nhân viên</span>
@@ -44,19 +44,19 @@
         </li>
       </ul>
     </li>
-    <li class="pageLink">
+    <li class="pageLink" v-if="test5">
       <router-link to="/admin/categories">
         <i class="fa fa-sitemap"></i>
         <span class="page">Danh mục</span>
       </router-link>
     </li>
-    <li class="pageLink">
+    <li class="pageLink" v-if="test6">
       <router-link to="/admin/products">
         <i class="fa fa-th-large"></i>
         <span class="page">Sản phẩm</span>
       </router-link>
     </li>
-    <li class="treeview pageLink">
+    <li class="treeview pageLink" v-if="test7">
       <a href="#">
         <i class="fa fa-shopping-cart"></i>
         <span class="treeview-title">Đơn hàng</span>
@@ -154,9 +154,52 @@
   </ul>
 </template>
 <script>
-export default {
-  name: 'SidebarMenu'
-}
+    import axios from 'axios';
+    import {mapGetters} from 'vuex';
+    import AuthorizationService from "@/services/admin/authorization.service";
+
+    export default {
+        name: 'TopBar',
+        data() {
+            return {
+                token: localStorage.getItem('tokenAdmin'),
+                test3: false,
+                test4: false,
+                test5: false,
+                test6: false,
+                test7: false,
+            };
+        },
+        async created() {
+            await axios.get(`http://127.0.0.1:8000/api/user`, {
+                headers: {
+                Authorization: `Bearer ${this.token}`
+                }
+            }).then((response) => {
+                this.$store.dispatch('user', response.data);
+                this.$store.dispatch('userId', response.data.id);
+            });
+
+            await AuthorizationService.getStaff(this.userId).then((response) => {
+                // console.log(response.permissions)
+                response.permissions.forEach(index=>{
+                  if(index.id == 3)
+                    this.test3 = true;
+                  else if(index.id == 4)
+                    this.test4 = true;
+                  else if(index.id == 5)
+                    this.test5 = true;
+                  else if(index.id == 6)
+                    this.test6 = true;
+                  else if(index.id == 7)
+                    this.test7 = true;
+                })
+            });
+        },
+        computed: {
+            ...mapGetters(['userId', 'user'])
+        }
+    };
 </script>
 <style>
   /* override default */

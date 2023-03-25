@@ -62,7 +62,7 @@ export default {
                 // console.log(response);
                 localStorage.setItem('tokenAdmin', response.token);
                 this.$store.dispatch('user', response.staff);
-                
+                this.$store.dispatch('userId', response.staff.id);
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',

@@ -1,5 +1,5 @@
 <template>
-    <h5 class="my-3">Phân theo vai trò</h5>
+    <h3 class="my-3">Phân theo vai trò</h3>
     <table
         aria-describedby="example2_info" role="grid" 
         id="" class="table_role example2 table table-bordered table-striped dataTable"
@@ -107,14 +107,14 @@
                 })
             });
         },
-        beforeUpdate() {
-            AuthorizationService.getByRole().then((response) => {
-                this.roles = response;
-                this.$nextTick(() => {
-                    $('.example2').DataTable()
-                })
-            });
-        },
+        // beforeUpdate() {
+        //     AuthorizationService.getByRole().then((response) => {
+        //         this.roles = response;
+        //         this.$nextTick(() => {
+        //             $('.example2').DataTable()
+        //         })
+        //     });
+        // },
         methods: {
             async openModel(id) {
                 await AuthorizationService.getPermissionRole(id).then((response) => {

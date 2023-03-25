@@ -1,4 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
+import axios from 'axios';
+import AuthorizationService from "@/services/admin/authorization.service";
+
 const routes = [
     {
         path:"/admin",
@@ -62,6 +65,7 @@ const routes = [
                 component: () => import("../views/admin/staffs/Staff.vue"),
                 meta: {
                     description: 'Nhân viên',
+                    permissionId: 3
                 },
             },
             {
@@ -89,6 +93,7 @@ const routes = [
                 component: () => import("../views/admin/categories/Category.vue"),
                 meta: {
                     description: 'Danh mục',
+                    permissionId: 5
                 }
             },
             {
@@ -108,6 +113,7 @@ const routes = [
                 component: () => import("../views/admin/products/Product.vue"),
                 meta: {
                     description: 'Sản phẩm',
+                    permissionId: 6
                 }
             },
             {
@@ -133,6 +139,7 @@ const routes = [
                 component: () => import("../views/admin/orders/Order.vue"),
                 meta: {
                     description: 'Đơn hàng',
+                    permissionId: 7
                 }
             },
             {
@@ -258,18 +265,47 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const adminAuthenticated = localStorage.getItem('tokenAdmin') ? true : false;
     const userAuthenticated = localStorage.getItem('token') ? true : false;
-
+  
     if (to.meta.authenticated && !userAuthenticated) {
-        next({ name: 'login'});
+      next({ name: 'login'});
     } else if (to.meta.authenticatedAdmin && !adminAuthenticated) {
-        next({ name: 'login.admin'});
+      next({ name: 'login.admin'});
     } else {
+      // Kiểm tra permission nếu có
+      if (to.meta.permissionId) {
+        const tokenAdmin = localStorage.getItem('tokenAdmin');
+        if (tokenAdmin) {
+          try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/user`, {
+              headers: {
+                Authorization: `Bearer ${tokenAdmin}`
+              }
+            });
+            const staffId = response.data.id;
+            const response1 = await AuthorizationService.getStaff(staffId);
+            const permissions = response1.permissions;
+            const hasPermission = permissions.some(permission => permission.id === to.meta.permissionId);
+            if (!hasPermission) {
+              next({ name: 'dashboard' });
+              return;
+            }
+            // Nếu có permission thì tiếp tục điều hướng đến route đích
+            next();
+          } catch (error) {
+            console.error(error);
+            next({ name: 'login.admin' });
+          }
+        } else {
+          next({ name: 'login.admin' });
+        }
+      } else {
+        // Nếu không có permission thì tiếp tục điều hướng đến route đích
         next();
+      }
     }
-    
-    
-});
-export default router;
+  });
+  
+  export default router;
