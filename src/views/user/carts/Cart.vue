@@ -1,7 +1,7 @@
 <template>
-    <div class="section">
+    <div class="mt-4">
         <div class="cart-list list">
-            <div class='container mt-100'>
+            <div class='container'>
                 <div class="d-flex justify-content-between">
                     <h5 class="mb-4">
                         <svg class="d-inline me-2 bi bi-bag" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -11,10 +11,9 @@
                         <span class="text-secondary fs-6 ms-1">({{ carts.count_item }} sản phẩm)</span>
                     </h5>
                 </div>
-                
                 <CartList
                     v-if="carts.count_item>0"
-                    :carts="filteredCarts"
+                    :carts="carts"
                 />
                 <div v-else>
                     <div class="d-flex justify-content-center">
@@ -37,50 +36,22 @@
 </template>
 <script>
         import CartList from "@/components/user/carts/CartList.vue";
-        import CartService from "@/services/user/cart.service";
-        import axios from 'axios';
+        import {mapGetters} from 'vuex';
 
         export default {
             components: {
                 CartList,
             },
             name: 'cart',
-            data() {
-                return {
-                    carts: [],
-                    token: localStorage.getItem('token'),
-                };
-            },
-            computed: {
-                filteredCarts() {
-                    return this.carts.getCartItems;
-                },
-            },
             methods: {
-                async retrieveCarts() {
-                    try {
-                        await axios.get(`/api/user`, {
-                            headers: {
-                                Authorization: `Bearer ${this.token}`
-                            }
-                        }).then(async (response) => {
-                            this.carts = await CartService.getCart(response.data.id);
-                        });
-                    } catch (error) {
-                        console.log(error);
-                    }
-                },
-                refreshList() {
-                    this.retrieveCarts();
-                },
                 formatPrice(value) {
                     let val = (value/1).toFixed(2)
                     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 },
             },
-            mounted() {
-                this.refreshList();
-            },
+            computed: {
+                ...mapGetters(['carts'])
+            }
         };
         
 </script>

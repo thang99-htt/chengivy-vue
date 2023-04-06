@@ -52,7 +52,7 @@
             <ErrorMessage name="password_confirmation" class="error-feedback" />
         </div>
         <div class="form-group d-flex align-items-center justify-content-end">
-            <a class="text-decoration-underline text-sm text-gray-600 hover:text-gray-900" href="">
+            <a class="text-decoration-underline text-sm text-gray-600 hover:text-gray-900" href="/login">
                 Bạn đã có tài khoản?
             </a>
             <div class="button">

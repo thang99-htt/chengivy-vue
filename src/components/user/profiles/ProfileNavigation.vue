@@ -4,7 +4,7 @@
             <div class="navbar-nav w-100">
                 <router-link 
                     :to="{ name: 'profile' }"
-                    class="nav-item nav-link"
+                    class="nav-item nav-link active"
                 >
                     <i class="fa fa-user"></i>Tài khoản
                 </router-link>
@@ -20,7 +20,15 @@
     </div>
 </template>
 <script>
-    
+    import $ from 'jquery'
+    export default {
+        mounted() {
+          $(".nav-link").on("click", function() {
+            $(".nav-link").removeClass("active");
+            $(this).addClass("active");
+          });
+        },
+    }
 </script>
 
 <style>

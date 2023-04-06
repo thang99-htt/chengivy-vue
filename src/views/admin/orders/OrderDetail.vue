@@ -41,8 +41,8 @@
                                         Thông tin khách hàng
                                     </div>
                                     <div class="social_cont">
-                                        <p>Họ tên: {{ order.user_detail.name }}</p>
-                                        <p>Email: {{ order.user_detail.email }}</p>
+                                        <p>Họ tên: {{ order.user_account_detail.name }}</p>
+                                        <p>Email: {{ order.user_account_detail.email }}</p>
                                         <p>Số điện thoại: {{ order.user_phone }}</p>
                                     </div>
                                 </div>

@@ -1,7 +1,7 @@
 <template>
-    <div class="section">
+    <div class="mt-4 mb-5">
         <div class="cart-list list">
-            <div class='container mt-30'>
+            <div class='container'>
                 <div v-if="stepCheck == 0" class="checkout-progress step-1"  id="" data-current-step="1">
                     <div class="progress-bar">
                         <div class="step step-1 active">
@@ -67,7 +67,7 @@
                 />
                 <CheckoutPayment 
                     v-if="stepCheck == 1"
-                    :carts="filteredCarts"
+                    :carts="carts"
                     :order="order"
                     @submit:order="createOrder"
                 />
@@ -88,8 +88,6 @@
     import CheckoutPayment from "@/components/user/checkouts/CheckoutPayment.vue";
     import CheckoutComplete from "@/components/user/checkouts/CheckoutComplete.vue";
     import OrderService from "@/services/user/order.service";
-    import CartService from "@/services/user/cart.service";
-    import axios from 'axios';
     import {mapGetters} from 'vuex';
     export default {
         components: {
@@ -99,9 +97,7 @@
         },
         data() {
             return {
-                stepCheck: 0,
-                token: localStorage.getItem('token'),                
-                carts: [],
+                stepCheck: 0,  
                 order: {
                     'contact_id': 0,
                     'payment_id': 1,
@@ -119,19 +115,6 @@
             shipping() {
                 this.stepCheck = 0;
             },
-            async retrieveCarts() {
-                try {
-                    await axios.get(`/api/user`, {
-                        headers: {
-                            Authorization: `Bearer ${this.token}`
-                        }
-                    }).then(async (response) => {
-                        this.carts = await CartService.getCart(response.data.id);
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
-            },
             async createOrder(data) {
                 try {
                     const Toast = Swal.mixin({
@@ -145,31 +128,20 @@
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
                     });
-                    await OrderService.create(this.userId, data).then((response) => {
+                    await OrderService.create(this.getUser.id, data).then((response) => {
                         Toast.fire({
                             icon: 'success',
                             title: 'Đặt hàng thành công.'
                         })
-                        // this.$router.push({name: "home"});
-                        // console.log(response)
                     });
                     this.stepCheck = 2;
                 } catch (error) {
                     console.log(error);
                 }
             },
-            refreshList() {
-                this.retrieveCarts();
-            },
         },
         computed: {
-            filteredCarts() {
-                return this.carts;
-            },
-            ...mapGetters(['userId', 'user']),
-        },
-        mounted() {
-            this.refreshList();
+            ...mapGetters(['getUser', 'carts']),
         },
     }
 </script>

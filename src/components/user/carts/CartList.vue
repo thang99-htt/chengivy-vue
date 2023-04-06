@@ -112,34 +112,17 @@
                 </div>
             </div>
         </div>
-    </div>
-        
-    
+    </div>    
 </template>
 
 <script>
     import CartService from "@/services/user/cart.service";
-    import axios from 'axios';
-
+    import {mapGetters} from 'vuex';
+    
     export default {
         name: 'CartList',
-        data() {
-            return {
-                token: localStorage.getItem('token'),
-                carts: [],
-            };
-        },
-        async mounted() {
-            await axios.get(`/api/user`, {
-                    headers: {
-                        Authorization: `Bearer ${this.token}`
-                    }
-            }).then(async (response) => {
-                await CartService.getCart(response.data.id).then((response) => {
-                    this.carts = response;
-                });
-            });
-            
+        props: {
+            carts: { type: Array, default: [] },
         },
         methods: {
             getImage(image){
@@ -150,8 +133,8 @@
                     try {
                         cart.quantity--;
                         CartService.updateQuantity(cart.id, cart.quantity)
-                        .then( (response) => {
-                            this.refreshList();
+                        .then( async (response) => {
+                            this.$store.commit('addToCart', await CartService.getCart(this.user.id));
                         })                  
 
                     } catch (error) {
@@ -163,8 +146,8 @@
                 try {
                     cart.quantity++;
                     CartService.updateQuantity(cart.id, cart.quantity)
-                    .then( (response) => {
-                        this.refreshList();
+                    .then( async (response) => {
+                        this.$store.commit('addToCart', await CartService.getCart(this.user.id));
                     })                  
 
                 } catch (error) {
@@ -174,22 +157,6 @@
             formatPrice(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
-            async retrieveCarts() {
-                try {
-                    await axios.get(`/api/user`, {
-                        headers: {
-                            Authorization: `Bearer ${this.token}`
-                        }
-                    }).then(async (response) => {
-                        this.carts = await CartService.getCart(response.data.id);
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            refreshList() {
-                this.retrieveCarts();
             },
             deleteProduct(id) {
                 Swal.fire({
@@ -203,16 +170,20 @@
                     cancelButtonText: 'Hủy'
                 }).then((result) => {
                     if (result.value) {
-                        CartService.delete(id).then((res) => {
+                        CartService.delete(id).then(async (res) => {
                             if(res.success) {
-                                this.refreshList();
+                                this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                             }
                         })
-                        Swal.fire('Đã xóa thành công!','','success')
+                        Swal.fire('Đã xóa thành công!','','success');
+                        
                     }
                 })
             },
         },
+        computed: {
+            ...mapGetters(['getUser', 'carts'])
+        }
     };
 </script>
 
@@ -224,7 +195,7 @@
  }
 
  .checkout:hover {
-    background-color: #003469;
+    background-color: #0167f3;
  }
 
  .checkout a {

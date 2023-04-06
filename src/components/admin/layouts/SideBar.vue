@@ -7,7 +7,7 @@
           </div>
           <div class="pull-left info">
             <div class="user_info">
-              <h6 v-if="user">{{ user.name }}</h6>
+              <h6 v-if="getAdmin">{{ getAdmin.name }}</h6>
               <p><span class="online_animation"></span> Online</p>
             </div>
           </div>
@@ -38,7 +38,6 @@
 </template>
 <script>
   import SidebarMenu from './SidebarMenu.vue';
-  import axios from 'axios';
   import {mapGetters} from 'vuex';
 
   export default {
@@ -51,17 +50,8 @@
         token: localStorage.getItem('tokenAdmin'),
       };
     },
-    async created() {
-      await axios.get(`http://127.0.0.1:8000/api/user`, {
-        headers: {
-          Authorization: `Bearer ${this.token}`
-        }
-      }).then((response) => {
-        this.$store.dispatch('user', response.data)
-      });
-    },
     computed: {
-      ...mapGetters(['user'])
+      ...mapGetters(['getAdmin'])
     }
     
   }

@@ -154,7 +154,7 @@
   </ul>
 </template>
 <script>
-    import axios from 'axios';
+    import $ from 'jquery'
     import {mapGetters} from 'vuex';
     import AuthorizationService from "@/services/admin/authorization.service";
 
@@ -171,16 +171,7 @@
             };
         },
         async created() {
-            await axios.get(`http://127.0.0.1:8000/api/user`, {
-                headers: {
-                Authorization: `Bearer ${this.token}`
-                }
-            }).then((response) => {
-                this.$store.dispatch('user', response.data);
-                this.$store.dispatch('userId', response.data.id);
-            });
-
-            await AuthorizationService.getStaff(this.userId).then((response) => {
+            await AuthorizationService.getStaff(this.getAdmin.id).then((response) => {
                 // console.log(response.permissions)
                 response.permissions.forEach(index=>{
                   if(index.id == 3)
@@ -197,7 +188,21 @@
             });
         },
         computed: {
-            ...mapGetters(['userId', 'user'])
+            ...mapGetters(['getAdmin'])
+        },
+        mounted() {
+          $(".pageLink").on("click", function() {
+            $(".pageLink").removeClass("active");
+            $(this).addClass("active");
+          });
+        },
+        watch: {
+          $route: function(to, from) {
+            $(".pageLink").on("click", function() {
+            $(".pageLink").removeClass("active");
+            $(this).addClass("active");
+          });
+          }
         }
     };
 </script>

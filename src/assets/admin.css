@@ -1036,15 +1036,14 @@ button[data-toggle="collapse"] {
 }
 
 .counter_section {
-    min-height: auto;
-    display: block;
+    display: flex;
+    align-items: center;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
     border: 0px solid #e7e7e7;
-    padding: 30px 35px;
+    padding: 30px 16px;
     background: #fff;
     border-radius: 5px;
-    min-height: 125px;
-    display: flex;
+    height: 150px;
 }
 
 .couter_icon span {
@@ -1071,9 +1070,6 @@ button[data-toggle="collapse"] {
 }
 
 .couter_icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 0;
     float: left;
     margin: 8px 0 8px;
@@ -1089,7 +1085,6 @@ button[data-toggle="collapse"] {
     align-content: center;
     align-items: center;
     float: right;
-    width: 100%;
 }
 
 .counter_no p.total_no {
@@ -1102,13 +1097,13 @@ button[data-toggle="collapse"] {
     color: #455a64;
     text-align: right;
     font-size: 24px;
-    font-weight: 400;
+    font-weight: 600;
 }
 
 .counter_no .head_couter {
     float: left;
     width: 100%;
-    color: #99abb4;
+    color: #014568;
     font-weight: 300;
     margin: 0px 0 0 0;
     font-size: 20px;

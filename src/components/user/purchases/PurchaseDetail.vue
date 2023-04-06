@@ -1,43 +1,43 @@
 <template>
-    <table
-        aria-describedby="example1_info" role="grid" 
-        id="" class=" example1 table table-bordered table-striped dataTable"
-    >
-        <thead> 
-            <tr role="row">
-                <th>#</th>
-                <th>Sản phẩm</th>
-                <th>Hình ảnh</th>
-                <th>Size</th>
-                <th>Giá (VNĐ)</th>
-                <th>Số lượng</th>
-                <th>Thành tiền (VNĐ)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr role="row"
-                v-for="(order, index) in orderLocal"
-                    :key="order" 
-                    :value="order.id"
-            >
-                <td>{{ index + 1 }}</td>
-                <td>{{ order.product_name }}</td>
-                <td>
-                    <img v-if="order.product_image" :src="getImage(order.product_image)"
-                    alt="Image" class="img-responsive center-block" width="100">
-                </td>
-                <td>{{ order.product_size }}</td>
-                <td>{{ formatPrice(order.product_price) }}</td>
-                <td>{{ order.product_quantity }}</td>
-                <td>{{ formatPrice(order.product_into_money) }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="accordion mt-3">
+        <div
+            class="accordion-item"
+            v-for="(product, index) in orderLocal"
+            :key="product.id"
+        >
+            <div class="accordion-content">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="d-flex">
+                            <img class="d-block me-3" width="100" :src="getImage(product.product_image)" alt="">
+                            <div>
+                                <router-link 
+                                    :to="{
+                                        name: 'product.detail',
+                                        params: { id: product.product_id },
+                                    }" 
+                                    class="text-dark"
+                                >
+                                    {{ product.product_name }}
+                                </router-link>
+                                <p>Size: {{ product.product_size }}</p>
+                                <p>x{{ product.product_quantity }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 accordion-price">
+                        <p class="fs-6">{{ formatPrice(product.product_price) }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
     export default {        
         props: {
             order: { type: Object, required: true },
+            purchasesList: { type: Object, required: true },
         },
         
         data() {
@@ -55,3 +55,22 @@
         }
     };
 </script>
+
+<style>
+    .accordion-item {
+        background-color: #fffdfd;
+        box-shadow: 0 0 10px #00000012;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .accordion-item img {
+        border-radius: 4px;
+    }
+
+    .accordion-price {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+    }
+</style>

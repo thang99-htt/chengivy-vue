@@ -51,7 +51,6 @@ export default {
   data() {
     return {
         error: '',
-        currentUser: [],
         token: localStorage.getItem('tokenAdmin'),
     }
   },
@@ -61,8 +60,7 @@ export default {
             await AuthService.login(form).then((response) => {
                 // console.log(response);
                 localStorage.setItem('tokenAdmin', response.token);
-                this.$store.dispatch('user', response.staff);
-                this.$store.dispatch('userId', response.staff.id);
+                this.$store.dispatch('updateAdmin', response.staff);
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',

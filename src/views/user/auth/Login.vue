@@ -59,9 +59,8 @@ export default {
         try {
             await AuthService.login(form).then((response) => {
                 console.log(response);
-                localStorage.setItem('token', response.token);
-                this.$store.dispatch('user', response.user);
-                this.$store.dispatch('userId', response.user.id);
+                localStorage.setItem('tokenUser', response.token);
+                this.$store.dispatch('updateUser', response.user);
                 
                 const Toast = Swal.mixin({
                     toast: true,

@@ -267,7 +267,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     const adminAuthenticated = localStorage.getItem('tokenAdmin') ? true : false;
-    const userAuthenticated = localStorage.getItem('token') ? true : false;
+    const userAuthenticated = localStorage.getItem('tokenUser') ? true : false;
   
     if (to.meta.authenticated && !userAuthenticated) {
       next({ name: 'login'});

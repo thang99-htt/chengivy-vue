@@ -118,105 +118,22 @@
 </template>
 
 <script>
-    import $ from 'jquery'
-    import CartService from "@/services/user/cart.service";
     import 'datatables.net'
     import 'datatables.net-bs'
-    import axios from 'axios';
+    import {mapGetters} from 'vuex';
 
     export default {
         name: 'CartList',
-        data() {
-            return {
-                token: localStorage.getItem('token'),
-                carts: [],
-            };
-        },
-        async mounted() {
-            await axios.get(`/api/user`, {
-                    headers: {
-                        Authorization: `Bearer ${this.token}`
-                    }
-            }).then(async (response) => {
-                await CartService.getCart(response.data.id).then((response) => {
-                    this.carts = response;
-                    this.$nextTick(() => {
-                        $('.example1').DataTable()
-                    })
-                });
-            });
-            
+        props: {
+            carts: { type: Array, default: [] },
         },
         methods: {
             getImage(image){
                 return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
             },
-            reduce(cart) {
-                if (cart.quantity > 1) {
-                    try {
-                        cart.quantity--;
-                        CartService.updateQuantity(cart.id, cart.quantity)
-                        .then( (response) => {
-                            this.refreshList();
-                        })                  
-
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
-            },
-            increase(cart) {
-                try {
-                    cart.quantity++;
-                    CartService.updateQuantity(cart.id, cart.quantity)
-                    .then( (response) => {
-                        this.refreshList();
-                    })                  
-
-                } catch (error) {
-                    console.log(error);
-                } 
-            },
             formatPrice(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
-            async retrieveCarts() {
-                try {
-                    await axios.get(`/api/user`, {
-                        headers: {
-                            Authorization: `Bearer ${this.token}`
-                        }
-                    }).then(async (response) => {
-                        this.carts = await CartService.getCart(response.data.id);
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            refreshList() {
-                this.retrieveCarts();
-            },
-            deleteProduct(id) {
-                Swal.fire({
-                    title: 'Bạn có chắc?',
-                    text: "Bạn sẽ không thể hoàn tác lại điều này!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.value) {
-                        CartService.delete(id).then((res) => {
-                            if(res.success) {
-                                this.refreshList();
-                            }
-                        })
-                        Swal.fire('Đã xóa thành công!','','success')
-                    }
-                })
             },
         },
     };

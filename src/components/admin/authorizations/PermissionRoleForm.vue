@@ -63,11 +63,8 @@
     
 </template>
 <script>
-    import $ from 'jquery'
-    import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
     import PermissionService from "@/services/admin/permission.service";
-    import AuthorizationService from "@/services/admin/authorization.service";
 
     export default {
         components: {

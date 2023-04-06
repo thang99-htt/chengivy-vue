@@ -1,5 +1,5 @@
 <template>
-    <section class="section mt-50">
+    <section class="mt-4 mb-5">
         <div v-if="product">
             <div class="detail">
                 <div class="container-fluid">
@@ -18,6 +18,7 @@
                                 :cart="cart"
                                 @submit:cart="addToCart"
                             />
+                            {{ carts }}
                         </div>
                     </div>
                 </div>
@@ -32,7 +33,9 @@
 
     import ProductService from "@/services/user/product.service";
     import CartService from "@/services/user/cart.service";
-    import axios from 'axios';
+    
+    import {mapGetters} from 'vuex';
+
     
     export default {
         components: {
@@ -45,7 +48,6 @@
         },
         data() {
             return {
-                token: localStorage.getItem('token'),
                 product: null,
                 cart: {
                     'product_id': this.id,
@@ -85,25 +87,21 @@
                     }
                 })
                 try {
-                    await axios.get(`/api/user`, {
-                        headers: {
-                            Authorization: `Bearer ${this.token}`
+                    await CartService.create(this.getUser.id, data).then(async (response) => {
+                        if(response == true) {
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Sản phẩm đã được thêm vào giỏ hàng.'
+                            });
+                            this.$store.commit('addToCart', await CartService.getCart(this.getUser.id, data.id));
+                            
+                        } else if (response == false) {
+                            Toast.fire({
+                                icon: 'warning',
+                                title: 'Số lượng của sản phẩm này đã được bán hết.'
+                            });
                         }
-                    }).then(async (response) => {
-                        await CartService.create(response.data.id, data).then((response) => {
-                            if(response == true) {
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Sản phẩm đã được thêm vào giỏ hàng.'
-                                })
-                            } else if (response == false) {
-                                Toast.fire({
-                                    icon: 'warning',
-                                    title: 'Số lượng của sản phẩm này đã được bán hết.'
-                                });
-                            }
-                            // console.log(response);
-                        });
+                        // console.log(response);
                     });
                 } catch (error) {
                     Toast.fire({
@@ -118,5 +116,8 @@
         created() {
             this.getProduct(this.id);
         },
+        computed: {
+            ...mapGetters(['getUser'])
+        }
     };
 </script>

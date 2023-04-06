@@ -1,39 +1,61 @@
-// import Vue from "vue";
-import {createStore} from 'vuex';
+import { createStore } from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
 
-// Vue.use(Vuex);
-
-const state = {
-    user: null,
-    userId: null
-};
 const store = createStore({
-    state,
-    getters: {
-        user: (state) => {
-            return state.user;
-        },
-        userId: (state) => {
-            return state.userId;
-        }
+  state: {
+    user: null,
+    admin: null,
+    carts: []
+  },
+  getters: {
+    getUser: state => state.user,
+    getAdmin: state => state.admin,
+    carts: (state) =>  state.carts
+  },
+  mutations: {
+    setUser: (state, user) => {
+      state.user = user;
     },
-    actions: {
-        user(context, user) {
-            context.commit('user', user);
-        },
-        userId(context, userId) {
-            context.commit('userId', userId);
-        },
+    clearUser: (state) => {
+      state.user = null;
     },
-    mutations:{
-        user(state, user) {
-            state.user = user
-        },
-        userId(state, userId) {
-            state.userId = userId
-        }
+    setAdmin: (state, admin) => {
+      state.admin = admin;
     },
+    clearAdmin: (state) => {
+      state.admin = null;
+    },    
+    addToCart(state, items) {
+      state.carts = items;
+    },
+  },
+  actions: {
+    updateUser: ({ commit }, user) => {
+      commit('setUser', user);
+    },
+    logoutUser: ({ commit }) => {
+      commit('clearUser');
+    },
+    updateAdmin: ({ commit }, admin) => {
+      commit('setAdmin', admin);
+    },
+    logoutAdmin: ({ commit }) => {
+      commit('clearAdmin');
+    },    
+    addProductToCart(context, product) {
+      context.commit('addToCart', product);
+    },
+  },
+  plugins: [
+    createPersistedState({
+      key: 'user',
+      paths: ['user']
+    }),
+    createPersistedState({
+      key: 'admin',
+      paths: ['admin']
+    })
+  ]
 });
-
 
 export default store;

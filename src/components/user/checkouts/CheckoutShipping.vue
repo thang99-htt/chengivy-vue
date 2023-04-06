@@ -17,10 +17,10 @@
                                     :key="address"
                                 >
                                     <Field name="address" type="radio" :value="address.id" v-model="orderLocal.contact_id"/>
-                                        <span class="text-bold ms-3">{{ user.name }}</span>
+                                        <span class="text-bold ms-3">{{ address.name }}</span>
                                         <p class="ms-address">Địa chỉ:
-                                            {{ address.address }}, {{ address.name }}, 
-                                            {{ address.district }}, {{ address.district.city }}
+                                            {{ address.address }}, {{ address.ward }}, 
+                                            {{ address.district }}, {{ address.city }}
                                         </p>
                                         <p class="ms-address">Điện thoại: {{ address.phone }}</p>
                                 </li>
@@ -77,7 +77,6 @@
 
 <script>
     import AddressService from "@/services/user/address.service";
-    import axios from 'axios';
     import {mapGetters} from 'vuex';
     import { Form, Field, ErrorMessage } from "vee-validate";
     import AddressForm from "@/components/user/checkouts/AddressForm.vue";
@@ -107,17 +106,7 @@
                 },
             };
         },
-        async mounted() {
-            await axios.get(`/api/user`, {
-                headers: {
-                    Authorization: `Bearer ${this.token}`
-                }
-            }).then(async (response) => {
-                this.$store.dispatch('user', response.data);
-                await AddressService.getAddresses(response.data.id).then((response) => {
-                    this.addresses = response;
-                });
-            });
+        mounted() {
             this.refreshList();
         },
         methods: { 
@@ -135,15 +124,8 @@
                 }
             },
             async retrieveAddressByUser() {
-                await axios.get(`/api/user`, {
-                    headers: {
-                        Authorization: `Bearer ${this.token}`
-                    }
-                }).then(async (response) => {
-                    this.$store.dispatch('user', response.data);
-                    await AddressService.getAddresses(response.data.id).then((response) => {
-                        this.addresses = response;
-                    });
+                await AddressService.getAddresses(this.getUser.id).then((response) => {
+                    this.addresses = response;
                 });
             },
             refreshList() {
@@ -152,50 +134,45 @@
             },
             async createContact(data) {
                 try {      
-                    await axios.get(`/api/user`, {
-                            headers: {
-                                Authorization: `Bearer ${this.token}`
+                    await AddressService.createNewAddress(this.getUser.id, data).then((response) => {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
                             }
-                    }).then(async (response) => {
-                        this.$store.dispatch('user', response.data);
-                        await AddressService.createNewAddress(response.data.id, data).then((response) => {
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
+                        })
+
+                        if(response.success == true) {
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Địa chỉ được thêm thành công.'
                             })
 
-                            if(response.success == true) {
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Địa chỉ được thêm thành công.'
-                                })
+                            this.refreshList();
+                        } 
+                        
+                        this.myModel = false;
 
-                                this.refreshList();
-                            } 
-
-                            if(response.success == false) {
-                                Toast.fire({
-                                    icon: 'warning',
-                                    title: 'Địa chỉ đã tồn tại.'
-                                })
-                            }
-        
-                        });
-                    });           
+                        if(response.success == false) {
+                            Toast.fire({
+                                icon: 'warning',
+                                title: 'Địa chỉ đã tồn tại.'
+                            })
+                        }
+    
+                    });     
                 } catch (error) {
                     console.log(error);
                 }
             },
         },
         computed: {
-            ...mapGetters(['user'])
+            ...mapGetters(['getUser'])
         }
     };
 </script>
@@ -231,7 +208,7 @@
         border-radius: 5px 5px 0 0;
         padding: 20px 30px;
         background-size: cover;
-        background-color: #2965a1;
+        background-color: #004fbe;
         position: relative;
     }
     .dash_head h3 {

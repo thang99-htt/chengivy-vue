@@ -109,7 +109,6 @@
             async changeSize(event) {
                 await ProductService.getStock(this.productLocal.id, event.target.value).then((response) => {
                     this.product_stock = response;
-                    console.log(response);
                 });
             },
         },

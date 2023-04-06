@@ -159,3 +159,322 @@ table.dataTable thead > tr > th:last-child {
   width: 230px !important;
 }
 
+
+/* product */
+.product-list .single-product {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  min-height: unset;
+  height: 660px;
+}
+.single-product .image-product {
+  position: relative;
+  overflow: hidden;
+}
+
+.single-product .image-product .front-image {
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  padding-top: 135%;
+}
+
+.single-product .image-product .overlay-product .image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover
+}
+
+.single-product .image-product .overlay-product {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: 0.5s ease;
+}
+
+.single-product .image-product .favorite-product {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.single-product .image-product .favorite-product {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.single-product .image-product .favorite-product svg {
+  overflow: visible;
+}
+
+.single-product .image-product .favorite-product .favorite-remove {
+  display: none;
+}
+
+.single-product:hover .overlay-product {
+  opacity: 1;
+}
+
+.single-product .card-title {
+  margin-bottom: 0;
+}
+
+.single-product .card-text {
+  font-size: 18inner-sub-categorypx;
+  color: #626262;
+}
+
+
+.detail .detail-image .mySlides img {
+  width: 100%;
+}
+
+.detail .detail-image img {
+  cursor: pointer;
+}
+
+.detail .detail-image .left-image {
+  width: 130px;
+  margin-bottom: 15px;
+}
+
+/* Add a transparency effect for thumnbail images */
+.detail .detail-image .demo {
+  opacity: 0.7;
+}
+
+.detail .detail-image .active,
+.detail .detail-image .demo:hover {
+  opacity: 1;
+}
+
+.detail .detail-info {
+  padding-right: 40px;
+  position: relative;
+}
+
+.detail .detail-info .info-name h3 {
+  font-size: 32px;
+  font-weight: bold;
+  font-family: Avenir-Black;
+  color: #000;
+}
+
+.detail .detail-info .info-category p,
+.detail .detail-info .info-price p {
+  font-weight: 600;
+  font-family: Avenir-Black;
+  color: #000;
+  font-size: 18px;
+  margin: 6px 0;
+}
+
+.detail .detail-info .info-des p {
+  font-size: 13px;
+  font-weight: 400;
+  color: #979797;
+  margin: 6px 0;
+  text-align: justify;
+}
+
+.detail .detail-info .info-size {
+  margin: 10px 0 30px 0;
+}
+
+.detail .detail-info .info-size p {
+  color: #000;
+  padding: 10px 0;
+}
+
+.detail .detail-info .info-size .guide {
+  color: #6d6d6d;
+  text-decoration: underline;
+}
+
+.form-select:focus {
+  border: 1px solid #ccc;
+  outline: none;
+  box-shadow: none;
+}
+
+.detail .detail-info .info-size select {
+  font-size: 15px;
+}
+
+.info-quantity {
+  margin: 10px 0 25px 0;
+}
+
+.info-quantity p {
+  color: #000;
+}
+
+.info-quantity input[type="number"],
+.cart-list input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.info-quantity input[type=number]::-webkit-inner-spin-button,
+.info-quantity input[type=number]::-webkit-outer-spin-button,
+.cart-list input[type=number]::-webkit-inner-spin-button,
+.cart-list input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.info-quantity .number-input,
+.cart-list .number-input {
+  border: 1px solid #ddd;
+  display: inline-flex;
+  margin-left: 20px;
+}
+
+.info-quantity .number-input,
+.info-quantity .number-input *,
+.cart-list .number-input,
+.cart-list .number-input * {
+  box-sizing: border-box;
+}
+
+.info-quantity .number-input a,
+.cart-list .number-input button {
+  outline:none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  margin: 0;
+  position: relative;
+  padding: 10px;
+  color: #b1aeae;
+}
+
+.info-quantity .number-input button.plus:after,
+.cart-list .number-input button.plus:after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.info-quantity .number-input input[type=number],
+.cart-list .number-input input[type=number] {
+  max-width: 50px;
+  height: 40px;
+  padding: 10px;
+  font-size: 18px;
+  text-align: center;
+  color: #000;
+  border: solid #ddd;
+  border-width: 0 2px;
+}
+
+.detail .detail-info .info-add {
+  margin: 30px 0;
+}
+
+.detail .detail-info .info-add .wish {
+  color: #000;
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #000;
+}
+
+.bag,
+.bag:hover {
+  color: #fff;
+  background-color: #000;
+  padding: 10px;
+}
+
+#sortProducts select {
+  background-image: none;
+  padding: 10px;
+}
+
+.profiles .sidebar {
+  background: #232323;
+  height: 500px;
+  margin-top: 10px;
+}
+
+.profiles .sidebar a {
+  color: #fff;
+  display: inline-block;
+  padding: 15px 20px;
+  margin: unset;
+}
+
+.profiles .sidebar a:hover,
+.sidebar .nav-link.active {
+  color: #fff !important;
+  background: #222d32;
+  border-left: 4px solid #3c8dbc !important;
+}
+
+.profiles .sidebar a i,
+.profiles .sidebar a svg {
+  margin-right: 8px;
+  display: inline;
+}
+
+.profiles .sidebar hr {
+  height: 1px;
+  color: #fff;
+  opacity: unset;
+  margin: 10px 15px;
+}
+
+.profiles .name {
+  font-weight: bold;
+  color: #000;
+}
+
+.profiles .accordion-button:not(.collapsed) {
+  background-color: transparent;
+  color: #000;
+  box-shadow: none;
+}
+
+.profiles .accordion-button,
+.profiles .accordion-body {
+  padding-left: 0 !important;
+  padding: 0;
+}
+
+
+.cart-list .provisional {
+  background: #e7e7e7;
+  height: 200px;
+  padding: 20px;
+  color: #000;
+  font-weight: bold;
+}
+
+.cart-list .provisional .total {
+  color: #000;
+  font-weight: 300;
+}
+
+.cart-list .remove-item {
+  background-color: transparent;
+  color: #000;
+  margin: 15px;
+}
+
+.cart-list .remove-item:hover {
+  background-color: transparent;
+  color: #000;
+}
+
+.navbar-static-top {
+  width: 85%;
+}

@@ -1,24 +1,22 @@
 <template>
     <div class="container-fluid">
-        <div class="mt-60 mb-4">
-            <div class="row">
-                <div class="offset-10"> 
-                    <form action="" class="sortProducts" id="sortProducts">
-                        <input type="hidden" id="url" name="url" value="{{ $url }}">
-                        <div class="toolbar-sorter">
-                            <div class="select-box-wrapper">
-                                <label for="sort" class="text-dark me-2">Sắp xếp</label>
-                                <select v-model="sortOrder">
-                                    <option value="ascName">Tên: A đến Z</option>
-                                    <option value="descName">Tên: Z đến A</option>
-                                    <option value="default" selected>Mặc định</option>
-                                    <option value="asc">Giá: Thấp đến cao</option>
-                                    <option value="desc">Giá: Cao đến thấp</option>
-                                </select>
-                            </div>
+        <div class="row mb-4">
+            <div class="offset-10"> 
+                <form action="" class="sortProducts" id="sortProducts">
+                    <input type="hidden" id="url" name="url" value="{{ $url }}">
+                    <div class="toolbar-sorter">
+                        <div class="select-box-wrapper">
+                            <label for="sort" class="text-dark me-2">Sắp xếp</label>
+                            <select v-model="sortOrder" class="p-2">
+                                <option value="ascName">Tên: A đến Z</option>
+                                <option value="descName">Tên: Z đến A</option>
+                                <option value="default" selected>Mặc định</option>
+                                <option value="asc">Giá: Thấp đến cao</option>
+                                <option value="desc">Giá: Cao đến thấp</option>
+                            </select>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="row">

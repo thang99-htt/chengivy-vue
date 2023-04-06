@@ -1,7 +1,7 @@
 <template>
     <div class="ms-3">
         <div class="box-header with-border p-0 mb-4">
-            <h3 class="box-title">Đơn hàng gần đây</h3>
+            <h3>Đơn hàng gần đây</h3>
         </div>
         <PurchaseList 
             v-if="filteredPurchasesCount > 0"
@@ -25,7 +25,7 @@
 <script>
     import PurchaseList from "@/components/user/purchases/PurchaseList.vue";
     import OrderService from "@/services/user/order.service";
-    import axios from 'axios';
+    import {mapGetters} from 'vuex';
 
     export default {
         components: {
@@ -35,8 +35,19 @@
         data() {
             return {
                 purchases: [],
-                token: localStorage.getItem('token'),
             };
+        },
+        methods: {
+            async retrievePurchases() {
+                try {
+                    this.purchases = await OrderService.getAllPurchase(this.getUser.id);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+        },
+        mounted() {
+            this.retrievePurchases();
         },
         computed: {
             filteredPurchases() {
@@ -45,28 +56,8 @@
             filteredPurchasesCount() {
                 return this.filteredPurchases.length;
             },
-        },
-        methods: {
-            async retrievePurchases() {
-                try {
-                    await axios.get(`/api/user`, {
-                        headers: {
-                            Authorization: `Bearer ${this.token}`
-                        }
-                    }).then(async (response) => {
-                        this.purchases = await OrderService.getAllPurchase(response.data.id);
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            refreshList() {
-                this.retrievePurchases();
-            },
-        },
-        mounted() {
-            this.refreshList();
-        },
+            ...mapGetters(['getUser']),
+        }
     };
 
 </script>

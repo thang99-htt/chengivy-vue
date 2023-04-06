@@ -25,7 +25,7 @@
                         <li>
                             <a class="dropdown-toggle" data-toggle="dropdown">
                                 <img class="img-responsive rounded-circle" src="/images/admin/photos/6215.jpg" alt="#" />
-                                <span class="name_user" v-if="user">{{ user.name }}</span>
+                                <span class="name_user" v-if="getAdmin">{{ getAdmin.name }}</span>
                             </a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#" @click="logout">
@@ -60,7 +60,7 @@
                     await axios.post(`http://127.0.0.1:8000/api/admin/logout`)
                     .then((response) => {
                         localStorage.removeItem('tokenAdmin');
-                        this.$store.dispatch('user', null);
+                        this.$store.dispatch(logoutAdmin);
                         this.$router.push({ name: "login.admin" });
 
                         const Toast = Swal.mixin({
@@ -87,7 +87,7 @@
             },
         },
         computed: {
-            ...mapGetters(['userId', 'user'])
+            ...mapGetters(['getAdmin'])
         }
     };
 </script>

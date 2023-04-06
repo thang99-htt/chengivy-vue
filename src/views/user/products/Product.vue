@@ -1,5 +1,5 @@
 <template>
-    <section class="product-list section filter_products mb-5">
+    <section class="product-list mt-5 filter_products mb-5">
         <ProductList
             v-if="filteredProductsCount > 0"
             :products="filteredProducts"
@@ -16,6 +16,11 @@
         },
         props: {
             url: { type: String, required: true },
+        },
+        watch: {
+            url(newUrl) {
+                this.getProduct(newUrl);
+            },
         },
         data() {
             return {

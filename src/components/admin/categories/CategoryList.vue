@@ -124,8 +124,6 @@
             $('.example1').DataTable().destroy();
         },
         methods: {
-            
-
             getImage(image){
                 return 'http://127.0.0.1:8000/storage/uploads/categories/'+image;
             },

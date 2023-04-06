@@ -135,7 +135,6 @@
         },
         data() {
             return {
-                token: localStorage.getItem('token'),
                 address_order: null,
                 payments: [],
                 cartLocal: this.carts,
@@ -331,10 +330,14 @@
         font-size: 14px;
     }
 
+    form {
+        position: relative;
+    }
+
     .btn-submit-order {
         position: absolute;
-        bottom: 0;
-        right: 125px;
+        bottom: -38%;
+        right: -15px;
         justify-content: end !important;
         z-index: 10;
         width: 60% !important;
