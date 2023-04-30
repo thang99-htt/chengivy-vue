@@ -44,7 +44,7 @@
         },
         data() {
             return {
-                productLocal: this.product.product,
+                productLocal: this.product,
                 products: [],
             };
         },

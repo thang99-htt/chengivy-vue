@@ -1,4 +1,4 @@
-<template>
+<template>{{ product }}
     <section class="content">
         <div class="row">
             <div class="col-md-12">
@@ -17,10 +17,10 @@
                     
                     <div class="box-body">
                         <div class="form-group">
-                            <p>Danh mục: {{ product.product.category.name }}</p>
-                            <p>Tên sản phẩm: {{ product.product.name }}</p>
-                            <p>Giá bán: {{ product.product.purchase_price }} VNĐ</p>
-                            <p>Thể loại: {{ product.product.type.name }}</p>
+                            <p>Danh mục: {{ product.category }}</p>
+                            <p>Tên sản phẩm: {{ product.name }}</p>
+                            <p>Giá bán: {{ product.price }} VNĐ</p>
+                            <p>Thể loại: {{ product.type }}</p>
                         </div>
                         <div class="row">
                             <div class="col-6 mt-3">
@@ -76,7 +76,7 @@
         },
         data() {
             return {
-                product: null,
+                product: this.product,
             };
         },
         methods: {
@@ -99,7 +99,7 @@
             async createProductSize(data) {
                 try {
                     await ProductService.createSize(data)
-                    .then((response) => {
+                    .then(async (response) => {
                         const Toast = Swal.mixin({
                             toast: true,
                             position: 'top-end',
@@ -117,7 +117,6 @@
                                 icon: 'success',
                                 title: "Size được thêm thành công!"
                             })
-                            this.getProduct(this.id);
                         }
                         if(response == false) {
                             Toast.fire({
@@ -161,6 +160,14 @@
                     console.log(error);
                 }
             },
+        },
+        watch: {
+            product: {
+            handler: function(newVal, oldVal) {
+                this.product = Object.assign({}, newVal);
+            },
+            deep: true
+            }
         },
         created() {
             this.getProduct(this.id);

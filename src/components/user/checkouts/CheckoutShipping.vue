@@ -93,7 +93,6 @@
         },
         data() {
             return {
-                token: localStorage.getItem('token'),
                 addresses: [],
                 cities: [],
                 orderLocal: this.order,

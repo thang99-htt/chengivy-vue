@@ -3426,7 +3426,6 @@ ol {
   display: block;
   overflow: hidden;
   border: none;
-  padding: 15px 25px;
   padding-right: 40px;
   background-color: #fff;
 }
@@ -6157,9 +6156,6 @@ blockquote span {
 }
 .account-login .lost-pass:hover {
   color: #0167f3;
-}
-.account-login .button {
-  margin-top: 30px;
 }
 .account-login .button .btn {
   width: 100%;

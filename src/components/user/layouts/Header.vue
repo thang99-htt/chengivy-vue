@@ -49,7 +49,7 @@
                                 </div>
                                 <ul class="user-login">
                                     <li>
-                                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                        <a @click="logout">
                                             <i class="bi bi-power-switch"></i>Đăng xuất
                                         </a>
                                     </li>
@@ -62,7 +62,7 @@
                                 </div>
                                 <ul class="user-login">
                                     <li>
-                                        <a href="<?= request()->baseUrl(); ?>/login">Đăng ký</a>
+                                        <a href="/regiester">Đăng ký</a>
                                     </li>
                                     <li>
                                         <a href="/login">Đăng nhập</a>
@@ -99,10 +99,18 @@
                                     </div>
                                 </div>
                                 <div class="search-input">
-                                    <input type="text" placeholder="Tìm kiếm" />
+                                    <input type="text" v-model="keyword" placeholder="Tìm kiếm" />
                                 </div>
                                 <div class="search-btn">
-                                    <button><i class="bi bi-search"></i></button>
+                                    <router-link 
+                                        :to="{ 
+                                            name: 'search',
+                                            query: { keyword: keyword }
+                                        }" 
+                                        class="main-btn"
+                                    >
+                                        <button><i class="bi bi-search"></i></button>
+                                    </router-link>
                                 </div>
                             </div>
                         </div>
@@ -175,6 +183,11 @@
                                         <img src="/images/cart/empty-cart.svg" alt="" />
                                         <p class="m-3 text-center text-dark">Bạn chưa có sản phẩm nào trong giỏ hàng của mình.</p>
                                     </div>
+                                </div>
+                                <div class="wishlist ms-3">
+                                    <a href="/profiles">
+                                        <i class="bi bi-person"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -344,6 +357,7 @@
             return {
                 categories: [],
                 token: localStorage.getItem('tokenUser'),
+                keyword: this.$route.query.keyword
             };
         },
         async created() {

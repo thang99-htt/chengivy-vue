@@ -103,25 +103,31 @@
             AuthorizationService.getByRole().then((response) => {
                 this.roles = response;
                 this.$nextTick(() => {
-                    $('.example2').DataTable()
+                    $('.example2').DataTable({
+                        "language": {
+                            "search": "Tìm kiếm:",
+                            "loadingRecords": "Đang tải...",
+                            "zeroRecords": "Không tìm thấy kết quả",
+                            "lengthMenu": "Hiển thị _MENU_ bản ghi",
+                            "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+                            "paginate": {
+                                "first": "Trang đầu",
+                                "last": "Trang cuối",
+                                "next": "Trang sau",
+                                "previous": "Trang trước"
+                            }
+                        }
+                    })
                 })
             });
         },
-        // beforeUpdate() {
-        //     AuthorizationService.getByRole().then((response) => {
-        //         this.roles = response;
-        //         this.$nextTick(() => {
-        //             $('.example2').DataTable()
-        //         })
-        //     });
-        // },
         methods: {
             async openModel(id) {
                 await AuthorizationService.getPermissionRole(id).then((response) => {
                     this.role = response;
                     this.permissionRole.role_id = response.id;
                     response.staffs.forEach(index=>{
-                        this.permissionRole.staff_id.push(index.name);
+                        this.permissionRole.staff_id.push(index.id);
                     })
                 });
                 this.myModel = true;
@@ -201,7 +207,7 @@
     @import url('/static/css/bootstrap.min.css');
 
     .btn-permission {
-        width: 140px;
+        width: 150px;
         color: #000;
         background-color: #1ed085;
         margin: 6px 10px 6px 0;
@@ -211,6 +217,6 @@
     }
 
     table.table_role thead > tr > th:nth-child(3) {
-        width: 400px !important;
+        width: 440px !important;
     }
 </style>

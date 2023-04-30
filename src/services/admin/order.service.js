@@ -15,8 +15,8 @@ class OrderService {
     async update(id, data) {
         return (await this.api.put(`/${id}`, data)).data;
     }
-    async updateStatus(id, status, data) {
-        return (await this.api.put(`/${id}/${status}`, data)).data;
+    async updateStatus(staff, id, status, data) {
+        return (await this.api.put(`/${staff}/${id}/${status}`, data)).data;
     }
     async delete(id) {
         return (await this.api.delete(`/${id}`)).data;

@@ -1,4 +1,4 @@
-<template>{{ permissionRoleLocal }}
+<template>
     <Form
         @submit="submitPermissionRole"
     > 
@@ -9,7 +9,7 @@
                 type="text"
                 class="form-control"
                 readonly=""
-                v-model="roleLocal.name"
+                v-model="roleLocal.description"
             />
             <ErrorMessage name="name" class="error-feedback" />
         </div>

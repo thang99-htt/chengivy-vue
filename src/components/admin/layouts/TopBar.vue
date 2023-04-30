@@ -60,7 +60,7 @@
                     await axios.post(`http://127.0.0.1:8000/api/admin/logout`)
                     .then((response) => {
                         localStorage.removeItem('tokenAdmin');
-                        this.$store.dispatch(logoutAdmin);
+                        this.$store.dispatch('logoutAdmin');
                         this.$router.push({ name: "login.admin" });
 
                         const Toast = Swal.mixin({

@@ -35,7 +35,7 @@
                             SALE
                         </span>
                         <div class="button">
-                            <a href="product-details.html" class="btn"><i class="fa fa-cart"></i>Thêm vào giỏ hàng</a>
+                            <a @click="addToCart(product)" class="btn"><i class="fa fa-cart"></i>Thêm vào giỏ hàng</a>
                         </div>
                     </div>
                     <div class="product-info">
@@ -107,7 +107,8 @@
 </template>
 
 <script>
-    
+    import CartService from "@/services/user/cart.service";
+    import {mapGetters} from 'vuex';
 
     export default {
         components: {
@@ -121,9 +122,15 @@
                 currentPage: 1,
                 itemsPerPage: 8,
                 sortOrder: 'default',
+                cart: {
+                    'product_id': this.id,
+                    'size': "",
+                    'quantity': 1,
+                },
             };
         },
         computed: {
+            ...mapGetters(['getUser']),
             filteredProducts() {
                 return this.products;
             },
@@ -165,7 +172,50 @@
             },
             formatPrice(value) {
                 return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
+            },
+            async addToCart(product) {
+                this.cart.product_id = product.id;
+                this.cart.size = product.sizes[0].id;
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                try {
+                    if(this.getUser) {
+                        await CartService.create(this.getUser.id, this.cart).then(async (response) => {
+                            if(response == true) {
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Sản phẩm đã được thêm vào giỏ hàng.'
+                                });
+                                this.$store.commit('addToCart', await CartService.getCart(this.getUser.id, this.cart.id));
+                                
+                            } else if (response == false) {
+                                Toast.fire({
+                                    icon: 'warning',
+                                    title: 'Số lượng của sản phẩm này đã được bán hết.'
+                                });
+                            }
+                            // console.log(response);
+                        });
+                    } else {
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Bạn phải là thành viên.'
+                        });
+                        this.$router.push({ name: "login" });
+                    }
+                } catch (error) {
+                    console.log(error.response.data);
+                }
+            },
         },
     };
 </script>

@@ -1,5 +1,6 @@
 <template>
     <section class="product-list mt-5 filter_products mb-5">
+        <p v-if="this.keyword" class="text-center">Kết quả tìm kiếm cho từ khóa "{{ this.keyword }}"</p>
         <ProductList
             v-if="filteredProductsCount > 0"
             :products="filteredProducts"
@@ -21,16 +22,25 @@
             url(newUrl) {
                 this.getProduct(newUrl);
             },
-        },
+            $route(to, from) {
+                const keyword = to.query.keyword || '';
+                if (keyword !== this.keyword) {
+                    this.keyword = keyword;
+                }
+            },      
+        },  
         data() {
             return {
                 products: [],
                 itemsPerPage: 5,
+                keyword: this.$route.query.keyword
             };
         },
         computed: {
             filteredProducts() {
-                return this.products;
+                if (!this.keyword) return this.products;
+                return this.products.filter(item => item.name.toLowerCase()
+                    .includes(this.keyword.toLowerCase()));
             },
             filteredProductsCount() {
                 return this.filteredProducts.length;
@@ -73,8 +83,10 @@
         created() {
             if(this.url) {
                 this.getProduct(this.url);
+            } 
+            else {                
+                this.getProductAll();
             }
-            else this.getProductAll();
         },
     };
 </script>

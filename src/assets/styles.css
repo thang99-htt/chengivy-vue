@@ -164,7 +164,6 @@ table.dataTable thead > tr > th:last-child {
 .product-list .single-product {
   position: relative;
   padding: 0;
-  margin: 0;
   min-height: unset;
   height: 660px;
 }

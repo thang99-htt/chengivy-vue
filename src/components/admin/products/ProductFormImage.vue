@@ -11,14 +11,14 @@
                     name="product_id"
                     type="number"
                     class="form-control"
-                    v-model="productLocal.product.id"
-                    :value="productLocal.product.id"
+                    v-model="productLocal.id"
+                    :value="productLocal.id"
                     hidden
                 />
             </div>
             <div class="form-group">
                 <p>
-                    <img :src="getImage(productLocal.product.image)"
+                    <img :src="getImage(productLocal.image)"
                         alt="Image" class="img-edit img-responsive">
                 </p>
             </div>
@@ -31,7 +31,7 @@
                     type="file"
                     class="form-control frm-file"
                     accept="image/*"
-                    v-model="productLocal.image"
+                    v-model="productLocal.img"
                     @change="onFileChange"
                 />
                 <ErrorMessage name="image" class="error-feedback" />
@@ -54,7 +54,6 @@
 <script>
     import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
-    import ProductService from "@/services/admin/product.service";
 
     export default {
         components: {
@@ -66,12 +65,6 @@
         props: {
             product: { type: Object, required: true },
         },
-        
-        mounted() {
-            ProductService.view().then((response) => {
-                this.products = response;
-            });
-        },
         data() {
             const productFormSchema = yup.object().shape({
                 image: yup
@@ -81,7 +74,6 @@
             return {
                 productLocal: this.product,
                 productFormSchema,
-                products: [],
             };
         },
         methods: {
@@ -95,7 +87,7 @@
                 let file = event.target.files[0];
                 let reader = new FileReader();
                 reader.onloadend = (file) => {
-                    this.productLocal.image = reader.result;
+                    this.productLocal.img = reader.result;
                 }
                 console.log(file);
                 reader.readAsDataURL(file);

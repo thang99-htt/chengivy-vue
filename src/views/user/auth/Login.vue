@@ -79,6 +79,7 @@ export default {
                     title: 'Đăng nhập thành công.'
                 })
 
+                // this.$swal('Đăng nhập thành công.');
                 this.$router.push({ name: "home" });
             });
             

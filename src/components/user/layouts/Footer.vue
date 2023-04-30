@@ -16,9 +16,7 @@ export default {
                 <div class="row">
                     <div class="col-lg-3 col-md-4 col-12">
                         <div class="footer-logo">
-                            <a href="/home">
-                                <img src="/images/logo/logo.jpg" alt="#" />
-                            </a>
+                            <a href="/home" class="text-white fs-1">C H E N G I V Y</a>
                         </div>
                     </div>
                     <div class="col-lg-9 col-md-8 col-12">

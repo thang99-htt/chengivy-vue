@@ -7,12 +7,6 @@
         <span class="page">Dashboard</span>
       </router-link>
     </li>
-    <li class="pageLink">
-      <router-link to="/admin/tables">
-        <i class="fa fa-table"></i>
-        <span class="page">Tables</span>
-      </router-link>
-    </li>
     <li class="treeview pageLink" v-if="test3">
       <a href="#">
         <i class="fa fa-user"></i>
@@ -44,6 +38,12 @@
         </li>
       </ul>
     </li>
+    <li class="pageLink" v-if="test3">
+      <router-link to="/admin/import-coupon">
+        <i class="fa fa-book"></i>
+        <span class="page">Phiếu nhập</span>
+      </router-link>
+    </li>
     <li class="pageLink" v-if="test5">
       <router-link to="/admin/categories">
         <i class="fa fa-sitemap"></i>
@@ -52,7 +52,7 @@
     </li>
     <li class="pageLink" v-if="test6">
       <router-link to="/admin/products">
-        <i class="fa fa-th-large"></i>
+        <i class="fa fa-box"></i>
         <span class="page">Sản phẩm</span>
       </router-link>
     </li>
@@ -172,19 +172,21 @@
         },
         async created() {
             await AuthorizationService.getStaff(this.getAdmin.id).then((response) => {
-                // console.log(response.permissions)
-                response.permissions.forEach(index=>{
-                  if(index.id == 3)
+              response.roles.forEach(index=>{
+                index.permissions.forEach(index1=>{
+                  if(index1.id == 3)
                     this.test3 = true;
-                  else if(index.id == 4)
+                  else if(index1.id == 4)
                     this.test4 = true;
-                  else if(index.id == 5)
+                  else if(index1.id == 14)
                     this.test5 = true;
-                  else if(index.id == 6)
+                  else if(index1.id == 10)
                     this.test6 = true;
-                  else if(index.id == 7)
+                  else if(index1.id == 22)
                     this.test7 = true;
                 })
+                })
+                
             });
         },
         computed: {

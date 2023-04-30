@@ -16,17 +16,12 @@ const routes = [
                 component: () => import("../views/admin/Dashboard.vue"),
             },
             {
-                path: "tables",
-                name: "table",
-                component: () => import("../views/Tables.vue"),
-                meta: {description: 'Overview of environment'}
-            },
-            {
                 path: "roles",
                 name: "role",
                 component: () => import("../views/admin/roles/Role.vue"),
                 meta: {
                     description: 'Vai trò',
+                    permissionId: 1
                 },
             },
             {
@@ -46,6 +41,7 @@ const routes = [
                 component: () => import("../views/admin/permissions/Permission.vue"),
                 meta: {
                     description: 'Quyền',
+                    permissionId: 2
                 },
             },
             {
@@ -72,12 +68,20 @@ const routes = [
                 path: "staffs/add",
                 name: "staff.add",
                 component: () => import("@/views/admin/staffs/StaffAdd.vue"),
+                meta: {
+                    description: 'Tạo Nhân viên',
+                    permissionId: 3
+                },
             },  
             {
                 path: "staffs/:id",
                 name: "staff.edit",
                 component: () => import("@/views/admin/staffs/StaffEdit.vue"),
                 props: true,
+                meta: {
+                    description: 'Cập nhật Nhân viên',
+                    permissionId: 3
+                },
             },
             {
                 path: "authorization",
@@ -85,6 +89,16 @@ const routes = [
                 component: () => import("../views/admin/authorizations/Authorization.vue"),
                 meta: {
                     description: 'Phân quyền',
+                    permissionId: 3
+                },
+            },
+            {
+                path: "import-coupon",
+                name: "import-coupon",
+                component: () => import("../views/admin/coupons/Import.vue"),
+                meta: {
+                    description: 'Phiếu nhập',
+                    permissionId: 4
                 },
             },
             {
@@ -93,7 +107,7 @@ const routes = [
                 component: () => import("../views/admin/categories/Category.vue"),
                 meta: {
                     description: 'Danh mục',
-                    permissionId: 5
+                    permissionId: 14
                 }
             },
             {
@@ -101,11 +115,19 @@ const routes = [
                 name: "category.edit",
                 component: () => import("@/views/admin/categories/CategoryEdit.vue"),
                 props: true,
+                meta: {
+                    description: 'Cập nhật Danh mục',
+                    permissionId: 13
+                }
             },
             {
                 path: "categories/add",
                 name: "category.add",
                 component: () => import("@/views/admin/categories/CategoryAdd.vue"),
+                meta: {
+                    description: 'Tạo Danh mục',
+                    permissionId: 12
+                }
             },   
             {
                 path: "products",
@@ -121,17 +143,29 @@ const routes = [
                 name: "product.view",
                 component: () => import("@/views/admin/products/ProductView.vue"),
                 props: true,
+                meta: {
+                    description: 'Xem Sản phẩm',
+                    permissionId: 10
+                }
             },
             {
                 path: "products/:id",
                 name: "product.edit",
                 component: () => import("@/views/admin/products/ProductEdit.vue"),
                 props: true,
+                meta: {
+                    description: 'Cập nhật Sản phẩm',
+                    permissionId: 9
+                }
             },
             {
                 path: "products/add",
                 name: "product.add",
                 component: () => import("@/views/admin/products/ProductAdd.vue"),
+                meta: {
+                    description: 'Tạo Sản phẩm',
+                    permissionId: 8
+                }
             }, 
             {
                 path: "orders",
@@ -139,7 +173,7 @@ const routes = [
                 component: () => import("../views/admin/orders/Order.vue"),
                 meta: {
                     description: 'Đơn hàng',
-                    permissionId: 7
+                    permissionId: 22
                 }
             },
             {
@@ -147,6 +181,10 @@ const routes = [
                 name: "order.detail",
                 component: () => import("@/views/admin/orders/OrderDetail.vue"),
                 props: true,
+                meta: {
+                    description: 'Xem chi tiết Đơn hàng',
+                    permissionId: 22
+                }
             },
         ]
     },
@@ -176,9 +214,9 @@ const routes = [
                 component: () => import("../views/user/Home.vue"),                
             },
             {
-                path: "/search",
+                path: "search",
                 name: "search",
-                component: () => import("../views/user/products/Search.vue"),                
+                component: () => import("../views/user/products/Product.vue"),                
             },
             {
                 path: "products/all",
@@ -286,8 +324,11 @@ router.beforeEach(async (to, from, next) => {
             });
             const staffId = response.data.id;
             const response1 = await AuthorizationService.getStaff(staffId);
-            const permissions = response1.permissions;
-            const hasPermission = permissions.some(permission => permission.id === to.meta.permissionId);
+            // const permissions = response1.rolespermissions;
+            // const hasPermission = permissions.some(permission => permission.id === to.meta.permissionId);
+            const hasPermission = response1.roles.some(role => {
+                return role.permissions.some(permission => permission.id === to.meta.permissionId);
+              });
             if (!hasPermission) {
               next({ name: 'dashboard' });
               return;

@@ -8,6 +8,7 @@
         <tr role="row">
             <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mã đơn hàng</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Nhân viên</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày đặt</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Khách hàng</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Số điện thoại</th>
@@ -26,6 +27,7 @@
                 {{ index + 1 }}
             </td>
             <td>{{ order.id }}</td>
+            <td>{{ order.staff }}</td>
             <td>{{ order.order_date }}</td>
             <td>{{ order.user_name  }}</td>
             <td>{{ order.user_phone  }}</td>
@@ -126,7 +128,8 @@
     import OrderService from "@/services/admin/order.service";
     import 'datatables.net'
     import 'datatables.net-bs'
-    
+    import {mapGetters} from 'vuex';
+
     export default {
         name: 'OrderList',
         props: {
@@ -134,8 +137,22 @@
         },
         mounted() {
             this.$nextTick(() => {
-                $('.example1').DataTable()
-            })
+                $(".example1").DataTable({
+                    "language": {
+                        "search": "Tìm kiếm:",
+                        "loadingRecords": "Đang tải...",
+                        "zeroRecords": "Không tìm thấy kết quả",
+                        "lengthMenu": "Hiển thị _MENU_ bản ghi",
+                        "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+                        "paginate": {
+                            "first": "Trang đầu",
+                            "last": "Trang cuối",
+                            "next": "Trang sau",
+                            "previous": "Trang trước"
+                        }
+                    }
+                })
+            });
         },
         data() {
             return {
@@ -165,7 +182,7 @@
             },
             statusUpdate(order) {
                 try {
-                    OrderService.updateStatus(order.id, order.status.id)
+                    OrderService.updateStatus(this.getAdmin.id, order.id, order.status.id)
                     .then( (response) => {
                         this.refreshList();
                     })                  
@@ -217,7 +234,9 @@
                 return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             }
         },
-        
+        computed: {
+            ...mapGetters(['getAdmin'])
+        }
     };
 </script>
 

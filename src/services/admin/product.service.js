@@ -42,5 +42,8 @@ class ProductService {
     async deleteSize(id) {
         return (await this.api.delete(`/delete-size/${id}`)).data;
     }
+    async getSizeAll() {
+        return (await this.api.get("/sizes")).data;
+    }
 }
 export default new ProductService();

@@ -16,26 +16,26 @@
             <tr role="row"
                 v-for="(size, index) in productLocal.sizes"
                     :key="size" 
-                    :value="size.pivot.id"
+                    :value="size.id"
             >
                 <td>
                     {{ index + 1 }}
                 </td>
                 <td>
-                    {{ size.name }}
+                    {{ size.size_name }}
                 </td>
                 <td>
-                    {{ size.pivot.quantity }}
+                    {{ size.quantity }}
                 </td>
                 <td>
-                    {{ size.pivot.stock }}
+                    {{ size.stock }}
                 </td>
                 <td>
                     <button
-                        v-if="size.pivot.id"
+                        v-if="size.id"
                         type="button"
                         class="ml-2 btn btn-danger"
-                        @click="deleteProduct(size.pivot.id)"
+                        @click="deleteProduct(size.id)"
                     >
                         <i class="fas fa-trash"></i>
                     </button>
@@ -54,7 +54,7 @@
         
         data() {
             return {
-                productLocal: this.product.product,
+                productLocal: this.product,
             };
         },
         methods: {            

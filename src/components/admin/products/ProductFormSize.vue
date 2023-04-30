@@ -11,8 +11,8 @@
                     name="product_id"
                     type="number"
                     class="form-control"
-                    v-model="productLocal.product.id"
-                    :value="productLocal.product.id"
+                    v-model="productLocal.id"
+                    :value="productLocal.id"
                     hidden
                 />
             </div>
@@ -25,7 +25,7 @@
                     class="form-control"
                     v-model="productLocal.size"
                 >
-                    <option v-for="(size, index) in product.sizes"
+                    <option v-for="(size, index) in sizes"
                         :key="size" 
                         :value="size.id"
                     >
@@ -89,11 +89,8 @@
         props: {
             product: { type: Object, required: true },
         },
-        
-        mounted() {
-            ProductService.view().then((response) => {
-                this.products = response;
-            });
+        async created() {
+            this.sizes = await ProductService.getSizeAll();
         },
         data() {
             const productFormSchema = yup.object().shape({
@@ -111,7 +108,7 @@
             return {
                 productLocal: this.product,
                 productFormSchema,
-                products: [],
+                sizes: []
             };
         },
         methods: {

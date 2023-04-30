@@ -1,4 +1,4 @@
-<template>{{ categoryLocal }}
+<template>
     <Form
         @submit="submitCategory"
         :validation-schema="categoryFormSchema"
