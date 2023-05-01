@@ -38,44 +38,55 @@
         </li>
       </ul>
     </li>
-    <li class="pageLink" v-if="test3">
-      <router-link to="/admin/import-coupon">
-        <i class="fa fa-book"></i>
-        <span class="page">Phiếu nhập</span>
-      </router-link>
-    </li>
-    <li class="pageLink" v-if="test5">
-      <router-link to="/admin/categories">
-        <i class="fa fa-sitemap"></i>
-        <span class="page">Danh mục</span>
-      </router-link>
-    </li>
-    <li class="pageLink" v-if="test6">
-      <router-link to="/admin/products">
-        <i class="fa fa-box"></i>
-        <span class="page">Sản phẩm</span>
-      </router-link>
-    </li>
-    <li class="treeview pageLink" v-if="test7">
+    <li class="treeview pageLink" v-if="test4">
       <a href="#">
-        <i class="fa fa-shopping-cart"></i>
-        <span class="treeview-title">Đơn hàng</span>
+        <i class="fa fa-book"></i>
+        <span class="treeview-title">Nhập hàng</span>
         <span class="pull-right-container pull-right">
           <i class="fa fa-angle-left fa-fw"></i>
         </span>
       </a>
       <ul class="treeview-menu">
         <li>
-          <router-link to="/admin/statuses">
-            Trạng thái
+          <router-link to="/admin/suppliers">
+            Nhà cung cấp
           </router-link>
         </li>
         <li>
-          <router-link to="/admin/orders">
-            Đơn hàng
+          <router-link to="/admin/payment-vouchers">
+            Phiếu chi
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/admin/import-coupons">
+            Phiếu nhập
           </router-link>
         </li>
       </ul>
+    </li>
+    <li class="pageLink" v-if="test14">
+      <router-link to="/admin/categories">
+        <i class="fa fa-sitemap"></i>
+        <span class="page">Danh mục</span>
+      </router-link>
+    </li>
+    <li class="pageLink" v-if="test10">
+      <router-link to="/admin/products">
+        <i class="fa fa-box"></i>
+        <span class="page">Sản phẩm</span>
+      </router-link>
+    </li>
+    <li class="pageLink" v-if="test22">
+      <router-link to="/admin/orders">
+        <i class="fa fa-shopping-cart"></i>
+        <span class="page">Đơn hàng</span>
+      </router-link>
+    </li>
+    <li class="pageLink" v-if="test7">
+      <router-link to="/admin/invoices">
+        <i class="fa fa-ticket"></i>
+        <span class="page">Hóa đơn</span>
+      </router-link>
     </li>
     <li class="header">ME</li>
     <li class="pageLink">
@@ -163,27 +174,46 @@
         data() {
             return {
                 token: localStorage.getItem('tokenAdmin'),
+                test1: false,
+                test2: false,
                 test3: false,
                 test4: false,
                 test5: false,
                 test6: false,
                 test7: false,
+                test10: false,
+                test14: false,
+                test18: false,
+                test22: false,
+
             };
         },
         async created() {
             await AuthorizationService.getStaff(this.getAdmin.id).then((response) => {
               response.roles.forEach(index=>{
                 index.permissions.forEach(index1=>{
-                  if(index1.id == 3)
+                  if(index1.id == 1)
+                    this.test1 = true;
+                  else if(index1.id == 2)
+                    this.test2 = true;
+                  else if(index1.id == 3)
                     this.test3 = true;
                   else if(index1.id == 4)
                     this.test4 = true;
-                  else if(index1.id == 14)
+                  else if(index1.id == 5)
                     this.test5 = true;
-                  else if(index1.id == 10)
+                  else if(index1.id == 6)
                     this.test6 = true;
-                  else if(index1.id == 22)
+                  else if(index1.id == 7)
                     this.test7 = true;
+                  else if(index1.id == 10)
+                      this.test10 = true;
+                  else if(index1.id == 14)
+                    this.test14 = true;
+                  else if(index1.id == 18)
+                    this.test18 = true;
+                  else if(index1.id == 22)
+                    this.test22 = true;
                 })
                 })
                 

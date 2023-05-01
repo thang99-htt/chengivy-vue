@@ -93,13 +93,88 @@ const routes = [
                 },
             },
             {
-                path: "import-coupon",
+                path: "suppliers",
+                name: "supplier",
+                component: () => import("../views/admin/suppliers/Supplier.vue"),
+                meta: {
+                    description: 'Nhà cung cấp',
+                    permissionId: 6
+                },
+            },
+            {
+                path: "suppliers/:id",
+                name: "supplier.edit",
+                component: () => import("@/views/admin/suppliers/SupplierEdit.vue"),
+                props: true,
+                meta: {
+                    description: 'Cập nhật Nhà cung cấp',
+                    permissionId: 6
+                }
+            },
+            {
+                path: "suppliers/add",
+                name: "supplier.add",
+                component: () => import("@/views/admin/suppliers/SupplierAdd.vue"),
+                meta: {
+                    description: 'Tạo Nhà cung cấp',
+                    permissionId: 6
+                }
+            },   
+            {
+                path: "payment-vouchers",
+                name: "payment-voucher",
+                component: () => import("../views/admin/payment-vouchers/PaymentVoucher.vue"),
+                meta: {
+                    description: 'Phiếu chi',
+                    permissionId: 5
+                },
+            },
+            {
+                path: "payment-vouchers/:id",
+                name: "payment-voucher.edit",
+                component: () => import("@/views/admin/payment-vouchers/PaymentVoucherEdit.vue"),
+                props: true,
+                meta: {
+                    description: 'Cập nhật Phiếu chi',
+                    permissionId: 5
+                }
+            },
+            {
+                path: "payment-vouchers/add",
+                name: "payment-voucher.add",
+                component: () => import("@/views/admin/payment-vouchers/PaymentVoucherAdd.vue"),
+                meta: {
+                    description: 'Tạo Phiếu chi',
+                    permissionId: 5
+                }
+            }, 
+            {
+                path: "import-coupons",
                 name: "import-coupon",
                 component: () => import("../views/admin/coupons/Import.vue"),
                 meta: {
                     description: 'Phiếu nhập',
                     permissionId: 4
                 },
+            },
+            {
+                path: "import-coupons/add",
+                name: "import-coupon.add",
+                component: () => import("../views/admin/coupons/ImportAdd.vue"),
+                meta: {
+                    description: 'Tạo Phiếu nhập',
+                    permissionId: 4
+                },
+            },
+            {
+                path: "import-coupons/view/:id",
+                name: "import-coupon.view",
+                component: () => import("@/views/admin/coupons/ImportView.vue"),
+                props: true,
+                meta: {
+                    description: 'Xem Phiếu nhập',
+                    permissionId: 4
+                }
             },
             {
                 path: "categories",
@@ -328,7 +403,7 @@ router.beforeEach(async (to, from, next) => {
             // const hasPermission = permissions.some(permission => permission.id === to.meta.permissionId);
             const hasPermission = response1.roles.some(role => {
                 return role.permissions.some(permission => permission.id === to.meta.permissionId);
-              });
+            });
             if (!hasPermission) {
               next({ name: 'dashboard' });
               return;

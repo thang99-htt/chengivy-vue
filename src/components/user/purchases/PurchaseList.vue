@@ -74,7 +74,7 @@
                         Đã hủy
                     </button>              
                     <button
-                        v-else
+                        v-else-if="purchase.status.id == 7"
                         type="button"
                         class="btn btn-success"
                         v-if="!isClicked"

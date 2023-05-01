@@ -17,8 +17,8 @@
                     
                     <div class="box-body offset-3 col-6">
                         <ProductForm
-                        :product="product"
-                        @submit:product="createProduct"
+                            :product="product"
+                            @submit:product="createProduct"
                         />
                     </div>
                 </div>
@@ -43,7 +43,9 @@
                     'categoy_id': "",
                     'name': "",
                     'description': "",
+                    'purchase_price': "",
                     'price': "",
+                    'quantity': "",
                     'type_id': "",
                     'discount_percent': 0,
                 },

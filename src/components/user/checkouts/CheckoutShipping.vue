@@ -207,7 +207,7 @@
         border-radius: 5px 5px 0 0;
         padding: 20px 30px;
         background-size: cover;
-        background-color: #004fbe;
+        background-color: #0167f3;
         position: relative;
     }
     .dash_head h3 {

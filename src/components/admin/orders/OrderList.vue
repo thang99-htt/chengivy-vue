@@ -14,6 +14,7 @@
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Số điện thoại</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Tổng giá trị</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Phương thức thanh toán</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Thanh toán</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Trạng thái</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting" style="width: 150px;">Tùy chọn</th>
         </tr>
@@ -33,6 +34,13 @@
             <td>{{ order.user_phone  }}</td>
             <td>{{ formatPrice(order.total_price) }} đ</td>
             <td>{{ order.payment.name }}</td>
+            <td>
+                <span
+                    :class="[order.paid == 1 ? 'text-success' : 'text-danger']"
+                >
+                {{order.paid == 1 ? 'Đã thanh toán' : 'Chưa thanh toán'}}
+                </span>                    
+            </td>
             <td>
                 <button
                     v-if="order.status.id == 1" class="btn-order-status order-status1"
@@ -171,7 +179,21 @@
                 try {
                     this.ordersList = await OrderService.getAll();
                     this.$nextTick(() => {
-                        $('.example1').DataTable()
+                        $(".example1").DataTable({
+                            "language": {
+                                "search": "Tìm kiếm:",
+                                "loadingRecords": "Đang tải...",
+                                "zeroRecords": "Không tìm thấy kết quả",
+                                "lengthMenu": "Hiển thị _MENU_ bản ghi",
+                                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+                                "paginate": {
+                                    "first": "Trang đầu",
+                                    "last": "Trang cuối",
+                                    "next": "Trang sau",
+                                    "previous": "Trang trước"
+                                }
+                            }
+                        })
                     })
                 } catch (error) {
                     console.log(error);

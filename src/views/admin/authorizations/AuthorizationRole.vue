@@ -45,7 +45,7 @@
                     v-else
                     type="button"
                     class="ms-2 btn btn-warning"
-                    @click="openModelEidt(role.id)"
+                    @click="openModelEdit(role.id)"
                 >
                     <i class="fas fa-edit"></i>
                 </button>
@@ -132,7 +132,7 @@
                 });
                 this.myModel = true;
             },
-            async openModelEidt(id) {
+            async openModelEdit(id) {
                 await AuthorizationService.getPermissionRole(id).then((response) => {
                     this.role = response;
                     this.permissionRole.role_id = response.id;

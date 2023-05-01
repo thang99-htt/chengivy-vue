@@ -100,7 +100,10 @@
                                                        :value="((cartLocal.into_money+25000)/23795).toFixed()"
                                                     />
                                                 </div>
-                                                <div v-show="orderLocal.payment_id == 3 && paymentStatus !== 'paid'" class="mt-4 text-center" id="paypal-button" @click="paypalCheckout()"></div>
+                                                
+                                                <div v-show="orderLocal.payment_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
+                                                    <div ref="paypal"></div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -143,9 +146,12 @@
                 paymentStatus: ''
             };
         },
-        async mounted() {
+        mounted: function() {
             this.refreshList();
-            this.paypalCheckout();
+            const script = document.createElement("script");
+            script.src = "https://www.paypal.com/sdk/js?client-id=AT5pO4SLjEoDt65gg6gzPGMAp4Ml1XpOkoeWr7_G-qa3moiSJJFkdqDIBxh1ytFYbCLXHRoT1MsJSur1";
+            script.addEventListener("load", this.setLoaded);
+            document.body.appendChild(script);
         },
         emits: ["submit:order"],
         methods: {
@@ -186,17 +192,25 @@
             closeModel() {
                 this.myModel = false;
             },
-            async paypalCheckout() {
+            setLoaded: function() {
                 var order_total_price = $("#order_total_price").val();
-                await paypal.Button.render({
-                    // Configure environment
-                    env: 'sandbox',
-                    client: {
-                        sandbox: 'AT5pO4SLjEoDt65gg6gzPGMAp4Ml1XpOkoeWr7_G-qa3moiSJJFkdqDIBxh1ytFYbCLXHRoT1MsJSur1',
-                        production: 'demo_production_client_id'
+                this.loaded = true;
+                window.paypal
+                    .Buttons({
+                    createOrder: (data, actions) => {
+                        return actions.order.create({
+                        purchase_units: [
+                            {
+                            description: "Thanh toán Paypal",
+                            amount: {
+                                currency_code: "USD",
+                                value: order_total_price
+                            }
+                            }
+                        ]
+                        });
                     },
-                    // Customize button (optional)
-                    locale: 'en_US',
+
                     style: {
                         size: 'large',
                         color: 'gold',
@@ -204,48 +218,21 @@
                         tagline : 'false',
                     },
 
-                    // Enable Pay Now checkout flow (optional)
-                    commit: true,
-
-                    // Set up a payment
-                    payment: function(data, actions) {
-                        return actions.payment.create({
-                            transactions: [{
-                                amount: {
-                                    total: order_total_price,
-                                    currency: 'USD'
-                                }
-                            }]
-                        });
+                    onApprove: async (data, actions) => {
+                        const order = await actions.order.capture();
+                        this.orderLocal.paid = 1;
+                        this.submitOrder();
+                        this.paymentStatus = 'paid';
+                        console.log(order);
                     },
-                    // Execute the payment
-                    onAuthorize: (data, actions) => {
-                        return actions.payment.execute()
-                            .then(() => {
-                                const Toast = Swal.mixin({
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                                });
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Thanh toán thành công. Hoàn tất đơn hàng ngay.'
-                                })
-                                this.paymentStatus = 'paid';
-                            });
+                    onError: err => {
+                        console.log(err);
                     }
-                        
-                }, '#paypal-button');
-                
-            }
-        },
-         
+                    })
+                    
+                    .render(this.$refs.paypal);
+                }
+            },         
      };
 </script>
 

@@ -22,6 +22,26 @@
             </Field>  
             <ErrorMessage name="category_id" class="error-feedback" />
         </div>
+        
+        <div class="form-group">
+            <label for="type_id">Thể loại
+                <span class="error-feedback">*</span>
+            </label>       
+            <Field 
+                name="type_id" as="select"
+                class="form-control"
+                v-model="productLocal.type_id"
+            >
+                <option disabled value="">Chọn thể loại</option>
+                <option v-for="(type, index) in products.types"
+                    :key="type" 
+                    :value="type.id"
+                >
+                    {{ type.description }}
+                </option>
+            </Field>  
+            <ErrorMessage name="type_id" class="error-feedback" />
+        </div>
         <div class="form-group">
             <label for="name">Tên
                 <span class="error-feedback">*</span>
@@ -46,17 +66,63 @@
             />
             <ErrorMessage name="description" class="error-feedback" />
         </div>
-        <div class="form-group">
-            <label for="price">Giá Bán
-                <span class="error-feedback">*</span>
-            </label>
-            <Field
-                name="price"
-                type="number"
-                class="form-control"
-                v-model="productLocal.price"
-            />
-            <ErrorMessage name="price" class="error-feedback" />
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="purchase_price">Giá Mua
+                        <span class="error-feedback">*</span>
+                    </label>
+                    <Field
+                        name="purchase_price"
+                        type="number"
+                        class="form-control"
+                        v-model="productLocal.purchase_price"
+                    />
+                    <ErrorMessage name="purchase_price" class="error-feedback" />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="price">Giá Bán
+                        <span class="error-feedback">*</span>
+                    </label>
+                    <Field
+                        name="price"
+                        type="number"
+                        class="form-control"
+                        v-model="productLocal.price"
+                    />
+                    <ErrorMessage name="price" class="error-feedback" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="quantity">Số lượng
+                        <span class="error-feedback">*</span>
+                    </label>
+                    <Field
+                        name="quantity"
+                        type="number"
+                        class="form-control"
+                        v-model="productLocal.quantity"
+                    />
+                    <ErrorMessage name="quantity" class="error-feedback" />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="discount_percent">Phần trăm giảm giá</label>
+                    <Field
+                        name="discount_percent"
+                        type="number"
+                        class="form-control"
+                        v-model="productLocal.discount_percent"
+                    />
+                    <ErrorMessage name="discount_percent" class="error-feedback" />
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <label for="image">Hình ảnh</label>
@@ -72,34 +138,6 @@
             <img v-if="image" :src="getImage(image)"
                  alt="Image" class="img-edit img-responsive center-block">
             <ErrorMessage name="image" class="error-feedback" />
-        </div>
-        <div class="form-group">
-            <label for="type_id">Thể loại
-                <span class="error-feedback">*</span>
-            </label>       
-            <Field 
-                name="type_id" as="select"
-                class="form-control"
-                v-model="productLocal.type_id"
-            >
-                <option v-for="(type, index) in products.types"
-                    :key="type" 
-                    :value="type.id"
-                >
-                    {{ type.name }}
-                </option>
-            </Field>  
-            <ErrorMessage name="type_id" class="error-feedback" />
-        </div>
-        <div class="form-group">
-            <label for="discount_percent">Phần trăm giảm giá</label>
-            <Field
-                name="discount_percent"
-                type="number"
-                class="form-control"
-                v-model="productLocal.discount_percent"
-            />
-            <ErrorMessage name="discount_percent" class="error-feedback" />
         </div>
         <div class="form-group">
             <button class="me-2 btn btn-success">
@@ -165,6 +203,12 @@
                 price: yup
                 .string()
                 .required("Giá Bán phải có giá trị."),
+                purchase_price: yup
+                .string()
+                .required("Giá Mua phải có giá trị."),
+                quantity: yup
+                .string()
+                .required("Số lượng phải có giá trị."),
                 type_id: yup
                 .string()
                 .required("Thể loại phải được chọn."),

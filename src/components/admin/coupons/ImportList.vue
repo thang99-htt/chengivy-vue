@@ -6,74 +6,63 @@
       <thead>
         <tr role="row">
             <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Danh mục cha</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">Tên</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Hình ảnh</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mô tả</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Đường dẫn</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Trạng thái</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày tạo</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Nhân viên</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">Nhà cung cấp</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Phiếu chi</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày lập</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Tổng tiền</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Thuế GTGT</th>
+            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Tổng giá trị</th>
             <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting" style="width: 150px;">Tùy chọn</th>
         </tr>
       </thead>
       <tbody>
         <tr role="row"
-            v-for="(category, index) in categoriesList"
-            :key="category"
+            v-for="(coupon, index) in import_couponsList"
+            :key="coupon"
         >
             <td class="sorting_1" >
                 {{ index + 1 }}
             </td>
-            <td>
-                <span v-if="category.parent">
-                    {{ category.parent.name }}
-                </span>
-                <span v-else>
-                    NULL
-                </span>
-            </td>
-            <td>{{ category.name }}</td>
-            <td>
-                <img v-if="category.image" :src="getImage(category.image)"
-                 alt="Image" class="img-responsive center-block">
-                
-            </td>
-            <td>{{ category.description }}</td>
-            <td>{{ category.url }}</td>
-            <td>
-                <button
-                    :class="[category.status == 1 ? 'btn-show' : 'btn-hide']"
-                    @click="statusUpdate(category)"
-                >
-                {{category.status == 1 ? 'Hiện' : 'Ẩn'}}
-                </button>                    
-            </td>
-            <td>{{ new Date(category.created_at).toLocaleString() }}</td>
+            <td>{{ coupon.staff }}</td>
+            <td>{{ coupon.supplier.name }}</td>
+            <td>{{ coupon.payment_voucher.id }}</td>
+            <td>{{ new Date(coupon.date).toLocaleString() }}</td>
+            <td>{{ formatPrice(coupon.total_price) }}</td>
+            <td>{{ formatPrice(coupon.value_added) }}</td>
+            <td>{{ formatPrice(coupon.total_value) }}</td>
             <td>
                 <button
                     type="button"
                     class="ms-2 btn btn-primary"
                 >
-                    <i class="fas fa-eye"></i>
+                    <router-link
+                          :to="{
+                              name: 'import-coupon.view',
+                              params: { id: coupon.id },
+                          }" 
+                    >
+                        <i class="fa fa-eye"></i>
+                    </router-link>
                 </button>
-                <button
+                <!-- <button
                     type="button"
                     class="ms-2 btn btn-success"
                 >
                     <router-link
                           :to="{
-                              name: 'category.edit',
-                              params: { id: category.id },
+                              name: 'import-coupon.edit',
+                              params: { id: coupon.id },
                           }" 
                     >
                         <i class="fa fa-pen"></i>
                     </router-link>
-                </button>
+                </button> -->
                 <button
-                    v-if="category.id"
+                    v-if="coupon.id"
                     type="button"
                     class="ms-2 btn btn-danger"
-                    @click="deleteCategory(category.id)"
+                    @click="deleteImportCoupon(coupon.id)"
                 >
                     <i class="fas fa-trash"></i>
                 </button>
@@ -85,14 +74,14 @@
 
 <script>
     import $ from 'jquery'
-    import CategoryService from "@/services/admin/category.service";
+    import ImportCouponService from "@/services/admin/import-coupon.service";
     import 'datatables.net'
     import 'datatables.net-bs'
     
     export default {
-        name: 'CategoryList',
+        name: 'ImportCouponList',
         props: {
-            categories: { type: Array, default: [] },
+            import_coupons: { type: Array, default: [] },
         },
         mounted() {
             this.$nextTick(() => {
@@ -115,7 +104,7 @@
         },
         data() {
             return {
-                categoriesList: this.categories,
+                import_couponsList: this.import_coupons,
                 status: 0,
             };
         },
@@ -123,25 +112,15 @@
             $('.example1').DataTable().destroy();
         },
         methods: {
+            formatPrice(value) {
+                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
             getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/categories/'+image;
+                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
             },
-            statusUpdate(category) {
+            async retrieveImportCounpons() {
                 try {
-                    console.log(category.status);
-                    CategoryService.updateStatus(category.id, category.status)
-                    .then( (response) => {
-                        this.refreshList();
-                        console.log(response.category.status);
-                    })                  
-
-                } catch (error) {
-                    console.log(error);
-                }   
-            },
-            async retrieveCategories() {
-                try {
-                    this.categoriesList= await CategoryService.getAll();
+                    this.import_couponsList= await ImportCouponService.getAll();
                     this.$nextTick(() => {
                         $('.example1').DataTable()
                     })
@@ -150,9 +129,9 @@
                 }
             },
             refreshList() {
-                this.retrieveCategories();
+                this.retrieveImportCounpons();
             },
-            deleteCategory(id) {
+            deleteImportCoupon(id) {
                 Swal.fire({
                     title: 'Bạn có chắc?',
                     text: "Bạn sẽ không thể hoàn tác lại điều này!",
@@ -164,7 +143,7 @@
                     cancelButtonText: 'Hủy'
                 }).then((result) => {
                     if (result.value) {
-                        CategoryService.delete(id).then((res) => {
+                        ImportCouponService.delete(id).then((res) => {
                             if(res.success) {
                                 this.refreshList();
                             }

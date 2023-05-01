@@ -25,7 +25,7 @@
                 v-for="(product, index) in displayedProducts"
                 :key="product"
             >
-                <div class="single-product">
+                <div class="single-product" :class="{ 'disabled': product.deleted_at }">
                     <div class="product-image">
                         <img :src="getImage(product.image)" alt="#" />
                         <span 
@@ -35,7 +35,8 @@
                             SALE
                         </span>
                         <div class="button">
-                            <a @click="addToCart(product)" class="btn"><i class="fa fa-cart"></i>Thêm vào giỏ hàng</a>
+                            <a v-if="product.deleted_at" href="" class="btn"><i class="fa fa-cart"></i>Ngừng kinh doanh</a>
+                            <a v-else @click="addToCart(product)" class="btn"><i class="fa fa-cart"></i>Thêm vào giỏ hàng</a>
                         </div>
                     </div>
                     <div class="product-info">
@@ -225,5 +226,17 @@
         margin: 0 8px;
         padding: 10px 20px;
         border-radius: 6px;
+    }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .single-product.disabled .product-image .button {
+        left: 50%;
+        bottom: 30%;
+        opacity: 1;
+        visibility: visible;
     }
 </style>

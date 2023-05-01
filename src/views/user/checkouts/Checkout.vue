@@ -101,7 +101,8 @@
                 order: {
                     'contact_id': 0,
                     'payment_id': 1,
-                    'note': ""
+                    'note': "",
+                    'paid': 0
                 },
             }
         },

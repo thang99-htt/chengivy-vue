@@ -13,7 +13,7 @@
                             <button class="btn btn-primary me-3" @click="refreshList()">
                                 <i class="fas fa-redo"></i> Làm mới
                             </button>
-                            <button class="btn btn-success me-3" @click="goToAddCategory">
+                            <button class="btn btn-success me-3" @click="goToAddImportCoupon">
                                 <i class="fas fa-plus"></i> Thêm mới
                             </button>
                         </div>
@@ -22,10 +22,10 @@
                 <div class="row">
                   <div class="col-sm-12 table-responsive">
                     <ImportList
-                        v-if="filteredCategoriesCount > 0"
-                        :categories="filteredCategories"
+                        v-if="filteredImportCouponsCount > 0"
+                        :import_coupons="filteredImportCoupons"
                     />
-                    <p v-else>Không có danh mục nào.</p>
+                    <p v-else>Không có phiếu nhập nào.</p>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
 </template>
 <script>
     import ImportList from "@/components/admin/coupons/ImportList.vue";
-    import CategoryService from "@/services/admin/category.service";
+    import ImportCouponService from "@/services/admin/import-coupon.service";
 
     export default {
         components: {
@@ -46,40 +46,30 @@
         name: 'import-coupon',
         data() {
             return {
-                categories: [],
+                import_coupons: [],
             };
         },
         computed: {
-            filteredCategories() {
-                return this.categories;
+            filteredImportCoupons() {
+                return this.import_coupons;
             },
-            filteredCategoriesCount() {
-                return this.filteredCategories.length;
+            filteredImportCouponsCount() {
+                return this.filteredImportCoupons.length;
             },
         },
         methods: {
-            async retrieveCategories() {
+            async retrieveImportCoupons() {
                 try {
-                    this.categories = await CategoryService.getAll();
+                    this.import_coupons = await ImportCouponService.getAll();
                 } catch (error) {
                     console.log(error);
                 }
             },
             refreshList() {
-                this.retrieveCategories();
+                this.retrieveImportCoupons();
             },
-            async removeAllCategories() {
-                if (confirm("Bạn muốn xóa tất cả Vai trò?")) {
-                    try {
-                        await CategoryService.deleteAll();
-                        this.refreshList();
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
-            },
-            goToAddCategory() {
-                this.$router.push({ name: "category.add" });
+            goToAddImportCoupon() {
+                this.$router.push({ name: "import-coupon.add" });
             },
         },
         mounted() {

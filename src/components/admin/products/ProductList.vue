@@ -58,7 +58,21 @@
                 try {
                     this.productsList = await ProductService.getAll();
                     this.$nextTick(() => {
-                        $('.example1').DataTable()
+                        $(".example1").DataTable({
+                            "language": {
+                                "search": "Tìm kiếm:",
+                                "loadingRecords": "Đang tải...",
+                                "zeroRecords": "Không tìm thấy kết quả",
+                                "lengthMenu": "Hiển thị _MENU_ bản ghi",
+                                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+                                "paginate": {
+                                    "first": "Trang đầu",
+                                    "last": "Trang cuối",
+                                    "next": "Trang sau",
+                                    "previous": "Trang trước"
+                                }
+                            }
+                        })
                     })
                 } catch (error) {
                     console.log(error);
@@ -118,6 +132,7 @@
         <tr role="row"
             v-for="(product, index) in productsList"
             :key="product"
+            :class="{ 'disabled': product.deleted_at }"
         >
             <td class="sorting_1" >
                 {{ index + 1 }}
@@ -142,40 +157,50 @@
                 </button>                    
             </td>
             <td>
-                <button
-                    type="button"
-                    class="me-2 btn btn-primary"
-                >
-                    <router-link
-                          :to="{
-                              name: 'product.view',
-                              params: { id: product.id },
-                          }" 
+                <div v-if="product.deleted_at">
+                    <button
+                        type="button"
+                        class="me-2 btn btn-danger"
                     >
-                        <i class="fa fa-eye"></i>
-                    </router-link>
-                </button>
-                <button
-                    type="button"
-                    class="me-2 btn btn-success"
-                >
-                    <router-link
-                          :to="{
-                              name: 'product.edit',
-                              params: { id: product.id },
-                          }" 
+                        Ngừng kinh doanh
+                    </button>
+                </div>
+                <div v-else>
+                    <button
+                        type="button"
+                        class="me-2 btn btn-primary"
                     >
-                        <i class="fa fa-pen"></i>
-                    </router-link>
-                </button>
-                <button
-                    v-if="product.id"
-                    type="button"
-                    class="me-2 btn btn-danger"
-                    @click="deleteProduct(product.id)"
-                >
-                    <i class="fas fa-trash"></i>
-                </button>
+                        <router-link
+                              :to="{
+                                  name: 'product.view',
+                                  params: { id: product.id },
+                              }" 
+                        >
+                            <i class="fa fa-eye"></i>
+                        </router-link>
+                    </button>
+                    <button
+                        type="button"
+                        class="me-2 btn btn-success"
+                    >
+                        <router-link
+                              :to="{
+                                  name: 'product.edit',
+                                  params: { id: product.id },
+                              }" 
+                        >
+                            <i class="fa fa-pen"></i>
+                        </router-link>
+                    </button>
+                    <button
+                        v-if="product.id"
+                        type="button"
+                        class="me-2 btn btn-danger"
+                        @click="deleteProduct(product.id)"
+                    >
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             </td>
         </tr>
       </tbody>
@@ -207,5 +232,10 @@
 
     select.input-sm {
         line-height: unset;
+    }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.7;
     }
 </style>
