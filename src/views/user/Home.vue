@@ -31,7 +31,7 @@
 </script>
 <template>
     <div class="container-fluid">
-        <section class="hero-area">
+        <section class="hero-area mt-4">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-12 custom-padding-right">
@@ -146,11 +146,11 @@
                     <div class="single-category">
                         <ul>
                             <div v-for="(category, index) in categories">
-                                <div :key="category.id" v-if="category.childs.length > 0">
-                                <li v-for="(child, index) in category.childs" :key="child.id" :class="{ 'active': child.id === 6 }">
-                                    <a class="heading" href="">{{ child.name }}</a>
-                                    <div class="images" :style="{ backgroundImage: 'url(http://127.0.0.1:8000/storage/uploads/categories/' + child.image + ')' }"></div>
-                                </li>
+                                <div :key="category.id" v-if="category.childs.length == 0">
+                                    <li :key="category.id" :class="{ 'active': category.id === 6 }">
+                                        <a class="heading" href="">{{ category.name }}</a>
+                                        <div class="images" :style="{ backgroundImage: 'url(http://127.0.0.1:8000/storage/uploads/categories/' + category.image + ')' }"></div>
+                                    </li>
                                 </div>
                             </div>
                         </ul>

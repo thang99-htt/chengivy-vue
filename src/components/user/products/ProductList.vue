@@ -25,52 +25,53 @@
                 v-for="(product, index) in displayedProducts"
                 :key="product"
             >
-                <div class="single-product" :class="{ 'disabled': product.deleted_at }">
-                    <div class="product-image">
-                        <img :src="getImage(product.image)" alt="#" />
-                        <span 
-                            v-if="product.discount_percent > 0"
-                            class="sale-tag"
-                        >
-                            SALE
-                        </span>
-                        <div class="button">
-                            <a v-if="product.deleted_at" href="" class="btn"><i class="fa fa-cart"></i>Ngừng kinh doanh</a>
-                            <a v-else @click="addToCart(product)" class="btn"><i class="fa fa-cart"></i>Thêm vào giỏ hàng</a>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <span class="category">{{ product.category.name }}</span>
-                        <h4 class="title">
-                            <router-link 
-                                :to="{
-                                    name: 'product.detail',
-                                    params: { id: product.id },
-                                }" 
-                            >
-                                {{ product.name }}
-                            </router-link>
-                        </h4>
-                        <ul class="review">
-                            <li><i class="fa fa-star"></i></li>
-                            <li><i class="fa fa-star"></i></li>
-                            <li><i class="fa fa-star"></i></li>
-                            <li><i class="fa fa-star"></i></li>
-                            <li><i class="fa fa-star"></i></li>
-                            <li><span>5.0 Review(s)</span></li>
-                        </ul>
-                        <div class="price">
-                            <span >
-                                {{ formatPrice(product.final_price) }} VNĐ
-                            </span>
-                            <span class="text-decoration-line-through float-end text-secondary"
-                                v-if="product.discount_percent > 0" 
-                            >
-                                {{ formatPrice(product.price) }} VNĐ
-                            </span>
-                        </div>
-                    </div>
+            <div class="single-product" :class="{ 'disabled': product.deleted_at }">
+                <div class="product-image">
+                    <img :src="getImage(product.image)" alt="#" />
+                    <span 
+                    v-if="product.discount_percent > 0"
+                    class="sale-tag"
+                    >
+                    SALE
+                </span>
+                <div class="button">
+                    <a v-if="product.deleted_at" href="" class="btn"><i class="fa fa-cart"></i>Ngừng kinh doanh</a>
+                    <a v-else @click="addToCart(product)" class="btn"><i class="fa fa-cart"></i>Thêm vào giỏ hàng</a>
                 </div>
+            </div>
+                    <router-link 
+                        :to="{
+                            name: 'product.detail',
+                            params: { id: product.id },
+                        }" 
+                    >
+                        <div class="product-info">
+                            <span class="category">{{ product.category }}</span>
+                            <h4 class="title">
+                                <a href="#">{{ product.name }}</a>
+                            </h4>
+                            <ul class="review">
+                                <li><i class="fa fa-star"></i></li>
+                                <li><i class="fa fa-star"></i></li>
+                                <li><i class="fa fa-star"></i></li>
+                                <li><i class="fa fa-star"></i></li>
+                                <li><i class="fa fa-star"></i></li>
+                                <li><span>5.0 Review(s)</span></li>
+                            </ul>
+                            <div class="price">
+                                <span >
+                                    {{ formatPrice(product.final_price) }} VNĐ
+                                </span>
+                                <span class="text-decoration-line-through float-end text-secondary"
+                                    v-if="product.discount_percent > 0" 
+                                >
+                                    {{ formatPrice(product.price) }} VNĐ
+                                </span>
+                            </div>
+                        </div>
+                    </router-link>
+                </div>
+            
             </div>
         </div>
     </div> 
@@ -176,7 +177,7 @@
             },
             async addToCart(product) {
                 this.cart.product_id = product.id;
-                this.cart.size = product.sizes[0].id;
+                this.cart.size = product.sizes[0].size_id;
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -204,7 +205,7 @@
                                     title: 'Số lượng của sản phẩm này đã được bán hết.'
                                 });
                             }
-                            // console.log(response);
+                            console.log(response);
                         });
                     } else {
                         Toast.fire({

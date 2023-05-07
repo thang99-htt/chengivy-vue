@@ -4,7 +4,7 @@
             <h3>{{ product.name }}</h3>
         </div>
         <div class="info-category">
-            <p>{{ product.category.name }}</p>
+            <p>{{ product.category }}</p>
         </div>
         <div class="info-price">
             <p>{{ formatPrice(product.final_price) }} VNĐ</p>

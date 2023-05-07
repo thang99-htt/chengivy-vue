@@ -5,7 +5,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="top-left">
-                            <ul class="menu-top-link">
+                            <!-- <ul class="menu-top-link">
                                 <li>
                                     <div class="select-position">
                                         <select id="select4">
@@ -28,7 +28,10 @@
                                         </select>
                                     </div>
                                 </li>
-                            </ul>
+                            </ul> -->
+                            <a class="navbar-brand" href="/">
+                                <img src="/images/logo/logo-dark.png" alt="Logo" />
+                            </a>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-12">
@@ -78,15 +81,66 @@
         <div class="header-middle">
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-lg-3 col-md-3 col-7">
-                        <a class="navbar-brand" href="/">
+                    <div class="col-lg-2 col-md-3 col-7">
+                        <!-- <a class="navbar-brand" href="/">
                             <img src="/images/logo/logo.jpg" alt="Logo" />
-                        </a>
+                        </a> -->
+                        <div class="mega-category-menu">
+                            <router-link 
+                                :to="{
+                                    name: 'product.all',
+                                }" 
+                            >
+                                <span class="cat-button">
+                                    <i class="bi bi-list"></i>
+                                    Tất cả danh mục
+                                </span>  
+                            </router-link>
+                            <ul class="sub-category">
+                                <li
+                                    v-for="(category, index) in categories"
+                                    :key="category"
+                                >
+                                    <router-link
+                                        :to="{
+                                            name: 'product.category',
+                                            params: { url: category.url },
+                                        }" 
+                                    >
+                                        {{ category.name }}
+                                        <span
+                                            v-if="category.childs.length > 0"
+                                        >
+                                            <i class="bi bi-chevron-right"></i> 
+                                        </span>
+                                    </router-link>
+                                    <ul class="inner-sub-category" v-if="category.childs.length > 0">
+                                        <li
+                                            v-for="(child, index) in category.childs"
+                                            :key="child"
+                                        >
+                                            <router-link 
+                                                :to="{
+                                                    name: 'product.category',
+                                                    params: { url: child.url },
+                                                }"
+                                            >
+                                                <span
+                                                    v-if="child.status == 1"
+                                                >
+                                                    {{ child.name }}
+                                                </span>
+                                            </router-link>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="col-lg-5 col-md-7 d-xs-none">
+                    <div class="col-lg-6 col-md-7 d-xs-none">
                         <div class="main-menu-search">
                             <div class="navbar-search search-style-5">
-                                <div class="search-select">
+                                <!-- <div class="search-select">
                                     <div class="select-position">
                                         <select id="select1">
                                             <option selected>Tất cả</option>
@@ -97,9 +151,10 @@
                                             <option value="5">option 05</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="search-input">
                                     <input type="text" v-model="keyword" placeholder="Tìm kiếm" />
+                                    <button @click="startListening" class="microphone-btn"><i class="fa fa-microphone"></i></button>
                                 </div>
                                 <div class="search-btn">
                                     <router-link 
@@ -196,7 +251,7 @@
             </div>
         </div>
 
-        <div class="container">
+        <!-- <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8 col-md-6 col-12">
                     <div class="nav-inner">
@@ -342,7 +397,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </header>
 </template>
 <script>
@@ -410,11 +465,35 @@
             },
             formatPrice(value) {
                 return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
+            startListening() {
+                const recognition = new window.webkitSpeechRecognition()
+                recognition.onresult = (event) => {
+                    const speechToText = event.results[0][0].transcript
+                    this.keyword = speechToText
+                }
+                recognition.start()
             }
         },
         computed: {
             ...mapGetters(['getUser', 'carts'])
-        }
-         
+        },
      };
 </script>
+
+
+<style scoped>
+.microphone-btn {
+  background-color: #fff;
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  border: 1px solid #e2e2e2;
+  border-left: none;
+  margin-left: -2px;
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  font-size: 18px;
+  padding-right: 10px;
+}
+</style>

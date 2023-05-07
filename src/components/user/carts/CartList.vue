@@ -134,7 +134,7 @@
                         cart.quantity--;
                         CartService.updateQuantity(cart.id, cart.quantity)
                         .then( async (response) => {
-                            this.$store.commit('addToCart', await CartService.getCart(this.user.id));
+                            this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                         })                  
 
                     } catch (error) {
@@ -147,7 +147,7 @@
                     cart.quantity++;
                     CartService.updateQuantity(cart.id, cart.quantity)
                     .then( async (response) => {
-                        this.$store.commit('addToCart', await CartService.getCart(this.user.id));
+                        this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                     })                  
 
                 } catch (error) {

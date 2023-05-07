@@ -39,49 +39,57 @@
             />
             <ErrorMessage name="address" class="error-feedback" />
         </div>
-        <div class="form-group">
-            <label for="address_city">Tỉnh/Thành
-                <span class="error-feedback">*</span>
-            </label>       
-            <Field    
-                @change="changeCity($event)"
-                name="address_city" as="select"
-                class="form-control select" id="address_city"
-            >
-                <option disabled value="">Chọn Tỉnh/Thành phố</option>
-                <option v-for="(city, index) in citiesList"
-                    :key="city" 
-                    :value="city.id"
-                >
-                    {{ city.name }}
-                </option>
-            </Field>  
-            <ErrorMessage name="address_city" class="error-feedback" />
-        </div>
-        <div class="form-group">
-            <label for="address_district">Quận/Huyện
-                <span class="error-feedback">*</span>
-            </label>      
-            <Field
-                @change="changeDistrict($event)"
-                name="address_district" as="select"
-                class="form-control select" id="address_district"
-            >
-            </Field> 
-            <ErrorMessage name="address_district" class="error-feedback" />
-        </div>
-        <div class="form-group">
-            <label for="address_ward">Phường/Xã
-                <span class="error-feedback">*</span>
-            </label>      
-            <Field 
-                v-slot="{ changeWard }"
-                @change="changeWard($event)"
-                name="address_ward" as="select"
-                class="form-control select" id="address_ward"
-            >
-            </Field>  
-            <ErrorMessage name="address_ward" class="error-feedback" />
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="address_city">Tỉnh/Thành
+                        <span class="error-feedback">*</span>
+                    </label>       
+                    <Field    
+                        @change="changeCity($event)"
+                        name="address_city" as="select"
+                        class="form-control select" id="address_city"
+                    >
+                        <option disabled value="">Chọn Tỉnh/Thành phố</option>
+                        <option v-for="(city, index) in citiesList"
+                            :key="city" 
+                            :value="city.id"
+                        >
+                            {{ city.name }}
+                        </option>
+                    </Field>  
+                    <ErrorMessage name="address_city" class="error-feedback" />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="address_district">Quận/Huyện
+                        <span class="error-feedback">*</span>
+                    </label>      
+                    <Field
+                        @change="changeDistrict($event)"
+                        name="address_district" as="select"
+                        class="form-control select" id="address_district"
+                    >
+                    </Field> 
+                    <ErrorMessage name="address_district" class="error-feedback" />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="address_ward">Phường/Xã
+                        <span class="error-feedback">*</span>
+                    </label>      
+                    <Field 
+                        v-slot="{ changeWard }"
+                        @change="changeWard($event)"
+                        name="address_ward" as="select"
+                        class="form-control select" id="address_ward"
+                    >
+                    </Field>  
+                    <ErrorMessage name="address_ward" class="error-feedback" />
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <button class="me-2 btn btn-success">

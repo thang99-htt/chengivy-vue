@@ -99,9 +99,6 @@
     .couter_icon>div {
         padding-right: 0;
     }
-    .counter_no p.total_no {
-        text-align: center;
-    }
     .counter_no .head_couter {
         text-align: center;
         font-size: 16px;

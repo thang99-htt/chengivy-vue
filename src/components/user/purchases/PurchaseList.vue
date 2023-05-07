@@ -5,18 +5,18 @@
             v-for="(purchase, index) in purchasesList"
             :key="purchase.id"
         >
+            <div class="accordion-status">
+                <span>{{ purchase.status.description }}</span>
+                <span> {{ purchase.status.name }}</span>
+            </div>
+            <hr>
             <router-link
-                class="d-block"
-                :to="{
-                    name: 'purchase.detail',
-                    params: { id: purchase.id },
-                }" 
+                    class="d-block"
+                    :to="{
+                        name: 'purchase.detail',
+                        params: { id: purchase.id },
+                    }" 
             >
-                <div class="accordion-status">
-                    <span>{{ purchase.status.description }}</span>
-                    <span> {{ purchase.status.name }}</span>
-                </div>
-                <hr>
                 <div class="accordion-content">
                     <div 
                         class="row"
@@ -24,7 +24,7 @@
                         :key="product.id"
                     >
                         <div class="col-8">
-                            <div class="d-flex">
+                            <div class="d-flex my-2">
                                 <img class="d-block me-3" width="100" :src="getImage(product.product_image)" alt="">
                                 <div>
                                     <router-link 
@@ -46,57 +46,89 @@
                         </div>
                     </div>
                 </div>
-                <hr>
-                <div class="accordion-btn">
-                    <div>
-                        <span>Thành tiền: </span><span class="fs-4 ms-3">{{ formatPrice(purchase.total_price) }} VNĐ</span>
-                    </div>
+            </router-link>
+            <hr>
+            <div class="accordion-btn">
+                <div>
+                    <span>Thành tiền: </span><span class="fs-4 ms-3">{{ formatPrice(purchase.total_price) }} VNĐ</span>
+                </div>
+                <button
+                    v-if="purchase.status.id == 1"
+                    type="button"
+                    class="btn btn-danger"
+                    @click="cancleOrder(purchase)"
+                >
+                    Hủy đơn
+                </button>
+                <div v-else-if="purchase.status.id == 9">
                     <button
-                        v-if="purchase.status.id == 1"
                         type="button"
-                        class="btn btn-danger"
-                        @click="cancleOrder(purchase)"
+                        class="btn btn-success me-3"
+                        @click="openModel(purchase.order_details)"
                     >
-                        Hủy đơn
-                    </button>
+                        Đánh giá
+                    </button>  
                     <button
-                        v-else-if="purchase.status.id == 9"
                         type="button"
                         class="btn btn-warning"
-                        >
+                    >
                         Mua lại
                     </button>  
-                    <button
-                        v-else-if="purchase.status.id == 10"
-                        type="button"
-                        class="btn btn-secondary"
-                    >
-                        Đã hủy
-                    </button>              
-                    <button
-                        v-else-if="purchase.status.id == 7"
-                        type="button"
-                        class="btn btn-success"
-                        v-if="!isClicked"
-                        @click="receiptOrder(purchase)"
-                    >
-                        Đã nhận hàng
-                    </button>  
-                    <button v-else class="btn btn-success" disabled>
-                        Đã nhận hàng
-                    </button>
                 </div>
-            </router-link>
+                <button
+                    v-else-if="purchase.status.id == 10"
+                    type="button"
+                    class="btn btn-secondary"
+                >
+                    Đã hủy
+                </button>              
+                <button
+                    v-else-if="purchase.status.id == 7"
+                    type="button"
+                    class="btn btn-success"
+                    v-if="!isClicked"
+                    @click="receiptOrder(purchase)"
+                >
+                    Đã nhận hàng
+                </button>  
+                <button v-else class="btn btn-success" disabled>
+                    Đã nhận hàng
+                </button>
+            </div>
+            <div v-if="myModel">
+                <div class="modal d-block">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateAddressModalLabel">Đánh Giá Sản Phẩm</h5>
+                                <button type="button" class="btn-close"  @click="closeModel"></button>
+                            </div>
+                            <div class="modal-body">
+                                <ReviewForm 
+                                    :reviews="reviews"
+                                    :selectedPurchase="selectedPurchase"
+                                    @submit:reviews="addToReview"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import OrderService from "@/services/user/order.service";
+    import ReviewService from "@/services/user/review.service";
+    import ReviewForm from "@/components/user/products/ReviewForm.vue";
     import {mapGetters} from 'vuex';
 
     export default {
         name: 'PurchaseList',
+        components: {
+            ReviewForm
+        },
         props: {
             purchases: { type: Array, default: [] },
         },
@@ -104,6 +136,18 @@
             return {
                 purchasesList: this.purchases,
                 isClicked: false,
+                myModel: false,
+                selectedPurchase: null,
+                // review: {
+                //     'product_id': this.id,
+                //     'user_id': "",
+                //     'content': "",
+                //     'rate': 0,
+                //     'images': []
+                // },
+                reviews: {
+                    review: []
+                }
             };
         },
         methods: {
@@ -174,8 +218,41 @@
                     console.log(error);
                 }   
             },
+            openModel(purchase) {
+                this.selectedPurchase = purchase;
+                this.myModel = true;
+            },
+            closeModel() {
+                this.myModel = false;
+                this.selectedPurchase = null;
+            },
+            async addToReview(data) {
+                // console.log(data)
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                try {
+                    await ReviewService.create(data).then(async (response) => {
+                        console.log(response);
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Đánh giá đã được thêm thành công.'
+                        });
+                        this.myModel = false;
+                    });
+                } catch (error) {
+                    console.log(error.response);
+                }
+            },
         },
-
         computed: {
             ...mapGetters(['getUser']),
         }
@@ -238,5 +315,10 @@
     }
     .accordion-btn span:nth-child(2) {
         color: #0167f3;
+    }
+
+    .modal-content {
+        max-height: 500px;
+        overflow-y: auto;
     }
 </style>

@@ -6820,7 +6820,7 @@ blockquote span {
 }
 
 .detail .detail-image .left-image {
-  width: 130px;
+  /* width: 130px; */
   margin-bottom: 15px;
 }
 

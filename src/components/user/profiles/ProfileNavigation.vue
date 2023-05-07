@@ -14,7 +14,7 @@
                 >
                     <i class="fa fa-cart-arrow-down"></i>Đơn mua
                 </router-link>
-                <a href="" class="nav-item nav-link"><i class="fa fa-map-marker"></i>Địa chỉ giao hàng</a>
+                <!-- <a href="" class="nav-item nav-link"><i class="fa fa-map-marker"></i>Địa chỉ giao hàng</a> -->
             </div>
         </nav>
     </div>

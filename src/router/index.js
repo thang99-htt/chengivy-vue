@@ -261,6 +261,24 @@ const routes = [
                     permissionId: 22
                 }
             },
+            {
+                path: "invoices",
+                name: "invoice",
+                component: () => import("../views/admin/invoices/Invoice.vue"),
+                meta: {
+                    description: 'Hóa đơn',
+                    permissionId: 22
+                }
+            },
+            {
+                path: "reviews",
+                name: "review",
+                component: () => import("../views/admin/reviews/Review.vue"),
+                meta: {
+                    description: 'Đánh giá',
+                    permissionId: 24
+                }
+            },
         ]
     },
     {

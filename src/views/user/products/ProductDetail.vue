@@ -2,14 +2,14 @@
     <section class="mt-4 mb-5">
         <div v-if="product">
             <div class="detail">
-                <div class="container-fluid">
+                <div class="container">
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-6">
                             <ProductDetailImage
                                 :product="product"
                             /> 
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
                             <ProductDetailInfor
                                 :product="product"
                             />
@@ -18,8 +18,12 @@
                                 :cart="cart"
                                 @submit:cart="addToCart"
                             />
-                            {{ carts }}
                         </div>
+                    </div>
+                    <div class="row">
+                        <ProductDetailReview
+                            :product="product"
+                        />
                     </div>
                 </div>
             </div>
@@ -30,9 +34,11 @@
     import ProductDetailImage from "@/components/user/products/ProductDetailImage.vue";
     import ProductDetailInfor from "@/components/user/products/ProductDetailInfor.vue";
     import ProductDetailAddCart from "@/components/user/products/ProductDetailAddCart.vue";
+    import ProductDetailReview from "@/components/user/products/ProductDetailReview.vue";
 
     import ProductService from "@/services/user/product.service";
     import CartService from "@/services/user/cart.service";
+    import ReviewService from "@/services/user/review.service";
     
     import {mapGetters} from 'vuex';
 
@@ -41,7 +47,8 @@
         components: {
             ProductDetailImage,
             ProductDetailInfor,
-            ProductDetailAddCart
+            ProductDetailAddCart,
+            ProductDetailReview
         },
         props: {
             id: { type: String, required: true },

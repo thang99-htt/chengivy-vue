@@ -129,7 +129,6 @@
                         newProduct.purchase_price = this.product.purchase_price; 
                         newProduct.quantity = this.product.quantity; 
                         this.coupon.products.push(newProduct);
-
                     });
                     
                     Toast.fire({

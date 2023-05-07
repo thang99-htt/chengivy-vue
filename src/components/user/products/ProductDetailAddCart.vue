@@ -23,9 +23,9 @@
                         <option disabled value="">Vui lòng chọn size</option>
                         <option v-for="(size, index) in product.sizes"
                             :key="size" 
-                            :value="size.id"
+                            :value="size.size_id"
                         >
-                            {{ size.name }} 
+                            {{ size.size_name }} 
                         </option>
                     </Field>      
                     <!-- <p class="text-secondary">{{ size.pivot.stock }}  sản phẩm có sẵn.</p> -->

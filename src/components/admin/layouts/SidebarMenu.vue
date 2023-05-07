@@ -9,7 +9,7 @@
     </li>
     <li class="treeview pageLink" v-if="test3">
       <a href="#">
-        <i class="fa fa-user"></i>
+        <i class="fa fa-user color1"></i>
         <span class="treeview-title">Nhân viên</span>
         <span class="pull-right-container pull-right">
           <i class="fa fa-angle-left fa-fw"></i>
@@ -40,7 +40,7 @@
     </li>
     <li class="treeview pageLink" v-if="test4">
       <a href="#">
-        <i class="fa fa-book"></i>
+        <i class="fa fa-book color2"></i>
         <span class="treeview-title">Nhập hàng</span>
         <span class="pull-right-container pull-right">
           <i class="fa fa-angle-left fa-fw"></i>
@@ -66,25 +66,31 @@
     </li>
     <li class="pageLink" v-if="test14">
       <router-link to="/admin/categories">
-        <i class="fa fa-sitemap"></i>
+        <i class="fa fa-sitemap color3"></i>
         <span class="page">Danh mục</span>
       </router-link>
     </li>
     <li class="pageLink" v-if="test10">
       <router-link to="/admin/products">
-        <i class="fa fa-box"></i>
+        <i class="fa fa-box color4"></i>
         <span class="page">Sản phẩm</span>
       </router-link>
     </li>
     <li class="pageLink" v-if="test22">
       <router-link to="/admin/orders">
-        <i class="fa fa-shopping-cart"></i>
+        <i class="fa fa-shopping-cart color5"></i>
         <span class="page">Đơn hàng</span>
+      </router-link>
+    </li>
+    <li class="pageLink" v-if="test24">
+      <router-link to="/admin/reviews">
+        <i class="fa fa-star color6"></i>
+        <span class="page">Đánh giá</span>
       </router-link>
     </li>
     <li class="pageLink" v-if="test7">
       <router-link to="/admin/invoices">
-        <i class="fa fa-ticket"></i>
+        <i class="fa fa-ticket color7"></i>
         <span class="page">Hóa đơn</span>
       </router-link>
     </li>
@@ -185,6 +191,7 @@
                 test14: false,
                 test18: false,
                 test22: false,
+                test24: false,
 
             };
         },
@@ -214,6 +221,8 @@
                     this.test18 = true;
                   else if(index1.id == 22)
                     this.test22 = true;
+                  else if(index1.id == 24)
+                    this.test24 = true;
                 })
                 })
                 
@@ -238,7 +247,7 @@
         }
     };
 </script>
-<style>
+<style scoped>
   /* override default */
   .sidebar-menu > li > a {
     padding: 12px 15px 12px 15px;
@@ -263,5 +272,28 @@
     100% {
       transform: rotate(-90deg);
     }
+  }
+
+
+  .color1 {
+    color: #cd0000;
+  }
+  .color2 {
+    color: #f4d801;
+  }
+  .color3 {
+    color: #66f606;
+  }
+  .color4 {
+    color: #0498e8;
+  }
+  .color5 {
+    color: #f104d6;
+  }
+  .color6 {
+    color: #f701a9;
+  }
+  .color7 {
+    color: #03e5f5;
   }
 </style>

@@ -1,30 +1,26 @@
 <template>
     <div class="detail-image">
-        <div class="row">
-            <div class="col-2">
-                <div class="d-flex flex-column">
-                    <div class="left-image">
-                        <img class="demo" :src="getImage(product.image)" alt=""
-                            @mouseover="changPicture(product.image)"
-                            :class="{ active: product.image === activeIndex ? true : false}"
-                        >
-                    </div>
-                    <div 
-                        v-for="(image, index) in product.images"
-                        :key="image"
-                        class="left-image"
-                        @mouseover="changPicture(image.image)"
+        <div class="d-flex">
+            <div class="d-flex flex-column">
+                <div class="left-image">
+                    <img class="demo" :src="getImage(product.image)" alt=""
+                        @mouseover="changPicture(product.image)"
+                        :class="{ active: product.image === activeIndex ? true : false}"
                     >
-                        <img class="demo" :src=getImage(image.image) alt=""
-                            :class="{ active: image.image === activeIndex ? true : false}"
-                        >
-                    </div>
+                </div>
+                <div 
+                    v-for="(image, index) in product.images"
+                    :key="image"
+                    class="left-image"
+                    @mouseover="changPicture(image.image)"
+                >
+                    <img class="demo" :src=getImage(image.image) alt=""
+                        :class="{ active: image.image === activeIndex ? true : false}" width="100"
+                    >
                 </div>
             </div>
-            <div class="col-10">
-                <div class="mySlides">
-                    <img :src="getImage(image)">
-                </div>
+            <div class="mySlides">
+                <img :src="getImage(image)" class="img-main">
             </div>
         </div>
     </div>    
@@ -58,5 +54,14 @@
     }
     .active {
         opacity: 1;
+    }
+
+    .demo {
+        width: 70px;
+        height: 100px;
+    }
+    .img-main {
+        width: 500px !important;
+        height: 700px;
     }
 </style>

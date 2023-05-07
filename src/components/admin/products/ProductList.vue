@@ -137,7 +137,7 @@
             <td class="sorting_1" >
                 {{ index + 1 }}
             </td>
-            <td>{{  product.category.name  }}</td>
+            <td>{{  product.category  }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.description.substring(0,50) }}......</td>
             <td>{{ formatPrice(product.price) }}</td>
@@ -146,7 +146,7 @@
                 <img v-if="product.image" :src="getImage(product.image)"
                  alt="Image" class="img-responsive center-block">
             </td>
-            <td>{{ product.type.name }}</td>
+            <td>{{ product.type }}</td>
             <td>
                 <button
                     class="btn-sm"
