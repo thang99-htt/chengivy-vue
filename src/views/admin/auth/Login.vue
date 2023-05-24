@@ -61,15 +61,15 @@ export default {
                 // console.log(response);
                 localStorage.setItem('tokenAdmin', response.token);
                 this.$store.dispatch('updateAdmin', response.staff);
-                const Toast = Swal.mixin({
+                const Toast = this.$swal.mixin({
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 3000,
                     timerProgressBar: true,
                     didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                     }
                 })
     

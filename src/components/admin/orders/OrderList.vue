@@ -214,15 +214,15 @@
                 }   
             },
             waitReceiptOrder() {
-                const Toast = Swal.mixin({
+                const Toast = this.$swal.mixin({
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 3000,
                     timerProgressBar: true,
                     didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                     }
                 })
 
@@ -232,7 +232,7 @@
                 })
             },
             deleteOrder(id) {
-                Swal.fire({
+                this.$swal.fire({
                     title: 'Bạn có chắc?',
                     text: "Bạn sẽ không thể hoàn tác lại điều này!",
                     icon: 'warning',
@@ -248,7 +248,7 @@
                                 this.refreshList();
                             }
                         })
-                        Swal.fire('Đã xóa thành công!','','success')
+                        this.$swal.fire('Đã xóa thành công!','','success')
                     }
                 })
             },

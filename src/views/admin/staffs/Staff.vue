@@ -76,7 +76,7 @@
                 this.retrieveStaffs();
             },
             async removeAllStaffs() {
-                Swal.fire({
+                this.$swal.fire({
                     title: 'Bạn muốn xóa tất cả Nhân viên?',
                     text: "Bạn sẽ không thể hoàn tác lại điều này!",
                     icon: 'warning',
@@ -92,7 +92,7 @@
                                 this.refreshList();
                             }
                         })
-                        Swal.fire('Đã xóa thành công!','','success')
+                        this.$swal.fire('Đã xóa thành công!','','success')
                     }
                 })
             },

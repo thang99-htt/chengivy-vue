@@ -54,7 +54,7 @@
             },
             
             async deleteProduct(id) {
-                Swal.fire({
+                this.$swal.fire({
                     title: 'Bạn có chắc?',
                     text: "Bạn sẽ không thể hoàn tác lại điều này!",
                     icon: 'warning',
@@ -70,7 +70,7 @@
                                 console.log(id)
                             }
                         })
-                        Swal.fire('Đã xóa thành công!','','success')
+                        this.$swal.fire('Đã xóa thành công!','','success')
                     }
                 })
             },

@@ -4,7 +4,7 @@
     import 'datatables.net-bs'
     
     export default {
-        name: 'ProductTrending',
+        name: 'ProductDesign',
         props: {
             products: { type: Array, default: [] },
         },
@@ -41,7 +41,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="section-title">
-                    <h2>Sản phẩm xu hướng</h2>
+                    <h2>Sản phẩm Thiết kế</h2>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
@@ -56,7 +56,7 @@
         <div id="carouselExampleControls" class="carousel slide slider-trending" data-bs-ride="carousel" data-bs-interval="1000">
             <div class="carousel-inner">
                 <div 
-                    v-for="(product, index) in products.trendingProducts"
+                    v-for="(product, index) in products.designProducts"
                     :key="product"
                     class="single-slider carousel-item"
                     :class="{ 'active': index === 0 }"

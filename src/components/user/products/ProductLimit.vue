@@ -4,7 +4,7 @@
     import 'datatables.net-bs'
     
     export default {
-        name: 'ProductSpeacial',
+        name: 'ProductLimit',
         props: {
             products: { type: Array, default: [] },
         },
@@ -43,7 +43,7 @@
          <div class="row">
              <div class="col-12">
                  <div class="section-title">
-                     <h2>Bộ sưu tập đặc biệt</h2>
+                     <h2>Sản phẩm Giới hạn</h2>
                  </div>
              </div>
          </div>
@@ -52,7 +52,7 @@
                  <div class="row">
                      <div 
                         class="col-lg-4 col-md-4 col-12"
-                        v-for="(product, index) in products.specialProducts"
+                        v-for="(product, index) in products.limitProducts"
                         :key="product"
                      >
                          <div class="single-product">
@@ -119,7 +119,6 @@
                  <div class="offer-content">
                      <div class="image">
                          <img :src="getImage(product.image)" alt="#" />
-                         <span class="sale-tag">LIMIT</span>
                      </div>
                      <div class="text">
                          <h2><a href="/product/">{{ product.name }}</a></h2>
@@ -140,7 +139,7 @@
                             </span>
                          </div>
                          <p>{{ product.description }}</p>
-                         <div class="button">
+                         <div class="button mt-3">
                              <a href="/product/" class="btn">Mua ngay</a>
                          </div>
                      </div>
@@ -151,5 +150,8 @@
 
 </template>
 
-
-
+<style>
+    .single-banner.right .content:hover {
+        height: 1000px;
+    }
+</style>

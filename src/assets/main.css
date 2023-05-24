@@ -1137,7 +1137,7 @@ ol {
 }
 .header .topbar {
   background-color: #081828;
-  padding: 18px 0;
+  padding: 6px 0;
 }
 @media (max-width: 767px) {
   .header .topbar .top-left {
@@ -2503,7 +2503,7 @@ ol {
   }
 }
 .hero-area .hero-slider .single-slider .content {
-  padding: 20px 365px 20px 50px;
+  padding: 20px 300px 20px 50px;
   position: absolute;
   left: 0;
   top: 50%;
@@ -7148,7 +7148,7 @@ blockquote span {
 }
 .hero-area .hero-slider .single-slider .content p {
   margin-top: 20px;
-  color: #b1aeae;
+  color: #d7d7d7;
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .trending-product .slider-trending .single-slider .content p {
@@ -7245,7 +7245,7 @@ blockquote span {
 }
 .trending-product .image-tail {
   position: absolute;
-  right: 10%;
+  right: 20px;
   top: 40px;
   width: 200px;
   height: auto;

@@ -89,8 +89,14 @@
                             <i class="fa fa-angle-left" aria-hidden="true"></i>
                         </a>
                     </li>
-                    <li class="page-item" v-for="pageNumber in totalPages" :key="pageNumber" :class="{ active: currentPage === pageNumber }">
+                    <li v-if="currentPage > maxVisibleButtons / 2 + 1" class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                    <li class="page-item" v-for="pageNumber in visiblePageButtons" :key="pageNumber" :class="{ active: currentPage === pageNumber }">
                         <a class="page-link" href="#" @click.prevent="currentPage = pageNumber">{{ pageNumber }}</a>
+                    </li>
+                    <li v-if="currentPage < totalPages - maxVisibleButtons / 2" class="page-item disabled">
+                        <a class="page-link">...</a>
                     </li>
                     <li class="page-item" :class="{ disabled: currentPage >= totalPages }">
                         <a class="page-link" href="#" @click.prevent="currentPage++">
@@ -103,6 +109,7 @@
                         </a>
                     </li>
                 </ul>
+
             </div>
         </div>
     </div>
@@ -122,13 +129,14 @@
             return {
                 products: this.products,
                 currentPage: 1,
-                itemsPerPage: 8,
+                itemsPerPage: 16,
                 sortOrder: 'default',
                 cart: {
                     'product_id': this.id,
                     'size': "",
                     'quantity': 1,
                 },
+                maxVisibleButtons: 2,
             };
         },
         computed: {
@@ -164,6 +172,36 @@
                 const end = start + this.itemsPerPage;
                 return this.sortedProducts.slice(start, end);
             },
+            visiblePageButtons() {
+                const totalPages = this.totalPages;
+                const currentPage = this.currentPage;
+                const maxVisibleButtons = this.maxVisibleButtons;
+
+                if (totalPages <= maxVisibleButtons) {
+                    // Nếu tổng số trang nhỏ hơn hoặc bằng số lượng nút hiển thị tối đa
+                    return Array.from({ length: totalPages }, (_, i) => i + 1);
+                } else {
+                    const halfVisibleButtons = Math.floor(maxVisibleButtons / 2);
+                    let start, end;
+
+                    if (currentPage <= halfVisibleButtons) {
+                        // Trang hiện tại nằm ở phần đầu của danh sách nút
+                        start = 1;
+                        end = maxVisibleButtons;
+                    } else if (currentPage >= totalPages - halfVisibleButtons) {
+                        // Trang hiện tại nằm ở phần cuối của danh sách nút
+                        start = totalPages - maxVisibleButtons + 1;
+                        end = totalPages;
+                    } else {
+                        // Trang hiện tại nằm ở phần giữa của danh sách nút
+                        start = currentPage - halfVisibleButtons;
+                        end = currentPage + halfVisibleButtons;
+                    }
+
+                    const buttons = Array.from({ length: end - start + 1 }, (_, i) => i + start);
+                    return buttons;
+                }
+            },
         },
         methods: {
             changePage(pageNumber) {
@@ -178,15 +216,15 @@
             async addToCart(product) {
                 this.cart.product_id = product.id;
                 this.cart.size = product.sizes[0].size_id;
-                const Toast = Swal.mixin({
+                const Toast = this.$swal.mixin({
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 3000,
                     timerProgressBar: true,
                     didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                     }
                 })
                 try {

@@ -81,7 +81,7 @@
         <div class="header-middle">
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-lg-2 col-md-3 col-7">
+                    <div class="col-lg-2 col-md-4 col-7">
                         <!-- <a class="navbar-brand" href="/">
                             <img src="/images/logo/logo.jpg" alt="Logo" />
                         </a> -->
@@ -137,7 +137,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-7 d-xs-none">
+                    <div class="col-lg-6 col-md-6 d-xs-none">
                         <div class="main-menu-search">
                             <div class="navbar-search search-style-5">
                                 <!-- <div class="search-select">
@@ -153,7 +153,7 @@
                                     </div>
                                 </div> -->
                                 <div class="search-input">
-                                    <input type="text" v-model="keyword" placeholder="Tìm kiếm" />
+                                    <input type="text" v-model="keyword" placeholder="Tìm kiếm" @keypress="handleKeyPress"/>
                                     <button @click="startListening" class="microphone-btn"><i class="fa fa-microphone"></i></button>
                                 </div>
                                 <div class="search-btn">
@@ -176,7 +176,7 @@
                                 <i class="bi bi-telephone-fill"></i>
                                 <h3>
                                     Hotline:
-                                    <span>(+100) 123 456 7890</span>
+                                    <span>(+84) 222 666 8888</span>
                                 </h3>
                             </div>
                             <div class="navbar-cart">
@@ -441,15 +441,15 @@
                         this.$store.dispatch('logoutUser');
                         this.$router.push({ name: "login" });
 
-                        const Toast = Swal.mixin({
+                        const Toast = this.$swal.mixin({
                             toast: true,
                             position: 'top-end',
                             showConfirmButton: false,
                             timer: 3000,
                             timerProgressBar: true,
                             didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                                toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                             }
                         })
             
@@ -473,6 +473,17 @@
                     this.keyword = speechToText
                 }
                 recognition.start()
+            },
+            handleKeyPress(event) {
+                if (event.key === 'Enter') {
+                this.redirectToSearchPage();
+                }
+            },
+            redirectToSearchPage() {
+                this.$router.push({
+                name: 'search',
+                query: { keyword: this.keyword }
+                });
             }
         },
         computed: {

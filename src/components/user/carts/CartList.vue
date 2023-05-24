@@ -159,7 +159,7 @@
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
             deleteProduct(id) {
-                Swal.fire({
+                this.$swal.fire({
                     title: 'Bạn có chắc?',
                     text: "Bạn sẽ không thể hoàn tác lại điều này!",
                     icon: 'warning',
@@ -175,7 +175,7 @@
                                 this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                             }
                         })
-                        Swal.fire('Đã xóa thành công!','','success');
+                        this.$swal.fire('Đã xóa thành công!','','success');
                         
                     }
                 })

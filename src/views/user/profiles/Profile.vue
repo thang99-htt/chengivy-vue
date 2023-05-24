@@ -166,15 +166,15 @@
             async updateProfile(data) {
                 try {      
                     await UserService.updateProfile(this.getUser.id, data).then(async(response) => {
-                        const Toast = Swal.mixin({
+                        const Toast = this.$swal.mixin({
                             toast: true,
                             position: 'top-end',
                             showConfirmButton: false,
                             timer: 3000,
                             timerProgressBar: true,
                             didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                                toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                             }
                         })
 
