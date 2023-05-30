@@ -52,10 +52,10 @@ export default {
                         <div class="single-footer f-contact">
                             <h3>Liên hệ</h3>
                             <ul>
-                                <li><span>Điện thoại:</span> <span class="phone">+84 11 333 7777</span></li>
+                                <li><span>Điện thoại:</span> <span class="phone">(+84) 222 666 8888</span></li>
                                 <li><span>Thứ hai - Thứ sáu: </span> 9.00 am - 10.00 pm</li>
                                 <li><span>Chủ nhật: </span> 10.00 am - 8.00 pm</li>
-                                <li><span>Email: </span> <span class="email">hi@chigivy.com</span> </li>
+                                <li><span>Email: </span> <span class="email">hi@chengivy.com</span> </li>
                             </ul>
                         </div>
                     </div>

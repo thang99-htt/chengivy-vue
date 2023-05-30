@@ -12,6 +12,7 @@
             ProductService.getType().then((response) => {
                 this.products = response;
             });
+            document.querySelector('.carousel-control-next').click();
         },
         data() {
             return {
@@ -93,9 +94,17 @@
                             </div>
                         </div>
                         <div class="button">
-                            <a href="/product/" class="btn">Khám phá</a>
+                            <router-link 
+                                    :to="{
+                                        name: 'product.detail',
+                                        params: { id: product.id },
+                                    }" 
+                                class="btn"
+                            >
+                                Khám phá
+                            </router-link>
                         </div>
-                        <div class="image-tail">
+                        <div class="image-detail">
                             <div class="image-item"
                                 v-for="(image, index) in product.images"
                                 :key="image"

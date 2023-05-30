@@ -195,6 +195,20 @@
 
             };
         },
+        mounted() {
+          $(".pageLink").on("click", function() {
+            $(".pageLink").removeClass("active");
+            $(this).addClass("active");
+          });
+        },
+        watch: {
+          $route: function(to, from) {
+            $(".pageLink").on("click", function() {
+            $(".pageLink").removeClass("active");
+            $(this).addClass("active");
+          });
+          }
+        },
         async created() {
             await AuthorizationService.getStaff(this.getAdmin.id).then((response) => {
               response.roles.forEach(index=>{
@@ -231,20 +245,6 @@
         computed: {
             ...mapGetters(['getAdmin'])
         },
-        mounted() {
-          $(".pageLink").on("click", function() {
-            $(".pageLink").removeClass("active");
-            $(this).addClass("active");
-          });
-        },
-        watch: {
-          $route: function(to, from) {
-            $(".pageLink").on("click", function() {
-            $(".pageLink").removeClass("active");
-            $(this).addClass("active");
-          });
-          }
-        }
     };
 </script>
 <style scoped>
