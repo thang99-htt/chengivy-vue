@@ -45,5 +45,11 @@ class ProductService {
     async getSizeAll() {
         return (await this.api.get("/sizes")).data;
     }
+    async getTypeAll() {
+        return (await this.api.get("/types")).data;
+    }
+    async getColorAll() {
+        return (await this.api.get("/colors")).data;
+    }
 }
 export default new ProductService();

@@ -12,7 +12,7 @@
             ProductService.getType().then((response) => {
                 this.products = response;
             });
-            document.querySelector('.carousel-control-next').click();
+            // document.querySelector('.carousel-control-next').click();
         },
         data() {
             return {
@@ -82,7 +82,7 @@
                                 <li><i class="fa fa-star"></i></li>
                                 <li><i class="fa fa-star"></i></li>
                                 <li><i class="fa fa-star"></i></li>
-                                <li><span>5.0 Review(s)</span></li>
+                                <li><span>(123)</span></li>
                             </ul>
                             <div class="price">
                                 <span>{{ formatPrice(product.final_price) }} VNĐ</span>

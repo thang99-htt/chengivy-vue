@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <div class="d-flex justify-content-end align-items-center pe-4 mb-2">
+            <div class="d-flex justify-content-end align-items-center pe-4">
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
                     aria-labelledby="offcanvasRightLabel">
                     <div class="offcanvas-header">
@@ -12,8 +12,8 @@
                     <div class="offcanvas-body">
                         <div class="filters-panel">
                             <div class="filters-panel__wrapper">
-                                <div class="zds-accordion-item" :class="{ 'zds-accordion-item--expanded': isExpandedSort }">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="toggleSort">
+                                <div class="zds-accordion-item">
+                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedSort = !isExpandedSort">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span
@@ -49,8 +49,78 @@
                                         </fieldset>
                                     </div>
                                 </div>
-                                <div class="zds-accordion-item" :class="{ 'zds-accordion-item--expanded': isExpandedType }">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="toggleType">
+                                <div class="zds-accordion-item">
+                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedCategory = !isExpandedCategory">
+                                        <span class="zds-accordion-item__title-text">
+                                            <span>
+                                                <span
+                                                    class="filters-panel__filter-name filters-panel__filter-name--highlight">Danh mục</span>
+                                            </span>
+                                        </span>
+                                        <span class="zds-accordion-item__icon-wrapper">
+                                            <i v-if="isExpandedCategory" class="bi bi-dash-lg"></i>
+                                            <i v-else class="bi bi-plus-lg"></i>
+                                        </span>
+                                    </button>
+                                    <div v-show="isExpandedCategory" class="zds-accordion-item__panel">
+                                        <fieldset class="filters-panel-group-item d-block">
+                                            <div class="form-input filters-panel-group-item__value w-100"
+                                                v-for="(category, index) in categories"
+                                                :key="category"
+                                                :class="{ 'filters-panel-group-item__value--checked': isCategorySelected(category.name) }"
+                                                @click.stop="categoryProducts(category)"
+                                            >
+                                                <div class="form-input__wrapper d-flex justify-content-between">
+                                                    <label class="form-input-checkbox">
+                                                        <div class="form-input-checkbox__input-wrapper checkbox-type">
+                                                            <input class="form-input-checkbox__input" type="checkbox"
+                                                                id="color-146" name="colorPrinted"
+                                                                data-qa-input-qualifier="colorPrinted"
+                                                                :value="category.id"
+                                                                @change="categoryProducts(category)">
+                                                        </div>
+                                                        <span class="form-input-checkbox__label">
+                                                            <span class="filters-panel-group-item__text">{{ category.name
+                                                            }}</span>
+                                                        </span>
+                                                        <span class="zds-accordion-item__icon-wrapper zds-accordion-item__icon-child-category" 
+                                                            v-if="category.childs.length > 0" 
+                                                            @click="category.isExpandedChild = !category.isExpandedChild"
+                                                        >
+                                                            <i v-if="category.isExpandedChild" class="bi bi-dash-lg"></i>
+                                                            <i v-else class="bi bi-plus-lg"></i>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <ul v-show="category.isExpandedChild" class="inner-sub-category" v-if="category.childs.length > 0">
+                                                    <li
+                                                        v-for="(child, index) in category.childs"
+                                                        :key="child"
+                                                        :class="{ 'filters-panel-group-item__value--checked': isCategorySelected(child.name) }"
+                                                        @click.stop="categoryProducts(child); $event.stopPropagation()"
+                                                    >
+                                                        <div>
+                                                            <div class="form-input-checkbox__input-wrapper checkbox-type">
+                                                                <input class="form-input-checkbox__input" type="checkbox"
+                                                                    id="color-146" name="colorPrinted"
+                                                                    data-qa-input-qualifier="colorPrinted"
+                                                                    :value="child.id"
+                                                                    @change="categoryProducts(child)">
+                                                            </div>
+                                                            <span
+                                                                v-if="child.status == 1"
+                                                            >
+                                                                {{ child.name }}
+                                                            </span>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="zds-accordion-item">
+                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedType = !isExpandedType">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span class="filters-panel__filter-name filters-panel__filter-name--highlight">
@@ -80,7 +150,7 @@
                                                                 @change="typeProducts(typ)">
                                                         </div>
                                                         <span class="form-input-checkbox__label">
-                                                            <span class="filters-panel-group-item__text">{{ typ.value }}</span>
+                                                            <span class="filters-panel-group-item__text">{{ typ.description }}</span>
                                                         </span>
                                                     </label>
                                                 </div>
@@ -88,8 +158,8 @@
                                         </fieldset>
                                     </div>
                                 </div>
-                                <div class="zds-accordion-item" :class="{ 'zds-accordion-item--expanded': isExpandedColor }">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="toggleColor">
+                                <div class="zds-accordion-item">
+                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedColor = !isExpandedColor">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span
@@ -123,8 +193,8 @@
                                                         </div>
                                                         <span class="form-input-checkbox__label">
                                                             <span class="filters-panel-group-item__item-box"
-                                                                :style="`background-color: ${color.cls}`"></span>
-                                                            <span class="filters-panel-group-item__text">{{ color.value
+                                                                :style="`background-color: ${color.color}`"></span>
+                                                            <span class="filters-panel-group-item__text">{{ color.description
                                                             }}</span>
                                                         </span>
                                                     </label>
@@ -133,8 +203,8 @@
                                         </fieldset>
                                     </div>
                                 </div>
-                                <div class="zds-accordion-item" :class="{ 'zds-accordion-item--expanded': isExpandedSize }">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="toggleSize">
+                                <div class="zds-accordion-item">
+                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedSize != isExpandedSize">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span
@@ -169,7 +239,7 @@
                                                                         @change="sizeProducts(size)"
                                                                         checked="">
                                                                 </div>
-                                                                <span class="form-input-checkbox__label">{{ size.value }}</span>
+                                                                <span class="form-input-checkbox__label">{{ size.name }}</span>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -178,8 +248,8 @@
                                         </fieldset>
                                     </div>
                                 </div>
-                                <div class="zds-accordion-item" :class="{ 'zds-accordion-item--expanded': isExpandedPrice }">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="togglePrice">
+                                <div class="zds-accordion-item">
+                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedPrice = !isExpandedPrice">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span
@@ -255,8 +325,10 @@
                                 <span v-if="product.discount_percent > 0" class="sale-tag">
                                     SALE
                                 </span>
-                                <div class="product-item__favorite">
-                                    <span class="product-item__favorite-item"><i class="bi bi-heart"></i></span>
+                                <div class="product-item__favorite" @click="toggleFavorite(product)">
+                                    <span class="product-item__favorite-item" :class="{ 'product-item__favorite-item-fill': favoriteProductIds.includes(product.id) }">
+                                        <i class="bi" :class="favoriteProductIds.includes(product.id) ? 'bi-heart-fill' : 'bi-heart'"></i>
+                                    </span>
                                 </div>
                                 <div class="button">
                                     <a v-if="product.deleted_at" href="" class="btn"><i class="fa fa-cart"></i>Ngừng kinh
@@ -280,24 +352,25 @@
                                         <li><i class="fa fa-star"></i></li>
                                         <li><i class="fa fa-star"></i></li>
                                         <li><i class="fa fa-star"></i></li>
-                                        <li><span>5.0 Review(s)</span></li>
+                                        <li><span>(123)</span></li>
                                     </ul>
                                     <div class="price">
                                         <span>
-                                            {{ formatPrice(product.final_price) }} VNĐ
+                                            {{ formatPrice(product.final_price) }}
                                         </span>
                                         <span class="text-decoration-line-through float-end text-secondary"
                                             v-if="product.discount_percent > 0">
-                                            {{ formatPrice(product.price) }} VNĐ
+                                            {{ formatPrice(product.price) }}
                                         </span>
                                     </div>
                                 </div>
                             </router-link>
-                            <div class="product-item__type">
-                                <span v-if="product.type === 'Thông thường'">Thông thường</span>
+                            <div class="product-item__sale">
+                                <!-- <span v-if="product.type === 'Thông thường'">Thông thường</span>
                                 <span v-if="product.type === 'Sản phẩm Cao cấp'">Cao cấp</span>
                                 <span v-if="product.type === 'Phiên bản giới hạn'">Giới hạn</span>
-                                <span v-if="product.type === 'Sản phẩm Thiết kế'">Thiết kế</span>
+                                <span v-if="product.type === 'Sản phẩm Thiết kế'">Thiết kế</span> -->
+                                <span>GIẢM {{ product.discount_percent }}%</span>
                             </div>
                         </div>
                     </div>
@@ -351,8 +424,10 @@
 
 <script>
 import CartService from "@/services/user/cart.service";
+import FavoriteService from "@/services/user/favorite.service";
+import CategoryService from "@/services/user/category.service";
+import ProductService from "@/services/admin/product.service";
 import { mapGetters } from 'vuex';
-import $ from 'jquery'
 
 export default {
     components: {
@@ -366,6 +441,7 @@ export default {
             currentPage: 1,
             itemsPerPage: 16,
             sortId: 1,
+            selectedCategoryValues: [],
             selectedTypeIds: [],
             selectedTypeValues: [],
             selectedSizeIds: [],
@@ -373,9 +449,12 @@ export default {
             selectedColorIds: [],
             selectedColorValues: [],
             cart: {
-                'product_id': this.id,
+                'product_id': '',
                 'size': "",
                 'quantity': 1,
+            },
+            favorite: {
+                'product_id': '',
             },
             maxVisibleButtons: 2,
             clickCount: 0,
@@ -384,6 +463,8 @@ export default {
             isExpandedSize: true,
             isExpandedPrice: true,
             isExpandedSort: false,
+            isExpandedCategory: false,
+            isExpandedChild: false,
             sorts: [
                 { 'id': 1, 'value': 'Mặc định' },
                 { 'id': 2, 'value': 'Giá thấp đến cao' },
@@ -391,44 +472,55 @@ export default {
                 { 'id': 4, 'value': 'Tên A đến Z' },
                 { 'id': 5, 'value': 'Tên Z đến A' }
             ],
-            types: [
-                { 'id': 1, 'value': 'Thông thường' },
-                { 'id': 2, 'value': 'Sản phẩm Cao cấp' },
-                { 'id': 3, 'value': 'Phiên bản giới hạn' },
-                { 'id': 4, 'value': 'Sản phẩm Thiết kế' }
+            types: [    { 'id': 4, 'value': 'Sản phẩm Thiết kế' }
             ],
-            colors: [
-                { 'id': 1, 'value': 'Màu trắng', 'cls': '#fff' },
-                { 'id': 2, 'value': 'Màu xám', 'cls': '#c6c4bf' },
-                { 'id': 3, 'value': 'Màu be', 'cls': '#d0be95' },
-                { 'id': 4, 'value': 'Màu vàng', 'cls': '#f8dd58' },
-                { 'id': 5, 'value': 'Màu cam', 'cls': 'ec8a4d' },
-                { 'id': 6, 'value': 'Màu đỏ', 'cls': '#e93224' },
-                { 'id': 7, 'value': 'Màu hồng', 'cls': '#e46eb5' },
-                { 'id': 8, 'value': 'Màu tím', 'cls': '#894fa5' },
-                { 'id': 9, 'value': 'Xanh lục', 'cls': '#61882d' },
-                { 'id': 10, 'value': 'Xanh dương', 'cls': '#3472a9' },
-                { 'id': 11, 'value': 'Màu nâu', 'cls': '#683f20' },
-                { 'id': 12, 'value': 'Màu đen', 'cls': '#000' }
-            ],
-            sizes: [
-                { 'id': 1, 'value': 'XS' },
-                { 'id': 2, 'value': 'S' },
-                { 'id': 3, 'value': 'M' },
-                { 'id': 4, 'value': 'L' },
-                { 'id': 5, 'value': 'XL' },
-                { 'id': 6, 'value': 'XXL' }
-            ],
+            colors: [],
+            sizes: [],
+            categories: [],
             minPrice: 3000000,
             maxPrice: 150000000,
             minKnob: 0,
             maxKnob: 350,
+            category: this.$route.query.category,
+            favoriteProductIds: []
         };
+    },
+    async created() {
+        this.categories = await CategoryService.getCategory();
+        this.sizes = await ProductService.getSizeAll();
+        this.types = await ProductService.getTypeAll();
+        this.colors = await ProductService.getColorAll();
+        this.isFavorite();
+    },
+    watch: {
+        $route(to, from) {
+            const category = to.query.category || '';
+            if (category !== this.category) {
+                this.category = category;
+                const index = this.selectedCategoryValues.indexOf(category.name);
+                this.selectedCategoryValues.splice(index, 1);
+            }
+        }
     },
     computed: {
         ...mapGetters(['getUser']),
         filteredProducts() {
+            this.currentPage = 1;  
+            
             let filtered = [...this.products];
+
+            if (this.category) {
+                this.selectedCategoryValues.push(this.category);
+            } 
+
+            if (this.selectedCategoryValues.length != 0) {
+                filtered = filtered.filter(item =>
+                    Object.values(this.selectedCategoryValues).some(value =>
+                        item.category.toLowerCase().includes(value.toLowerCase()) ||
+                        (item.category_parent && item.category_parent.toLowerCase().includes(value.toLowerCase()))
+                    )
+                );
+            }
 
             // Lọc loại sản phẩm
             if(this.selectedTypeValues.length!=0) {
@@ -461,7 +553,6 @@ export default {
             filtered = filtered.filter(item =>
                 item.final_price >= this.minPrice && item.final_price <= this.maxPrice
             );
-
             return filtered;
         },
         sortedProducts() {
@@ -530,7 +621,7 @@ export default {
             if (index === -1) {
                 // Nếu typ.id chưa tồn tại trong mảng, thêm nó vào
                 this.selectedTypeIds.push(typ.id);
-                this.selectedTypeValues.push(typ.value);
+                this.selectedTypeValues.push(typ.description);
             } else {
                 // Ngược lại, loại bỏ typ.id khỏi mảng
                 this.selectedTypeIds.splice(index, 1);
@@ -542,7 +633,7 @@ export default {
             if (index === -1) {
                 // Nếu size.id chưa tồn tại trong mảng, thêm nó vào
                 this.selectedSizeIds.push(size.id);
-                this.selectedSizeValues.push(size.value);
+                this.selectedSizeValues.push(size.name);
             } else {
                 // Ngược lại, loại bỏ size.id khỏi mảng
                 this.selectedSizeIds.splice(index, 1);
@@ -554,12 +645,31 @@ export default {
             if (index === -1) {
                 // Nếu color.id chưa tồn tại trong mảng, thêm nó vào
                 this.selectedColorIds.push(color.id);
-                this.selectedColorValues.push(color.value);
+                this.selectedColorValues.push(color.description);
             } else {
                 // Ngược lại, loại bỏ color.id khỏi mảng
                 this.selectedColorIds.splice(index, 1);
                 this.selectedColorValues.splice(index, 1);
             }
+        },
+        categoryProducts(category) {
+            const index = this.selectedCategoryValues.indexOf(category.name);
+            if (index === -1) {
+                // Nếu category chưa tồn tại trong mảng, thêm nó vào
+                this.selectedCategoryValues.push(category.name);
+            } else {
+                // Ngược lại, loại bỏ category khỏi mảng
+                this.selectedCategoryValues.splice(index, 1);
+            }
+
+            // Xóa giá trị truy vấn 'category' nếu danh sách danh mục đã chọn là rỗng
+            if (this.selectedCategoryValues.length === 0) {
+                this.$router.replace({ query: { ...this.$route.query, category: undefined } });
+            }
+        },
+        isCategorySelected(selectedId) {
+            const category = this.$route.query.category;
+            return this.selectedCategoryValues.includes(selectedId) || category === selectedId;
         },
         changePage(pageNumber) {
             this.currentPage = pageNumber;
@@ -569,6 +679,66 @@ export default {
         },
         formatPrice(price) {
             return price.toLocaleString("vi-VN") + " VNĐ";
+        },
+        async toggleFavorite(product) {
+            this.favorite.product_id = product.id;
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            try {
+                if (this.getUser) {
+                    if (!this.favoriteProductIds.includes(product.id)) { 
+                        // Thêm vào yêu thích sản phẩm
+                        await FavoriteService.create(this.getUser.id, this.favorite).then(async (response) => {
+                            if (response == true) {
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Sản phẩm đã được thêm vào danh sách yêu thích.'
+                                });
+                                this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id, this.favorite.id));
+    
+                            } else if (response == false) {
+                                Toast.fire({
+                                    icon: 'warning',
+                                    title: 'Sản phẩm đã được yêu thích.'
+                                });
+                            }
+                        });
+                    } else {
+                        // Bỏ yêu thích sản phẩm
+                        await FavoriteService.delete(this.getUser.id, product.id).then(async (response) => {
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Sản phẩm đã được xoá khỏi danh sách yêu thích.'
+                            });
+                            this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id));
+
+                            // this.$store.commit('removeFavorite', await FavoriteService.delete(this.getUser.id, product.id));
+                        });
+                    }
+
+                    // Cập nhật trạng thái yêu thích
+                    this.isFavorite();
+                } else {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Bạn phải là thành viên.'
+                    });
+                    this.$router.push({ name: "login" });
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+            
         },
         async addToCart(product) {
             this.cart.product_id = product.id;
@@ -600,7 +770,6 @@ export default {
                                 title: 'Số lượng của sản phẩm này đã được bán hết.'
                             });
                         }
-                        console.log(response);
                     });
                 } else {
                     Toast.fire({
@@ -650,29 +819,14 @@ export default {
                 this.clickCount = 0; // Đặt lại biến đếm về 0
             }
         },
-        toggleType() {
-            this.isExpandedType = !this.isExpandedType;
-        },
         isTypeSelected(selectedTypeIds) {
             return this.selectedTypeIds.includes(selectedTypeIds);
-        },
-        toggleColor() {
-            this.isExpandedColor = !this.isExpandedColor;
         },
         isColorSelected(selectedColorIds) {
             return this.selectedColorIds.includes(selectedColorIds);
         },
-        toggleSize() {
-            this.isExpandedSize = !this.isExpandedSize;
-        },
         isSizeSelected(selectedSizeIds) {
             return this.selectedSizeIds.includes(selectedSizeIds);
-        },
-        togglePrice() {
-            this.isExpandedPrice = !this.isExpandedPrice;
-        },
-        toggleSort() {
-            this.isExpandedSort = !this.isExpandedSort;
         },
         startDrag(event, knob) {
             event.preventDefault();
@@ -717,7 +871,25 @@ export default {
             this.sortId = 1;
             this.minKnob = 0;
             this.maxKnob = 350;
+            
+            // Xóa giá trị truy vấn 'category'
+            this.$router.replace({ query: { ...this.$route.query, category: undefined } });
+            this.selectedCategoryValues = [];
         },
+        async isFavorite() {
+            if (this.getUser) {
+                try {
+                    let favoriteList = await FavoriteService.getFavorite(this.getUser.id);
+                    this.favoriteProductIds = favoriteList.getFavoriteItems.map(item => item.product_id);
+                    return true;
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            return false;
+        }
+
+
     },
 };
 </script>

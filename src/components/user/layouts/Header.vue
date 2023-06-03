@@ -12,7 +12,7 @@
                             >
                                 <span class="cat-button">
                                     <i class="bi bi-list"></i>
-                                    Tất cả danh mục
+                                    Tất cả danh mục 
                                 </span>  
                             </router-link>
                             <ul class="sub-category">
@@ -31,8 +31,8 @@
                                 >
                                     <router-link
                                         :to="{
-                                            name: 'product.category',
-                                            params: { url: category.url },
+                                            name: 'product.all',
+                                            query: { category: category.name },
                                         }" 
                                     >
                                         {{ category.name }}
@@ -49,8 +49,8 @@
                                         >
                                             <router-link 
                                                 :to="{
-                                                    name: 'product.category',
-                                                    params: { url: child.url },
+                                                    name: 'product.all',
+                                                    query: { category: child.name },
                                                 }"
                                             >
                                                 <span
@@ -76,7 +76,8 @@
                                 <div class="wishlist">
                                     <a href="javascript:void(0)">
                                         <i class="bi bi-heart"></i>
-                                        <span class="total-items">0</span>
+                                        <span class="total-items" v-if="favorites.favoriteCount">{{ favorites.favoriteCount }}</span>
+                                        <span class="total-items" v-else>0</span>
                                     </a>
                                 </div>
                                 <div class="cart-items">        
@@ -245,8 +246,8 @@
                                 >
                                     <router-link
                                         :to="{
-                                            name: 'product.category',
-                                            params: { url: category.url },
+                                            name: 'product.all',
+                                            query: { category: category.name },
                                         }" 
                                     >
                                         {{ category.name }}
@@ -263,8 +264,8 @@
                                         >
                                             <router-link 
                                                 :to="{
-                                                    name: 'product.category',
-                                                    params: { url: child.url },
+                                                    name: 'product.all',
+                                                    query: { category: child.name },
                                                 }"
                                             >
                                                 <span
@@ -313,7 +314,8 @@
                                 <div class="wishlist">
                                     <a href="javascript:void(0)">
                                         <i class="bi bi-heart"></i>
-                                        <span class="total-items">0</span>
+                                        <span class="total-items" v-if="favorites.favoriteCount">{{ favorites.favoriteCount }}</span>
+                                        <span class="total-items" v-else>0</span>
                                     </a>
                                 </div>
                                 <div class="cart-items">        
@@ -332,7 +334,9 @@
                                                 v-for="(cart, index) in carts.getCartItems"
                                                 :key="cart"
                                             >
-                                                <a href="javascript:void(0)" class="remove" title="Remove this item"><i class="fa fa-close"></i></a>
+                                                <a href="javascript:void(0)" @click="deleteProduct(cart.id)" class="remove" title="Remove this item">
+                                                    <i class="fa fa-close"></i>
+                                                </a>
                                                 <div class="cart-img-head">
                                                     <img v-if="cart.product.image" :src="getImage(cart.product.image)" alt="#" />
                                                 </div>
@@ -410,6 +414,7 @@
 <script>
     import CategoryService from "@/services/user/category.service";
     import CartService from "@/services/user/cart.service";
+    import FavoriteService from "@/services/user/favorite.service";
     import axios from 'axios';
     import {mapGetters} from 'vuex';
     import $ from 'jquery'
@@ -420,7 +425,7 @@
             return {
                 categories: [],
                 token: localStorage.getItem('tokenUser'),
-                keyword: this.$route.query.keyword
+                keyword: this.$route.query.keyword,
             };
         },
         async created() {
@@ -430,6 +435,7 @@
 
             if(this.getUser) {
                 this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
+                this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id));
             }
             
         },
@@ -498,13 +504,35 @@
             },
             redirectToSearchPage() {
                 this.$router.push({
-                name: 'search',
-                query: { keyword: this.keyword }
+                    name: 'product.all',
+                    query: { keyword: this.keyword }
                 });
-            }
+            },
+            deleteProduct(id) {
+                CartService.delete(id).then(async (res) => {
+                    if(res.success) {
+                        this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
+                    }
+                })
+                const Toast = this.$swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Sản phẩm đã được xoá khỏi giỏ hàng.'
+                });
+            },
         },
         computed: {
-            ...mapGetters(['getUser', 'carts'])
+            ...mapGetters(['getUser', 'carts', 'favorites'])
         },
      };
 </script>

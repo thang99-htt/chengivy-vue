@@ -19,11 +19,9 @@
             url: { type: String, required: true },
         },
         watch: {
-            url(newUrl) {
-                this.getProduct(newUrl);
-            },
             $route(to, from) {
                 const keyword = to.query.keyword || '';
+
                 if (keyword !== this.keyword) {
                     this.keyword = keyword;
                 }
@@ -33,7 +31,7 @@
             return {
                 products: [],
                 itemsPerPage: 5,
-                keyword: this.$route.query.keyword
+                keyword: this.$route.query.keyword,
             };
         },
         computed: {
@@ -47,22 +45,6 @@
             },
         },
         methods: {
-            async getProduct(url) {
-                try {
-                    this.products = await ProductService.getListing(url);
-                } catch (error) {
-                    console.log(error);
-                    // Chuyển sang trang NotFound đồng thời giữ cho URL không đổi
-                    this.$router.push({
-                        name: "notfound",
-                        params: {
-                            pathMatch: this.$route.path.split("/").slice(1)
-                        },
-                        query: this.$route.query,
-                        hash: this.$route.hash,
-                    });
-                }
-            },
             async getProductAll() {
                 try {
                     this.products = await ProductService.getListingAll();
@@ -81,12 +63,7 @@
             },
         },
         created() {
-            if(this.url) {
-                this.getProduct(this.url);
-            } 
-            else {                
-                this.getProductAll();
-            }
+            this.getProductAll();
         },
     };
 </script>

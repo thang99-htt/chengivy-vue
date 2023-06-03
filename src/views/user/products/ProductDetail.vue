@@ -67,7 +67,7 @@
             async getProduct(id) {
                 try {
                     this.product = await ProductService.getDetail(id);
-                    console.log(this.cart.size);
+                    // console.log(this.cart.size);
                 } catch (error) {
                     console.log(error);
                     // Chuyển sang trang NotFound đồng thời giữ cho URL không đổi

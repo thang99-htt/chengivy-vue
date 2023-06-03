@@ -159,26 +159,26 @@
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
             deleteProduct(id) {
-                this.$swal.fire({
-                    title: 'Bạn có chắc?',
-                    text: "Bạn sẽ không thể hoàn tác lại điều này!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.value) {
-                        CartService.delete(id).then(async (res) => {
-                            if(res.success) {
-                                this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
-                            }
-                        })
-                        this.$swal.fire('Đã xóa thành công!','','success');
-                        
+                CartService.delete(id).then(async (res) => {
+                    if(res.success) {
+                        this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                     }
                 })
+                const Toast = this.$swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Sản phẩm đã được xoá khỏi giỏ hàng.'
+                });
             },
         },
         computed: {
