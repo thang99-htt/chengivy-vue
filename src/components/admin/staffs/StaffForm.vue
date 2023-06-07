@@ -40,18 +40,6 @@
             <ErrorMessage name="phone" class="error-feedback" />
         </div>
         <div class="form-group">
-            <label for="password">Mật khẩu
-                <span class="error-feedback">*</span>
-            </label>
-            <Field
-                name="password"
-                type="password"
-                class="form-control"
-                v-model="staffLocal.phone"
-            />
-            <ErrorMessage name="password" class="error-feedback" />
-        </div>
-        <div class="form-group">
             <label for="indentity_card">CCCD/CMT
                 <span class="error-feedback">*</span>
             </label>
@@ -151,12 +139,6 @@
                 .string()
                 .required("Email phải có giá trị.")
                 .email("Địa chỉ email không hợp lệ."),
-                password: yup
-                .string()
-                .required("Mật khẩu phải có giá trị.")
-                .test("match", "Mật khẩu phải trùng với số điện thoại.", function (value) {
-                    return value === this.parent.phone;
-                }),
                 phone: yup
                 .string()
                 .required("Số điện thoại phải có giá trị.")

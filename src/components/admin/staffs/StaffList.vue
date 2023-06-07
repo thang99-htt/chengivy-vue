@@ -30,7 +30,10 @@
             <td>{{ staff.identity_card }}</td>
             <td>{{ staff.email }}</td>
             <td>{{ staff.phone }}</td>
-            <td>{{ staff.gender }}</td>
+            <td>
+                <span v-if="staff.gender === 'Male'">Nam</span>
+                <span v-if="staff.gender === 'Female'">Nữ</span>
+            </td>
             <td>{{  new Date(staff.birth_date).toLocaleString() }}</td>
             <td>{{ staff.address }}</td>
             <td>

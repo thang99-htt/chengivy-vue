@@ -27,6 +27,7 @@ import './assets/styles.css';
 import './assets/main.css';
 import './assets/responsive.css';
 import './assets/admin.js';
+import './assets/bootstrap.bundle.min.js';
 
 import $ from 'jquery'
 

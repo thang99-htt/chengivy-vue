@@ -12,7 +12,7 @@
             ProductService.getType().then((response) => {
                 this.products = response;
             });
-            // document.querySelector('.carousel-control-next').click();
+            document.querySelector('.carousel-control-next').click();
         },
         data() {
             return {

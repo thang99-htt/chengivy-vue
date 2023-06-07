@@ -21,13 +21,13 @@
                         <li><a href="#"><i class="fa fa-question-circle"></i></a></li>
                         
                     </ul>
-                    <ul class="user_profile_dd">
+                    <ul class="user_profile_dd dropdown">
                         <li>
-                            <a class="dropdown-toggle" data-toggle="dropdown">
+                            <a class="dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img class="img-responsive rounded-circle" src="/images/admin/photos/6215.jpg" alt="#" />
                                 <span class="name_user" v-if="getAdmin">{{ getAdmin.name }}</span>
                             </a>
-                            <div class="dropdown-menu">
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <a class="dropdown-item" href="#" @click="logout">
                                     <span>Đăng xuất</span> 
                                     <i class="fa fa-sign-out"></i>
@@ -50,7 +50,8 @@
         data() {
             return {
                 token: localStorage.getItem('tokenAdmin'),
-                authorization: []
+                authorization: [],
+                
             };
         },
         methods: {
