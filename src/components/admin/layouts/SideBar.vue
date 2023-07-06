@@ -1,6 +1,11 @@
 <template>
     <aside class="main-sidebar">
       <section class="sidebar">
+        <span class="logo-mini">
+            <a href="/">
+                <img src="/images/logo/logo.jpg" alt="Logo" class="img-responsive center-block logo">
+            </a>
+        </span>
         <div class="user-panel">
           <div class="pull-left image">
             <img class="img-responsive" src="/images/admin/photos/6215.jpg" alt="#" />

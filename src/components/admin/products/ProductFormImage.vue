@@ -54,6 +54,7 @@
 <script>
     import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
+    import { getImage } from "../../../utils";
 
     export default {
         components: {
@@ -80,9 +81,7 @@
             submitProduct() {
                 this.$emit("submit:product", this.productLocal);
             },
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
-            },
+            getImage,
             onFileChange(event){
                 let file = event.target.files[0];
                 let reader = new FileReader();

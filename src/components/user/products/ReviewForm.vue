@@ -63,6 +63,7 @@
     import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
     import {mapGetters} from 'vuex';
+    import { formatPrice, getImage } from '@/utils';
 
     export default {
         components: {
@@ -153,12 +154,8 @@
                 this.rates.push(rating);
 
             },
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
-            },
-            formatPrice(value) {
-                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
+            getImage,
+            formatPrice,
             setCurrentProductIndex(index) {
                 this.currentProductIndex = index;
             },

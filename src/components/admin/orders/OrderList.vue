@@ -137,6 +137,7 @@
     import 'datatables.net'
     import 'datatables.net-bs'
     import {mapGetters} from 'vuex';
+    import { formatPrice, initializeDataTable } from '@/utils';
 
     export default {
         name: 'OrderList',
@@ -145,21 +146,7 @@
         },
         mounted() {
             this.$nextTick(() => {
-                $(".example1").DataTable({
-                    "language": {
-                        "search": "Tìm kiếm:",
-                        "loadingRecords": "Đang tải...",
-                        "zeroRecords": "Không tìm thấy kết quả",
-                        "lengthMenu": "Hiển thị _MENU_ bản ghi",
-                        "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
-                        "paginate": {
-                            "first": "Trang đầu",
-                            "last": "Trang cuối",
-                            "next": "Trang sau",
-                            "previous": "Trang trước"
-                        }
-                    }
-                })
+                initializeDataTable();
             });
         },
         data() {
@@ -172,9 +159,6 @@
             $('.example1').DataTable().destroy();
         },
         methods: {
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
-            },
             async retrieveOrders() {
                 try {
                     this.ordersList = await OrderService.getAll();
@@ -252,9 +236,7 @@
                     }
                 })
             },
-            formatPrice(value) {
-                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
+            formatPrice,
         },
         computed: {
             ...mapGetters(['getAdmin'])

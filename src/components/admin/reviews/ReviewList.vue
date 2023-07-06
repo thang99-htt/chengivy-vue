@@ -3,6 +3,7 @@
     import ReviewService from "@/services/admin/review.service";
     import 'datatables.net'
     import 'datatables.net-bs'
+    import { getImage } from '../../../utils';
     
     export default {
         name: 'ReviewList',
@@ -38,9 +39,7 @@
             $('.example1').DataTable().destroy();
         },
         methods: {
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
-            },
+            getImage,
             statusUpdate(review) {
                 try {
                     ReviewService.updateStatus(review.id, review.status)
@@ -79,9 +78,6 @@
             refreshList() {
                 this.retrieveReviewss();
             },
-            formatPrice(value) {
-                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
         },
         
     };

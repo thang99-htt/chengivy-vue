@@ -69,7 +69,7 @@ const routes = [
                 name: "staff.add",
                 component: () => import("@/views/admin/staffs/StaffAdd.vue"),
                 meta: {
-                    description: 'Tạo Nhân viên',
+                    description: 'Thêm Nhân viên',
                     permissionId: 3
                 },
             },  
@@ -116,7 +116,7 @@ const routes = [
                 name: "supplier.add",
                 component: () => import("@/views/admin/suppliers/SupplierAdd.vue"),
                 meta: {
-                    description: 'Tạo Nhà cung cấp',
+                    description: 'Thêm Nhà cung cấp',
                     permissionId: 6
                 }
             },   
@@ -144,7 +144,7 @@ const routes = [
                 name: "payment-voucher.add",
                 component: () => import("@/views/admin/payment-vouchers/PaymentVoucherAdd.vue"),
                 meta: {
-                    description: 'Tạo Phiếu chi',
+                    description: 'Thêm Phiếu chi',
                     permissionId: 5
                 }
             }, 
@@ -162,7 +162,7 @@ const routes = [
                 name: "import-coupon.add",
                 component: () => import("../views/admin/coupons/ImportAdd.vue"),
                 meta: {
-                    description: 'Tạo Phiếu nhập',
+                    description: 'Thêm Phiếu nhập',
                     permissionId: 4
                 },
             },
@@ -200,7 +200,7 @@ const routes = [
                 name: "category.add",
                 component: () => import("@/views/admin/categories/CategoryAdd.vue"),
                 meta: {
-                    description: 'Tạo Danh mục',
+                    description: 'Thêm Danh mục',
                     permissionId: 12
                 }
             },   
@@ -238,7 +238,7 @@ const routes = [
                 name: "product.add",
                 component: () => import("@/views/admin/products/ProductAdd.vue"),
                 meta: {
-                    description: 'Tạo Sản phẩm',
+                    description: 'Thêm Sản phẩm',
                     permissionId: 8
                 }
             }, 

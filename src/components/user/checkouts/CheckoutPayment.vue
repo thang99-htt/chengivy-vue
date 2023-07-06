@@ -80,18 +80,18 @@
                                                 <div class="bottom mt-4">
                                                     <div class="total">
                                                         <span>Tổng tiền</span>
-                                                        <span class="total-amount">{{ formatPrice(cartLocal.into_money) }} VĐN</span>
+                                                        <span class="total-amount">{{ formatPrice(cartLocal.into_money) }}</span>
                                                     </div>
                                                     <div class="total">
                                                         <span>Phí vận chuyển</span>
-                                                        <span class="total-amount">25.000 VĐN</span>
+                                                        <span class="total-amount">25.000 VNĐ</span>
                                                     </div>
                                                 </div>
                                                 <hr>
                                                 <div class="bottom mt-4">
                                                     <div class="total">
                                                         <span>Tổng đơn đặt hàng</span>
-                                                        <span class="total-amount">{{ formatPrice(cartLocal.into_money + 25000) }} VĐN</span>
+                                                        <span class="total-amount">{{ formatPrice(cartLocal.into_money + 25000) }}</span>
                                                     </div>
                                                     <Field    
                                                         hidden
@@ -124,6 +124,7 @@
     import AddressService from "@/services/user/address.service";
     import PaymentMethodService from "@/services/admin/payment.service";
     import { Form, Field, ErrorMessage } from "vee-validate";
+    import { formatPrice, getImage } from '@/utils';
 
     export default {
         name: 'Header',
@@ -155,6 +156,7 @@
         },
         emits: ["submit:order"],
         methods: {
+            formatPrice,
             async retrieveAddressOrder(order) {
                 try {
                     this.address_order = await AddressService.getAddressOrder(order.contact_id);
@@ -173,15 +175,9 @@
                 this.retrieveAddressOrder(this.order);
                 this.retrievePaymentMethod();
             },
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
-            },
+            getImage,
             getImagePayment(image){
                 return 'http://127.0.0.1:8000/storage/uploads/checkout/'+image;
-            },
-            formatPrice(value) {
-                let val = (value/1)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
             submitOrder() {
                 this.$emit("submit:order", this.orderLocal);

@@ -1,10 +1,5 @@
 <template>
     <header class="main-header">
-        <span class="logo-mini">
-            <a href="/">
-                <img src="/static/img/copilot-logo-white.svg" alt="Logo" class="img-responsive center-block logo">
-            </a>
-        </span>
         <!-- Header Navbar -->
         <nav class="navbar navbar-static-top" role="navigation">
             <!-- Sidebar toggle button-->
@@ -19,7 +14,6 @@
                         <li><a href="#"><i class="fa fa-bell"></i><span class="badge">2</span></a></li>
                         <li><a href="#"><i class="fa fa-envelope"></i><span class="badge">3</span></a></li>
                         <li><a href="#"><i class="fa fa-question-circle"></i></a></li>
-                        
                     </ul>
                     <ul class="user_profile_dd dropdown">
                         <li>

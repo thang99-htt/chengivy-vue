@@ -1,6 +1,7 @@
 <script>
     import $ from 'jquery'
     import SupplierService from "@/services/admin/supplier.service";
+    import { initializeDataTable } from '../../../utils';
     import 'datatables.net'
     import 'datatables.net-bs'
     
@@ -11,21 +12,7 @@
         },
         mounted() {
             this.$nextTick(() => {
-                $(".example1").DataTable({
-                    "language": {
-                        "search": "Tìm kiếm:",
-                        "loadingRecords": "Đang tải...",
-                        "zeroRecords": "Không tìm thấy kết quả",
-                        "lengthMenu": "Hiển thị _MENU_ bản ghi",
-                        "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
-                        "paginate": {
-                            "first": "Trang đầu",
-                            "last": "Trang cuối",
-                            "next": "Trang sau",
-                            "previous": "Trang trước"
-                        }
-                    }
-                })
+                initializeDataTable();
             })
         },
         data() {

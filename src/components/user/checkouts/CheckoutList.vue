@@ -89,7 +89,7 @@
                         <p>Thành tiền</p>
                     </div>
                     <div class="col-6">
-                        {{ formatPrice(carts.into_money) }} VĐN
+                        {{ formatPrice(carts.into_money) }}
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -97,7 +97,7 @@
                         <p>Tổng đơn đặt hàng</p>
                     </div>
                     <div class="col-6">
-                        {{ formatPrice(carts.into_money) }} VĐN
+                        {{ formatPrice(carts.into_money) }}
                     </div>
                 </div>
                 <hr>
@@ -120,7 +120,7 @@
 <script>
     import 'datatables.net'
     import 'datatables.net-bs'
-    import {mapGetters} from 'vuex';
+    import { formatPrice, getImage } from '@/utils';
 
     export default {
         name: 'CartList',
@@ -128,13 +128,8 @@
             carts: { type: Array, default: [] },
         },
         methods: {
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
-            },
-            formatPrice(value) {
-                let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
+            getImage,
+            formatPrice,
         },
     };
 </script>

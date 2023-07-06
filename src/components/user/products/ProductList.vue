@@ -428,6 +428,7 @@ import FavoriteService from "@/services/user/favorite.service";
 import CategoryService from "@/services/user/category.service";
 import ProductService from "@/services/admin/product.service";
 import { mapGetters } from 'vuex';
+import { formatPrice, getImage } from '@/utils';
 
 export default {
     components: {
@@ -477,8 +478,8 @@ export default {
             colors: [],
             sizes: [],
             categories: [],
-            minPrice: 3000000,
-            maxPrice: 150000000,
+            minPrice: 200000,
+            maxPrice: 50000000,
             minKnob: 0,
             maxKnob: 350,
             category: this.$route.query.category,
@@ -544,7 +545,7 @@ export default {
             if (this.selectedColorValues.length != 0) {
                 filtered = filtered.filter(item =>
                     Object.values(this.selectedColorValues).some(value =>
-                        item.color.toLowerCase().includes(value.toLowerCase())
+                        item.color.description.toLowerCase().includes(value.toLowerCase())
                     )
                 );
             }
@@ -613,6 +614,8 @@ export default {
         },
     },
     methods: {
+        formatPrice,
+        getImage,
         sortProducts(sort) {
             this.sortId = sort.id;
         },
@@ -673,12 +676,6 @@ export default {
         },
         changePage(pageNumber) {
             this.currentPage = pageNumber;
-        },
-        getImage(image) {
-            return 'http://127.0.0.1:8000/storage/uploads/products/' + image;
-        },
-        formatPrice(price) {
-            return price.toLocaleString("vi-VN") + " VNĐ";
         },
         async toggleFavorite(product) {
             this.favorite.product_id = product.id;
@@ -855,9 +852,9 @@ export default {
         },
         updatePrices() {
             const sliderWidth = this.$refs.slider.offsetWidth;
-            const priceRange = 150000000 - 3000000;
-            this.minPrice = Math.round((this.minKnob / sliderWidth) * priceRange) + 3000000;
-            this.maxPrice = Math.round((this.maxKnob / sliderWidth) * priceRange) + 3000000;
+            const priceRange = 50000000 - 200000;
+            this.minPrice = Math.round((this.minKnob / sliderWidth) * priceRange) + 200000;
+            this.maxPrice = Math.round((this.maxKnob / sliderWidth) * priceRange) + 200000;
         },
         clearFiltered() {
             this.selectedTypeIds = [];
@@ -866,8 +863,8 @@ export default {
             this.selectedSizeValues = [];
             this.selectedColorIds = [];
             this.selectedColorValues = [];
-            this.minPrice = 3000000;
-            this.maxPrice = 150000000;
+            this.minPrice = 200000;
+            this.maxPrice = 50000000;
             this.sortId = 1;
             this.minKnob = 0;
             this.maxKnob = 350;

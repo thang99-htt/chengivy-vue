@@ -60,6 +60,8 @@
     </div>    
 </template>
 <script>
+    import { getImage } from '../../../utils';
+    
     export default {
         props: {
             product: { type: Object, required: true },
@@ -82,9 +84,7 @@
             this.sumRate = this.totalRate;
         },
         methods: {
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/reviews/'+image;
-            },
+            getImage,
         },
     };
 </script>

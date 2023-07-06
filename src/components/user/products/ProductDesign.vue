@@ -2,6 +2,7 @@
     import ProductService from "@/services/user/product.service";
     import 'datatables.net'
     import 'datatables.net-bs'
+    import { formatPrice, getImage } from '@/utils';
     
     export default {
         name: 'ProductDesign',
@@ -20,9 +21,7 @@
             };
         },
         methods: {
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
-            },
+            getImage,
             async retrieveProducts() {
                 try {
                     this.products = await ProductService.getType();
@@ -30,9 +29,7 @@
                     console.log(error);
                 }
             },
-            formatPrice(value) {
-                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
+            formatPrice,
         },
         
     };

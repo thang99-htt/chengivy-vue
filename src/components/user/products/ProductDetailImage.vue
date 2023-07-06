@@ -21,6 +21,7 @@
     </div>
 </template>
 <script>
+import { getImage } from '../../../utils';
 export default {
     props: {
         product: { type: Object, required: true },
@@ -35,9 +36,7 @@ export default {
         };
     },
     methods: {
-        getImage(image) {
-            return 'http://127.0.0.1:8000/storage/uploads/products/' + image;
-        },
+        getImage,
         changPicture(image) {
             this.image = image;
             this.activeIndex = image;

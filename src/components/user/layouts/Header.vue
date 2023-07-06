@@ -70,8 +70,10 @@
                                 </router-link>
                                 <div class="shopping-item" v-if="carts.count_item > 0">
                                     <div class="dropdown-cart-header">
-                                        <a href="cart.html">Giỏ hàng</a>
                                         <span>{{ carts.count_item }} sản phẩm</span>
+                                        <router-link :to="{ name: 'cart' }" class="btn animate">
+                                            Xem giỏ hàng
+                                        </router-link>
                                     </div>
                                     <ul class="shopping-list">
                                         <li v-for="(cart, index) in carts.getCartItems" :key="cart">
@@ -97,7 +99,7 @@
                                         </div>
                                         <div class="button">
                                             <router-link :to="{ name: 'cart' }" class="btn animate">
-                                                Xem giỏ hàng
+                                                Mua ngay
                                             </router-link>
                                         </div>
                                     </div>
@@ -312,8 +314,10 @@
                         </router-link>
                         <div class="shopping-item" v-if="carts.count_item > 0">
                             <div class="dropdown-cart-header">
-                                <a href="cart.html">Giỏ hàng</a>
                                 <span>{{ carts.count_item }} sản phẩm</span>
+                                <router-link :to="{ name: 'cart' }" class="btn animate">
+                                    Xem giỏ hàng
+                                </router-link>
                             </div>
                             <ul class="shopping-list">
                                 <li v-for="(cart, index) in carts.getCartItems" :key="cart">
@@ -340,7 +344,7 @@
                                 </div>
                                 <div class="button">
                                     <router-link :to="{ name: 'cart' }" class="btn animate">
-                                        Xem giỏ hàng
+                                        Mua ngay
                                     </router-link>
                                 </div>
                             </div>
@@ -504,7 +508,7 @@
                                                         <router-link :to="{
                                                             name: 'product.all',
                                                             query: { category: child.name },
-                                                        }">
+                                                        }" class="fw-normal">
                                                             <span v-if="child.status == 1">
                                                                 {{ child.name }}
                                                             </span>
@@ -569,6 +573,7 @@ import FavoriteService from "@/services/user/favorite.service";
 import axios from 'axios';
 import { mapGetters } from 'vuex';
 import $ from 'jquery'
+import { formatPrice, getImage } from '@/utils';
 
 export default {
     name: 'Header',
@@ -639,6 +644,7 @@ export default {
         },
     },
     methods: {
+        formatPrice,
         handleScroll() {
             if (window.scrollY > 130) {
                 $(".topbar-transparent").addClass('d-flex position-fixed mt-3 w-100').removeClass('d-none');
@@ -657,9 +663,7 @@ export default {
         productByUrl(url) {
             console.log(url);
         },
-        getImage(image) {
-            return 'http://127.0.0.1:8000/storage/uploads/products/' + image;
-        },
+        getImage,
         async logout() {
             try {
                 axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;
@@ -689,9 +693,6 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-        },
-        formatPrice(value) {
-            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
         },
         startListening() {
             const recognition = new window.webkitSpeechRecognition()
@@ -824,7 +825,7 @@ export default {
 }
 
 .link {
-    color: #0167f3 !important;
+    color: var(--cls-primary) !important;
 }
 
 .fw-bold {

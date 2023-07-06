@@ -34,6 +34,8 @@
     </div>
 </template>
 <script>
+    import { formatPrice } from '@/utils';
+
     export default {        
         props: {
             order: { type: Object, required: true },
@@ -46,9 +48,7 @@
             };
         },
         methods: {
-            formatPrice(value) {
-                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
+            formatPrice,
             getImage(image){
                 return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
             },

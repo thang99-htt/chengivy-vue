@@ -10,7 +10,10 @@ class CartService {
         return (await this.api.get(`/${id}`)).data;
     }
     async updateQuantity(id, quantity, data) {
-        return (await this.api.put(`/${id}/${quantity}`, data)).data;
+        return (await this.api.put(`/quantity/${id}/${quantity}`, data)).data;
+    }
+    async updateSize(id, size, quantity, data) {
+        return (await this.api.put(`/size/${id}/${size}/${quantity}`, data)).data;
     }
     async delete(id) {
         return (await this.api.delete(`/${id}`)).data;

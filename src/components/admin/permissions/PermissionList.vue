@@ -3,6 +3,7 @@
     import PermissionService from "@/services/admin/permission.service";
     import 'datatables.net'
     import 'datatables.net-bs'
+    import { initializeDataTable } from '../../../utils';
     
     export default {
         name: 'PermissionList',
@@ -17,7 +18,7 @@
             PermissionService.getAll().then((response) => {
                 this.permissions = response;
                 this.$nextTick(() => {
-                    $('.example1').DataTable()
+                    initializeDataTable();
                 })
             });
         },

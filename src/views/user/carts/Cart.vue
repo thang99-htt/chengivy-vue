@@ -20,7 +20,7 @@
                         <img src="/images/cart/empty-cart.svg" alt="" />
                     </div>
                     <h6 class="text-center mt-4">Giỏ hàng trống!</h6>
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center mb-5">
                         <router-link 
                             :to="{name: 'home'}" 
                         >
@@ -43,12 +43,6 @@
                 CartList,
             },
             name: 'cart',
-            methods: {
-                formatPrice(value) {
-                    let val = (value/1).toFixed(2)
-                    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                },
-            },
             computed: {
                 ...mapGetters(['carts'])
             }

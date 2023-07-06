@@ -1,13 +1,13 @@
 <template>
   <ul class="sidebar-menu">
     <li class="header">TOOLS</li>
-    <li class="pageLink active">
+    <li class="pageLink" :class="{ active: $route.path.includes('/admin/dashboard') }">
       <router-link to="/admin/dashboard">
-        <i class="fa fa-desktop"></i>
+        <i class="fa fa-desktop color8"></i>
         <span class="page">Dashboard</span>
       </router-link>
     </li>
-    <li class="treeview pageLink" v-if="test3">
+    <li class="treeview pageLink" :class="{ active: [$route.path.includes('/admin/roles'), $route.path.includes('/admin/permissions'), $route.path.includes('/admin/staffs'), $route.path.includes('/admin/authorization')].some(Boolean) }" v-if="test3">
       <a href="#">
         <i class="fa fa-user color1"></i>
         <span class="treeview-title">Nhân viên</span>
@@ -64,31 +64,31 @@
         </li>
       </ul>
     </li>
-    <li class="pageLink" v-if="test14">
+    <li class="pageLink" :class="{ active: $route.path.includes('/admin/categories') }" v-if="test14">
       <router-link to="/admin/categories">
         <i class="fa fa-sitemap color3"></i>
         <span class="page">Danh mục</span>
       </router-link>
     </li>
-    <li class="pageLink" v-if="test10">
+    <li class="pageLink" :class="{ active: $route.path.includes('/admin/products') }" v-if="test10">
       <router-link to="/admin/products">
         <i class="fa fa-box color4"></i>
         <span class="page">Sản phẩm</span>
       </router-link>
     </li>
-    <li class="pageLink" v-if="test22">
+    <li class="pageLink" :class="{ active: $route.path.includes('/admin/orders') }" v-if="test22">
       <router-link to="/admin/orders">
         <i class="fa fa-shopping-cart color5"></i>
         <span class="page">Đơn hàng</span>
       </router-link>
     </li>
-    <li class="pageLink" v-if="test24">
+    <li class="pageLink" :class="{ active: $route.path.includes('/admin/reviews') }" v-if="test24">
       <router-link to="/admin/reviews">
         <i class="fa fa-star color6"></i>
         <span class="page">Đánh giá</span>
       </router-link>
     </li>
-    <li class="pageLink" v-if="test7">
+    <li class="pageLink" :class="{ active: $route.path.includes('/admin/invoices') }" v-if="test7">
       <router-link to="/admin/invoices">
         <i class="fa fa-ticket color7"></i>
         <span class="page">Hóa đơn</span>
@@ -192,22 +192,8 @@
                 test18: false,
                 test22: false,
                 test24: false,
-
+                isChildClicked: false
             };
-        },
-        mounted() {
-          $(".pageLink").on("click", function() {
-            $(".pageLink").removeClass("active");
-            $(this).addClass("active");
-          });
-        },
-        watch: {
-          $route: function(to, from) {
-            $(".pageLink").on("click", function() {
-            $(".pageLink").removeClass("active");
-            $(this).addClass("active");
-          });
-          }
         },
         async created() {
             await AuthorizationService.getStaff(this.getAdmin.id).then((response) => {
@@ -276,24 +262,27 @@
 
 
   .color1 {
-    color: #cd0000;
+    color: #6300cc;
   }
   .color2 {
-    color: #f4d801;
+    color: #baa400;
   }
   .color3 {
-    color: #66f606;
+    color: #48b300;
   }
   .color4 {
     color: #0498e8;
   }
   .color5 {
-    color: #f104d6;
+    color: #d600bd;
   }
   .color6 {
     color: #f701a9;
   }
   .color7 {
-    color: #03e5f5;
+    color: #00c3d5;
+  }
+  .color8 {
+    color: #7a1b67;
   }
 </style>

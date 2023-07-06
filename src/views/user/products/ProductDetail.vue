@@ -94,28 +94,32 @@
                     }
                 })
                 try {
-                    await CartService.create(this.getUser.id, data).then(async (response) => {
-                        if(response == true) {
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Sản phẩm đã được thêm vào giỏ hàng.'
-                            });
-                            this.$store.commit('addToCart', await CartService.getCart(this.getUser.id, data.id));
-                            
-                        } else if (response == false) {
-                            Toast.fire({
-                                icon: 'warning',
-                                title: 'Số lượng của sản phẩm này đã được bán hết.'
-                            });
-                        }
-                        // console.log(response);
-                    });
+                    if(this.getUser) {
+                        await CartService.create(this.getUser.id, data).then(async (response) => {
+                            if(response == true) {
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Sản phẩm đã được thêm vào giỏ hàng.'
+                                });
+                                this.$store.commit('addToCart', await CartService.getCart(this.getUser.id, data.id));
+                                
+                            } else {
+                                this.$swal.fire({
+                                    icon: 'warning',
+                                    text: response.message
+                                    }
+                                )
+                            }
+                            // console.log(response);
+                        });
+                    } else {
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Bạn phải là thành viên.'
+                        });
+                        this.$router.push({ name: "login" });
+                    }
                 } catch (error) {
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Bạn phải là thành viên.'
-                    });
-                    this.$router.push({ name: "login" });
                     console.log(error);
                 }
             },

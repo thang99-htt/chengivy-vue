@@ -1,19 +1,17 @@
 <template>
-    <table
-        aria-describedby="example1_info" role="grid" 
-        id="" class="example1 table table-bordered table-striped dataTable"
-    >
+    <table id="" class="example1 table table-bordered table-striped dataTable">
       <thead>
         <tr role="row">
-            <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Danh mục cha</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">Tên</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Hình ảnh</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mô tả</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Đường dẫn</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Trạng thái</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày tạo</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting" style="width: 150px;">Tùy chọn</th>
+            <th width="4%">#</th>
+            <th width="10%">Danh mục cha</th>
+            <th width="14%">Tên</th>
+            <th width="10%">Hình ảnh</th>
+            <th width="14%">Mô tả</th>
+            <th width="6%">Đường dẫn</th>
+            <th width="8%">Trạng thái</th>
+            <th width="8%">Ngày tạo</th>
+            <th width="7%">Tùy chọn</th>
+            <th width="5%">Chọn</th>
         </tr>
       </thead>
       <tbody>
@@ -34,7 +32,7 @@
             </td>
             <td>{{ category.name }}</td>
             <td>
-                <img v-if="category.image" :src="getImage(category.image)"
+                <img v-if="category.image" :src="getImageCat(category.image)"
                  alt="Image" class="img-responsive center-block">
                 
             </td>
@@ -52,13 +50,7 @@
             <td>
                 <button
                     type="button"
-                    class="ms-2 btn btn-primary"
-                >
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button
-                    type="button"
-                    class="ms-2 btn btn-success"
+                    class="btn"
                 >
                     <router-link
                           :to="{
@@ -66,18 +58,33 @@
                               params: { id: category.id },
                           }" 
                     >
-                        <i class="fa fa-pen"></i>
+                        <img src="/images/icon/iconedit.png" alt="">
                     </router-link>
                 </button>
                 <button
                     v-if="category.id"
                     type="button"
-                    class="ms-2 btn btn-danger"
+                    class="btn"
                     @click="deleteCategory(category.id)"
                 >
-                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-trash color-delete"></i>
                 </button>
             </td>
+            <td>
+                <input type="checkbox">
+            </td>
+        </tr>
+        <tr role="row">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>a</td>
         </tr>
       </tbody>
     </table>
@@ -88,7 +95,7 @@
     import CategoryService from "@/services/admin/category.service";
     import 'datatables.net'
     import 'datatables.net-bs'
-    
+    import { getImageCat, initializeDataTable } from '../../../utils';
     export default {
         name: 'CategoryList',
         props: {
@@ -96,22 +103,8 @@
         },
         mounted() {
             this.$nextTick(() => {
-                $(".example1").DataTable({
-                    "language": {
-                        "search": "Tìm kiếm:",
-                        "loadingRecords": "Đang tải...",
-                        "zeroRecords": "Không tìm thấy kết quả",
-                        "lengthMenu": "Hiển thị _MENU_ bản ghi",
-                        "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
-                        "paginate": {
-                            "first": "Trang đầu",
-                            "last": "Trang cuối",
-                            "next": "Trang sau",
-                            "previous": "Trang trước"
-                        }
-                    }
-                })
-            })
+                initializeDataTable();
+            });
         },
         data() {
             return {
@@ -123,9 +116,7 @@
             $('.example1').DataTable().destroy();
         },
         methods: {
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/categories/'+image;
-            },
+            getImageCat,
             statusUpdate(category) {
                 try {
                     console.log(category.status);
@@ -181,4 +172,10 @@
 <style>
     @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
     @import url('/static/css/bootstrap.min.css');
+    .color-edit {
+        color: #4c86bc;
+    }
+    .color-delete {
+        color: #c31211;
+    }
 </style>

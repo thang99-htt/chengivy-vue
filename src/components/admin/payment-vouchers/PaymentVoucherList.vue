@@ -3,6 +3,7 @@
     import PaymentVoucherService from "@/services/admin/payment-voucher.service";
     import 'datatables.net'
     import 'datatables.net-bs'
+    import { formatPrice, initializeDataTable } from '@/utils';
     
     export default {
         name: 'SupplierList',
@@ -11,21 +12,7 @@
         },
         mounted() {
             this.$nextTick(() => {
-                $(".example1").DataTable({
-                    "language": {
-                        "search": "Tìm kiếm:",
-                        "loadingRecords": "Đang tải...",
-                        "zeroRecords": "Không tìm thấy kết quả",
-                        "lengthMenu": "Hiển thị _MENU_ bản ghi",
-                        "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
-                        "paginate": {
-                            "first": "Trang đầu",
-                            "last": "Trang cuối",
-                            "next": "Trang sau",
-                            "previous": "Trang trước"
-                        }
-                    }
-                })
+                initializeDataTable();
             })
         },
         data() {
@@ -85,9 +72,7 @@
                     }
                 })
             },
-            formatPrice(value) {
-                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
+            formatPrice,
         },
         
     };

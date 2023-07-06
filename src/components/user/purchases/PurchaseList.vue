@@ -50,7 +50,7 @@
             <hr>
             <div class="accordion-btn">
                 <div>
-                    <span>Thành tiền: </span><span class="fs-4 ms-3">{{ formatPrice(purchase.total_price) }} VNĐ</span>
+                    <span>Thành tiền: </span><span class="fs-4 ms-3">{{ formatPrice(purchase.total_price) }}</span>
                 </div>
                 <button
                     v-if="purchase.status.id == 1"
@@ -123,6 +123,7 @@
     import ReviewService from "@/services/user/review.service";
     import ReviewForm from "@/components/user/products/ReviewForm.vue";
     import {mapGetters} from 'vuex';
+    import { formatPrice, getImage } from '@/utils';
 
     export default {
         name: 'PurchaseList',
@@ -151,12 +152,8 @@
             };
         },
         methods: {
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
-            },
-            formatPrice(value) {
-                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
+            getImage,
+            formatPrice,
             cancleOrder(order) {
                 try {
                     OrderService.cancleOrder(order.id)

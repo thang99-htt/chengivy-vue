@@ -166,6 +166,7 @@
     import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
     import ProductService from "@/services/admin/product.service";
+    import { getImage  } from "../../../utils";
 
     export default {
         components: {
@@ -245,9 +246,7 @@
                 this.productLocal.type_id = "";
                 this.productLocal.discount_percent = "0";
             },
-            getImage(image){
-                return 'http://127.0.0.1:8000/storage/uploads/products/'+image;
-            },
+            getImage,
         },
         computed: {
             datetime () {

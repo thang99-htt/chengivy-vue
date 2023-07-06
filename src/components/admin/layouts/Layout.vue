@@ -18,7 +18,7 @@
         <side-bar />
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
-            <section class="content-header mb-4">
+            <section class="content-header mb-3">
                 <h1>
                 {{$route.name.toUpperCase() }}
                 <small>{{ $route.meta.description }}</small>
@@ -59,31 +59,5 @@
   .wrapper.hide_logo .main-header .logo {
     display: none;
   }
-}
-
-.logo-mini,
-.logo-lg {
-  position: fixed;
-  text-align: left;
-}
-.logo-mini img,
-.logo-lg img {
-  padding: 0.4em !important;
-}
-
-.logo-lg img {
-  display: -webkit-inline-box;
-  width: 25%;
-}
-
-
-hr.visible-xs-block {
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.17);
-  height: 1px;
-  border-color: transparent;
-}
-.content-header {
-    margin-top: 50px;
 }
 </style>
