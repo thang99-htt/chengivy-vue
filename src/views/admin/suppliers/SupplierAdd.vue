@@ -5,16 +5,9 @@
                 <div v-if="supplier" class="box box-info">
                     <div class="box-header with-border">
                         <router-link to="/admin/suppliers">
-                            <button
-                                type="button"
-                                class="btn btn-dark me-4"
-                            >
-                                <i class="fa fa-arrow-left"></i>
-                            </button>
+                            <input type="button" name="btnBack" value="Trở về">
                         </router-link>
-                        <h3 class="box-title">Thêm mới Nhà cung cấp</h3>
                     </div>
-                    
                     <div class="box-body offset-3 col-6">
                         <SupplierForm
                             :supplier="supplier"
@@ -28,13 +21,11 @@
 </template>
 <script>
     import SupplierForm from "@/components/admin/suppliers/SupplierForm.vue";
-    import RoleService from "@/services/admin/supplier.service";
+    import SuppllierService from "@/services/admin/supplier.service";
+
     export default {
         components: {
             SupplierForm,
-        },
-        props: {
-            id: { type: String, required: true },
         },
         data() {
             return {
@@ -49,7 +40,7 @@
         methods: {
             async createSupplier(data) {
                 try {
-                    await RoleService.create(data);
+                    await SuppllierService.create(data);
                     const Toast = this.$swal.mixin({
                         toast: true,
                         position: 'top-end',

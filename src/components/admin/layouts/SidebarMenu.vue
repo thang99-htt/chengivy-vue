@@ -1,94 +1,50 @@
 <template>
   <ul class="sidebar-menu">
     <li class="header">TOOLS</li>
+    <!-- <li class="pageLink" v-if="checkRangeOfPermissionIDs(getAdmin.permissionIDs, 21, 69)" :class="{ active: $route.path.includes('/admin/dashboard') }"> -->
     <li class="pageLink" :class="{ active: $route.path.includes('/admin/dashboard') }">
       <router-link to="/admin/dashboard">
         <i class="fa fa-desktop color8"></i>
         <span class="page">Dashboard</span>
       </router-link>
     </li>
-    <li class="treeview pageLink" :class="{ active: [$route.path.includes('/admin/roles'), $route.path.includes('/admin/permissions'), $route.path.includes('/admin/staffs'), $route.path.includes('/admin/authorization')].some(Boolean) }" v-if="test3">
-      <a href="#">
+    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(23)" :class="{ active: $route.path.includes('/admin/staffs') }">
+      <a href="/admin/staffs/staff-list">
         <i class="fa fa-user color1"></i>
         <span class="treeview-title">Nhân viên</span>
-        <span class="pull-right-container pull-right">
-          <i class="fa fa-angle-left fa-fw"></i>
-        </span>
       </a>
-      <ul class="treeview-menu">
-        <li>
-          <router-link to="/admin/roles">
-            Vai trò
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/admin/permissions">
-            Quyền
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/admin/staffs">
-            Danh sách nhân viên
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/admin/authorization">
-            Phân quyền nhân viên
-          </router-link>
-        </li>
-      </ul>
-    </li>
-    <li class="treeview pageLink" v-if="test4">
-      <a href="#">
+     </li>
+    <li class="treeview pageLink"  v-if="getAdmin.permissionIDs.includes(44)">
+      <a href="/admin/suppliers">
         <i class="fa fa-book color2"></i>
         <span class="treeview-title">Nhập hàng</span>
-        <span class="pull-right-container pull-right">
-          <i class="fa fa-angle-left fa-fw"></i>
-        </span>
       </a>
-      <ul class="treeview-menu">
-        <li>
-          <router-link to="/admin/suppliers">
-            Nhà cung cấp
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/admin/payment-vouchers">
-            Phiếu chi
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/admin/import-coupons">
-            Phiếu nhập
-          </router-link>
-        </li>
-      </ul>
     </li>
-    <li class="pageLink" :class="{ active: $route.path.includes('/admin/categories') }" v-if="test14">
+    <!-- <li class="pageLink" :class="{ active: $route.path.includes('/admin/categories') }">
       <router-link to="/admin/categories">
         <i class="fa fa-sitemap color3"></i>
         <span class="page">Danh mục</span>
       </router-link>
     </li>
-    <li class="pageLink" :class="{ active: $route.path.includes('/admin/products') }" v-if="test10">
+    <li class="pageLink" :class="{ active: $route.path.includes('/admin/products') }">
       <router-link to="/admin/products">
         <i class="fa fa-box color4"></i>
         <span class="page">Sản phẩm</span>
       </router-link>
-    </li>
-    <li class="pageLink" :class="{ active: $route.path.includes('/admin/orders') }" v-if="test22">
+    </li> -->
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(55)" :class="{ active: $route.path.includes('/admin/orders') }">
       <router-link to="/admin/orders">
         <i class="fa fa-shopping-cart color5"></i>
         <span class="page">Đơn hàng</span>
       </router-link>
     </li>
-    <li class="pageLink" :class="{ active: $route.path.includes('/admin/reviews') }" v-if="test24">
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(59)" :class="{ active: $route.path.includes('/admin/reviews') }">
       <router-link to="/admin/reviews">
         <i class="fa fa-star color6"></i>
         <span class="page">Đánh giá</span>
       </router-link>
     </li>
-    <li class="pageLink" :class="{ active: $route.path.includes('/admin/invoices') }" v-if="test7">
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(58)" :class="{ active: $route.path.includes('/admin/invoices') }">
       <router-link to="/admin/invoices">
         <i class="fa fa-ticket color7"></i>
         <span class="page">Hóa đơn</span>
@@ -98,13 +54,13 @@
     <li class="pageLink">
       <router-link to="/admin/tasks">
         <i class="fa fa-tasks"></i>
-        <span class="page">Tasks</span>
+        <span class="page">Nhiệm vụ</span>
       </router-link>
     </li>
     <li class="pageLink">
       <router-link to="/admin/setting">
         <i class="fa fa-cog"></i>
-        <span class="page">Settings</span>
+        <span class="page">Cài đặt</span>
       </router-link>
     </li>
     <li class="treeview">
@@ -173,70 +129,29 @@
 <script>
     import $ from 'jquery'
     import {mapGetters} from 'vuex';
-    import AuthorizationService from "@/services/admin/authorization.service";
+    import StaffService from "@/services/admin/staff.service";
 
     export default {
         name: 'TopBar',
-        data() {
-            return {
-                token: localStorage.getItem('tokenAdmin'),
-                test1: false,
-                test2: false,
-                test3: false,
-                test4: false,
-                test5: false,
-                test6: false,
-                test7: false,
-                test10: false,
-                test14: false,
-                test18: false,
-                test22: false,
-                test24: false,
-                isChildClicked: false
-            };
-        },
-        async created() {
-            await AuthorizationService.getStaff(this.getAdmin.id).then((response) => {
-              response.roles.forEach(index=>{
-                index.permissions.forEach(index1=>{
-                  if(index1.id == 1)
-                    this.test1 = true;
-                  else if(index1.id == 2)
-                    this.test2 = true;
-                  else if(index1.id == 3)
-                    this.test3 = true;
-                  else if(index1.id == 4)
-                    this.test4 = true;
-                  else if(index1.id == 5)
-                    this.test5 = true;
-                  else if(index1.id == 6)
-                    this.test6 = true;
-                  else if(index1.id == 7)
-                    this.test7 = true;
-                  else if(index1.id == 10)
-                      this.test10 = true;
-                  else if(index1.id == 14)
-                    this.test14 = true;
-                  else if(index1.id == 18)
-                    this.test18 = true;
-                  else if(index1.id == 22)
-                    this.test22 = true;
-                  else if(index1.id == 24)
-                    this.test24 = true;
-                })
-                })
-                
-            });
-        },
         computed: {
             ...mapGetters(['getAdmin'])
         },
+        methods: {
+          checkRangeOfPermissionIDs(permissionIDs, startID, endID) {
+            return (
+              permissionIDs.length >= (endID - startID + 1) &&
+              Array.from({ length: endID - startID + 1 }, (_, index) => startID + index)
+                .every(id => permissionIDs.includes(id))
+            );
+          }
+        }
     };
 </script>
 <style scoped>
   /* override default */
   .sidebar-menu > li > a {
-    padding: 12px 15px 12px 15px;
+    padding: 10px 15px 12px 15px;
+    margin-bottom: 4px;
   }
 
   .sidebar-menu li.active > a > .fa-angle-left,

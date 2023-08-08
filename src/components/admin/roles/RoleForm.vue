@@ -28,24 +28,34 @@
             <ErrorMessage name="description" class="error-feedback" />
         </div>
         <div class="form-group">
-            <button class="me-2 btn btn-success">
-                <i class="fas fa-save"></i> Lưu
-            </button>
-            <button
-                v-if="roleLocal.id"
-                type="button"
-                class="btn btn-danger"
-                @click="deleteRole"
+            <label for="role_id">Quyền
+                <span class="error-feedback">*</span>
+            </label>     
+            <div
+                v-for="permission in permissions"
+                :key="permission" 
             >
-                <i class="fas fa-trash"></i> Xóa
-            </button>
-            <button
-                v-else
-                class="btn btn-primary"
-                @click="reset"
-            >
-                <i class="fas fa-redo"></i> Hủy
-            </button>
+                <p class="fs-5 m-2">{{ permission.name }}</p>
+                <div 
+                    v-if="permission.childs.length > 0" 
+                    v-for="child in permission.childs" :key="child"
+                    class="d-inline-flex w-50 align-items-baseline px-4"
+                >
+                    <input 
+                        v-model="roleLocal.permission_id" 
+                        :id="child.id" name="permission_id" 
+                        type="checkbox" :value="child.id"
+                        class="me-2"
+                    /> 
+                    <label for="permission_id">{{ child.name }}</label>
+                </div>
+            </div>
+            <ErrorMessage name="permission_id" class="error-feedback" />
+        </div>
+        <div class="form-group">
+            <input type="submit" name="btnSave" value="Thực hiện">
+            <input type="button" name="btnDelete" value="Xóa" v-if="roleLocal.id">
+            <input type="button" name="btnBack" value="Hủy" v-else @click="reset">
         </div>
     </Form>
     
@@ -53,6 +63,7 @@
 <script>
     import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
+    import PermissionService from "@/services/admin/permission.service";
 
     export default {
         components: {
@@ -80,8 +91,13 @@
             return {
                 roleLocal: this.role,
                 roleFormSchema,
-                searchText: "",
+                permissions: []
             };
+        },
+        watch: {
+            'role'(newValue) {
+                this.roleLocal = newValue;
+            },
         },
         methods: {
             submitRole() {
@@ -95,11 +111,11 @@
                 this.roleLocal.description = "";
             },
         },
-        computed: {
-            datetime () {
-                return new Date()
-            }
-        },
+        mounted() {
+            PermissionService.getAll().then((response) => {
+                this.permissions = response;
+            });
+        }
     };
 </script>
 <style scoped>

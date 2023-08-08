@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import axios from 'axios';
-import AuthorizationService from "@/services/admin/authorization.service";
+import StaffService from "@/services/admin/staff.service";
 
 const routes = [
     {
@@ -14,34 +14,8 @@ const routes = [
                 path: "dashboard",
                 name: "dashboard",
                 component: () => import("../views/admin/Dashboard.vue"),
-            },
-            {
-                path: "roles",
-                name: "role",
-                component: () => import("../views/admin/roles/Role.vue"),
                 meta: {
-                    description: 'Vai trò',
-                    permissionId: 1
-                },
-            },
-            {
-                path: "roles/:id",
-                name: "role.edit",
-                component: () => import("@/views/admin/roles/RoleEdit.vue"),
-                props: true,
-            },
-            {
-                path: "roles/add",
-                name: "role.add",
-                component: () => import("@/views/admin/roles/RoleAdd.vue"),
-            },  
-            {
-                path: "permissions",
-                name: "permission",
-                component: () => import("../views/admin/permissions/Permission.vue"),
-                meta: {
-                    description: 'Quyền',
-                    permissionId: 2
+                    description: 'Dashboard'
                 },
             },
             {
@@ -57,22 +31,56 @@ const routes = [
             },   
             {
                 path: "staffs",
-                name: "staff",
-                component: () => import("../views/admin/staffs/Staff.vue"),
-                meta: {
-                    description: 'Nhân viên',
-                    permissionId: 3
-                },
+                component: () => import("../views/admin/staffs/StaffDefault.vue"),
+                children: [
+                    {
+                        path: "staff-list",
+                        name: "staff",
+                        component: () => import("../views/admin/staffs/Staff.vue"),
+                        meta: {
+                            description: 'Nhân viên',
+                            permissionId: 3
+                        },
+                    },
+                    {
+                        path: "staff-add",
+                        name: "staff.add",
+                        component: () => import("@/views/admin/staffs/StaffAdd.vue"),
+                        meta: {
+                            description: 'Thêm Nhân viên',
+                            permissionId: 3
+                        },
+                    },  
+                    {
+                        path: "roles",
+                        name: "role",
+                        component: () => import("../views/admin/roles/Role.vue"),
+                        meta: {
+                            description: 'Vai trò',
+                            permissionId: 1
+                        },
+                    },
+                    {
+                        path: "roles/add",
+                        name: "role.add",
+                        component: () => import("@/views/admin/roles/RoleAdd.vue"),
+                        meta: {
+                            description: 'Thêm Vai trò',
+                            permissionId: 1
+                        },
+                    },  
+                    {
+                        path: "permissions",
+                        name: "permission",
+                        component: () => import("../views/admin/permissions/Permission.vue"),
+                        meta: {
+                            description: 'Quyền',
+                            permissionId: 2
+                        },
+                    },
+
+                ],
             },
-            {
-                path: "staffs/add",
-                name: "staff.add",
-                component: () => import("@/views/admin/staffs/StaffAdd.vue"),
-                meta: {
-                    description: 'Thêm Nhân viên',
-                    permissionId: 3
-                },
-            },  
             {
                 path: "staffs/:id",
                 name: "staff.edit",
@@ -83,15 +91,7 @@ const routes = [
                     permissionId: 3
                 },
             },
-            {
-                path: "authorization",
-                name: "authorization",
-                component: () => import("../views/admin/authorizations/Authorization.vue"),
-                meta: {
-                    description: 'Phân quyền',
-                    permissionId: 3
-                },
-            },
+            
             {
                 path: "suppliers",
                 name: "supplier",
@@ -350,13 +350,18 @@ const routes = [
         },
         children: [
             {
-                path: "profiles",
+                path: "customer",
                 component: () => import("../components/user/profiles/Profile.vue"),
                 children: [
                     {
-                        path: "/profiles",
+                        path: "profiles",
                         name: "profile",
                         component: () => import("@/views/user/profiles/Profile.vue"),
+                    },
+                    {
+                        path: "addresses",
+                        name: "address",
+                        component: () => import("@/views/user/addresses/Address.vue"),
                     },
                     {
                         path: "purchases",
@@ -368,6 +373,11 @@ const routes = [
                         name: "purchase.detail",
                         component: () => import("@/views/user/purchases/PurchaseDetail.vue"),
                         props: true,
+                    },
+                    {
+                        path: "favorites",
+                        name: "favorite",
+                        component: () => import("@/views/user/favorites/Favorite.vue"),
                     },
                 ]
             },
@@ -416,16 +426,19 @@ router.beforeEach(async (to, from, next) => {
               }
             });
             const staffId = response.data.id;
-            const response1 = await AuthorizationService.getStaff(staffId);
+            const response1 = await StaffService.get(staffId);
             // const permissions = response1.rolespermissions;
             // const hasPermission = permissions.some(permission => permission.id === to.meta.permissionId);
-            const hasPermission = response1.roles.some(role => {
-                return role.permissions.some(permission => permission.id === to.meta.permissionId);
-            });
-            if (!hasPermission) {
-              next({ name: 'dashboard' });
-              return;
-            }
+            
+            // Tam dong
+            // const hasPermission = response1.roles.some(role => {
+            //     return role.permissions.some(permission => permission.id === to.meta.permissionId);
+            // });
+            // if (!hasPermission) {
+            //   next({ name: 'dashboard' });
+            //   return;
+            // }
+
             // Nếu có permission thì tiếp tục điều hướng đến route đích
             next();
           } catch (error) {

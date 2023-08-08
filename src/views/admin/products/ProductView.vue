@@ -18,9 +18,9 @@
                     <div class="box-body">
                         <div class="form-group">
                             <p>Danh mục: {{ product.category }}</p>
+                            <p>Thương hiệu: {{ product.brand }}</p>
                             <p>Tên sản phẩm: {{ product.name }}</p>
                             <p>Giá bán: {{ product.price }} VNĐ</p>
-                            <p>Thể loại: {{ product.type }}</p>
                         </div>
                         <div class="row">
                             <div class="col-6 mt-3">

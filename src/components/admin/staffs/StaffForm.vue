@@ -58,8 +58,8 @@
                         <span class="error-feedback">*</span>
                     </label>
                     <div class="py-2">
-                        <Field name="gender" v-model="staffLocal.gender" type="radio" value="Male"/> Nam
-                        <Field name="gender" v-model="staffLocal.gender" type="radio" value="Female" class="ms-4" /> Nữ
+                        <Field name="gender" v-model="staffLocal.gender" type="radio" value="Nam"/> Nam
+                        <Field name="gender" v-model="staffLocal.gender" type="radio" value="Nữ" class="ms-4" /> Nữ
                     </div>
                     <ErrorMessage name="gender" class="error-feedback" />
                 </div>
@@ -76,38 +76,91 @@
             </div>
         </div>
         <div class="form-group">
-            <div>
-                <label for="address">Địa chỉ
-                    <span class="error-feedback">*</span>
-                </label>
-                <Field
-                    name="address"
-                    type="text"
-                    class="form-control"
-                    v-model="staffLocal.address"
-                />
-                <ErrorMessage name="address" class="error-feedback" />
-            </div>
+            <label for="address">Địa chỉ cụ thể
+                <span class="error-feedback">*</span>
+            </label>
+            <Field
+                name="address"
+                type="text"
+                class="form-control"
+                v-model="staffLocal.address_detail"
+            />
+            <ErrorMessage name="address" class="error-feedback" />
         </div>
         <div class="form-group">
-            <button class="me-2 btn btn-success">
-                <i class="fas fa-save"></i> Lưu
-            </button>
-            <button
-                v-if="staffLocal.id"
-                type="button"
-                class="btn btn-danger"
-                @click="deleteStaff"
+            <label for="city">Tỉnh/Thành phố, Quận/Huyện, Phường/Xã
+                <span class="error-feedback">*</span>
+            </label>
+            <div class="aselect" :data-value="value" :data-list="cities">
+                <div class="selector" @click="visible = !visible">
+                    <div class="label">
+                            <span>{{ valueSelect }}</span>
+                    </div>
+                    <div class="arrow" :class="{ expanded : visible }"></div>
+                    <div :class="{ hidden : !visible, visible }">
+                        <div class="selector-container">
+                            <div class="selector-item" @click.stop>
+                                <span :class="{'active': addressStatus === 1}">Tỉnh/Thành phố</span>
+                                <span :class="{'active': addressStatus === 2}">Quận/Huyện</span>
+                                <span :class="{'active': addressStatus === 3}">Phường/Xã</span>
+                            </div>
+                            <ul v-if="addressStatus === 1">
+                                <li 
+                                    :class="{ current : city === value }" 
+                                    v-for="(city, index) in cities" 
+                                    :key="city.id" :value="city.id" 
+                                    @click.stop="selectOptionCity(city)"
+                                >
+                                    {{ city.name }}
+                                </li>
+                            </ul>
+                            <ul v-if="addressStatus === 2">
+                                <li 
+                                    :class="{ current : district === value }" 
+                                    v-for="(district, index) in districts" 
+                                    :key="district.id" :value="district.id" 
+                                    @click.stop="selectOptionDistrict(district)"
+                                >
+                                    {{ district.name }}
+                                </li>
+                            </ul>
+                            <ul v-if="addressStatus === 3">
+                                <li 
+                                    :class="{ current : ward === value }" 
+                                    v-for="(ward, index) in wards" 
+                                    :key="ward.id" :value="ward.id" 
+                                    @click.stop="selectOptionWard(ward)"
+                                >
+                                    {{ ward.name }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+        <div class="form-group">
+            <label for="role_id">
+                <span class="error-feedback">*</span>
+            </label>     
+            <div
+                v-for="role in roles"
+                :key="role" 
             >
-                <i class="fas fa-trash"></i> Xóa
-            </button>
-            <button
-                v-else
-                class="btn btn-primary"
-                @click="reset"
-            >
-                <i class="fas fa-redo"></i> Hủy
-            </button>
+                <input 
+                    v-model="staffLocal.role_id" 
+                    :id="role.id" name="role_id" 
+                    type="checkbox" :value="role.id"
+                    class="me-2"
+                /> 
+                <label for="role_id">{{ role.name }}</label>
+            </div>
+            <ErrorMessage name="role_id" class="error-feedback" />
+        </div>
+        <div class="form-group">
+            <input type="submit" name="btnSave" value="Thực hiện">
+            <input type="button" name="btnDelete" value="Xóa" v-if="staffLocal.id">
+            <input type="button" name="btnBack" value="Hủy" v-else @click="emitReset">
         </div>
     </Form>
     
@@ -115,50 +168,64 @@
 <script>
     import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
-    import DatePicker from 'vue3-datepicker';
+    import AddressService from "@/services/user/address.service";
+    import RoleService from "@/services/admin/role.service";
+    import StaffModal from "@/components/admin/staffs/StaffModal.vue";
 
     export default {
         components: {
-            DatePicker,
             Form,
             Field,
             ErrorMessage,
         },
         emits: ["submit:staff", "delete:staff"],
         props: {
-            staff: { type: Object, required: true }
+            staff: { type: Object, required: true },
+            cities: { type: Array, default: [] },
+            reset: { type: Function, required: true },
+        },
+        watch: {
+            'staff'(newValue) {
+                this.staffLocal = newValue;
+                this.valueSelect = this.staffLocal.address;
+            },
         },
         data() {
             const staffFormSchema = yup.object().shape({
                 name: yup
                 .string()
-                .required("Tên phải có giá trị.")
-                .min(2, "Tên phải ít nhất 2 ký tự.")
-                .max(50, "Tên có nhiều nhất 50 ký tự."),
+                .required("Vui lòng nhập họ tên.")
+                .min(2, "Họ tên phải ít nhất 2 ký tự.")
+                .max(50, "Họ tên có nhiều nhất 50 ký tự."),
                 email: yup
                 .string()
-                .required("Email phải có giá trị.")
+                .required("Vui lòng nhập Email.")
                 .email("Địa chỉ email không hợp lệ."),
                 phone: yup
                 .string()
-                .required("Số điện thoại phải có giá trị.")
+                .required("Vui lòng nhập số điện thoại.")
                 .matches(/^\d{10}$/, "Số điện thoại không hợp lệ."),
-                gender: yup
-                .string()
-                .required("Giới tính phải có giá trị."),
                 address: yup
                 .string()
-                .required("Địa chỉ phải có giá trị."),
+                .required("Vui lòng nhập địa chỉ cụ thể."),
                 indentity_card: yup
                 .string()
-                .required("CCCD/CMT phải có giá trị."),
+                .required("Vui lòng nhập CCCD/CMT."),
 
             });
             return {
                 staffLocal: this.staff,
                 staffFormSchema,
-                searchText: "",
-                birth_date: new Date("1990-01-01"),
+                activeCity: "",
+                activeDistrict: "",
+                activeWard: "",
+                cities: [],
+                districts: [],
+                wards: [],
+                valueSelect: "",
+                visible: false,
+                addressStatus: 1,
+                roles: [],
             };
         },
         methods: {
@@ -168,13 +235,44 @@
             deleteStaff() {
                 this.$emit("delete:staff", this.staffLocal.id);
             },
-            reset () {
-                this.staffLocal.name = "";
-                this.staffLocal.description = "";
+            async retrieveCities() {
+                try {
+                    this.cities = await AddressService.getCities();
+                } catch (error) {
+                    console.log(error);
+                }
             },
+            async retrieveRoles() {
+                try {
+                    this.roles = await RoleService.getAll();
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async selectOptionCity(city) {
+                this.valueSelect = city.name;
+                this.districts = await AddressService.getDistricts(city.id);
+                this.addressStatus = 2;
+            },
+            async selectOptionDistrict(district) {
+                this.valueSelect = district.name + ", " + this.valueSelect
+                this.wards = await AddressService.getWards(district.id);
+                this.addressStatus = 3;
+            },
+            async selectOptionWard(ward) {
+                this.valueSelect = ward.name + ", " + this.valueSelect;
+                this.visible = false;
+                this.addressStatus = 1;
+                this.staffLocal.address =  this.valueSelect;
+            },
+            emitReset() {
+                this.reset();
+                console.log('a')
+            }
+        },
+        mounted() {
+            this.retrieveCities();
+            this.retrieveRoles();
         },
     };
 </script>
-<style scoped>
-    
-</style>

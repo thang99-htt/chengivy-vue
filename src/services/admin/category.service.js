@@ -15,9 +15,9 @@ class CategoryService {
     async getAdd(data) {
         return (await this.api.get("/add", data)).data;
     }
-    async deleteAll() {
-        return (await this.api.delete("/")).data;
-    }
+    // async deleteAll() {
+    //     return (await this.api.delete("/")).data;
+    // }
     async get(id) {
         return (await this.api.get(`/${id}`)).data;
     }
@@ -27,8 +27,8 @@ class CategoryService {
     async updateStatus(id, status, data) {
         return (await this.api.put(`/${id}/${status}`, data)).data;
     }
-    async delete(id) {
-        return (await this.api.delete(`/${id}`)).data;
+    async delete(selectedIds) {
+        return (await this.api.delete("/", { data: selectedIds })).data;
     }
 }
 export default new CategoryService();

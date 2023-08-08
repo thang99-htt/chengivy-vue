@@ -3,16 +3,15 @@
         <div class="container-fluid">
             <div class="topbar bg-transparent topbar-transparent d-none">
                 <div class="top-left">
-                    <div class="mega-category-menu">
-                        <router-link :to="{
-                            name: 'product.all',
-                        }">
+                    <div class="mega-category-menu"  @click="subCategory = !subCategory">
+                        <a href="javascript:void(0)">
                             <span class="cat-button">
                                 <i class="bi bi-list"></i>
                                 Tất cả danh mục
                             </span>
-                        </router-link>
-                        <ul class="sub-category">
+                        </a>
+                        <ul class="sub-category" v-if="subCategory">
+                            <button class="close"><i class="fa fa-close"></i></button>
                             <li>
                                 <router-link :to="{
                                     name: 'product.all',
@@ -43,6 +42,9 @@
                                     </li>
                                 </ul>
                             </li>
+                            <div>
+                                <img src="/images/hero/slider-bg3.jpg" alt="">
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -55,7 +57,7 @@
                     <div class="middle-right-area">
                         <div class="navbar-icon-right">
                             <div class="wishlist">
-                                <a href="javascript:void(0)">
+                                <a href="/customer/favorites">
                                     <i class="bi bi-heart"></i>
                                     <span class="total-items" v-if="favorites.favoriteCount">{{ favorites.favoriteCount
                                     }}</span>
@@ -80,14 +82,21 @@
                                             <a href="javascript:void(0)" class="remove" title="Remove this item"><i
                                                     class="fa fa-close"></i></a>
                                             <div class="cart-img-head">
-                                                <img v-if="cart.product.image" :src="getImage(cart.product.image)"
+                                                <img v-if="cart.image" :src="getImage(cart.image)"
                                                     alt="#" />
                                             </div>
                                             <div class="content">
-                                                <h6><a href="product-details.html">{{ cart.product.name }}</a></h6>
-                                                <p>Size: {{ cart.size }}</p>
+                                                <h4>
+                                                    <router-link :to="{
+                                                        name: 'product.detail',
+                                                        params: { id: cart.product.id },
+                                                    }">
+                                                        {{ cart.product.name }}
+                                                    </router-link>    
+                                                </h4>
+                                                <p>Size: {{ cart.size_name }}</p>
                                                 <p class="quantity">
-                                                    {{ cart.quantity }} x - {{ formatPrice(cart.final_price) }}
+                                                    {{ cart.quantity }} x {{ formatPrice(cart.product.price_final) }}
                                                 </p>
                                             </div>
                                         </li>
@@ -95,11 +104,16 @@
                                     <div class="bottom mt-4">
                                         <div class="total">
                                             <span>Tổng tiền</span>
-                                            <span class="total-amount">{{ formatPrice(carts.into_money) }} VNĐ</span>
+                                            <span class="total-amount">{{ formatPrice(carts.into_money) }}</span>
                                         </div>
                                         <div class="button">
-                                            <router-link :to="{ name: 'cart' }" class="btn animate">
-                                                Mua ngay
+                                            <router-link 
+                                                :to="{
+                                                    name: 'checkout',
+                                                }" 
+                                                class="btn animate"
+                                            >
+                                                Mua ngay   
                                             </router-link>
                                         </div>
                                     </div>
@@ -118,17 +132,17 @@
                                 </div>
                                 <ul class="sub-user" v-if="getUser">
                                     <li>
-                                        <a href="">Hello {{ getUser.name }}</a>
+                                        <a href="" class="text-bold">{{ getUser.name }}</a>
                                     </li>
                                     <li>
-                                        <a href="/profiles">Tài khoản</a>
+                                        <a href="/customer/profiles">Tài khoản</a>
                                     </li>
                                     <li>
-                                        <a href="/profiles/purchases">Đơn mua</a>
+                                        <a href="/customer/purchases">Đơn mua</a>
                                     </li>
                                     <li>
                                         <a @click="logout">
-                                            Đăng xuất<i class="bi bi-power"></i>
+                                            Đăng xuất
                                         </a>
                                     </li>
                                 </ul>
@@ -299,7 +313,7 @@
             <div class="middle-right-area">
                 <div class="navbar-icon-right">
                     <div class="wishlist">
-                        <a href="javascript:void(0)">
+                        <a href="/customer/favorites">
                             <i class="bi bi-heart"></i>
                             <span class="total-items" v-if="favorites.favoriteCount">{{ favorites.favoriteCount
                             }}</span>
@@ -326,13 +340,20 @@
                                         <i class="fa fa-close"></i>
                                     </a>
                                     <div class="cart-img-head">
-                                        <img v-if="cart.product.image" :src="getImage(cart.product.image)" alt="#" />
+                                        <img v-if="cart.image" :src="getImage(cart.image)" alt="#" />
                                     </div>
                                     <div class="content">
-                                        <h6><a href="product-details.html">{{ cart.product.name }}</a></h6>
-                                        <p>Size: {{ cart.size }}</p>
+                                        <h4>
+                                            <router-link :to="{
+                                                name: 'product.detail',
+                                                params: { id: cart.product.id },
+                                            }">
+                                                {{ cart.product.name }}
+                                            </router-link>
+                                        </h4>
+                                        <p>Size: {{ cart.size_name }}</p>
                                         <p class="quantity">
-                                            {{ cart.quantity }} x - {{ formatPrice(cart.final_price) }}
+                                            {{ cart.quantity }} x {{ formatPrice(cart.product.price_final) }}
                                         </p>
                                     </div>
                                 </li>
@@ -340,11 +361,16 @@
                             <div class="bottom mt-4">
                                 <div class="total">
                                     <span>Tổng tiền</span>
-                                    <span class="total-amount">{{ formatPrice(carts.into_money) }} VNĐ</span>
+                                    <span class="total-amount">{{ formatPrice(carts.into_money) }}</span>
                                 </div>
                                 <div class="button">
-                                    <router-link :to="{ name: 'cart' }" class="btn animate">
-                                        Mua ngay
+                                    <router-link 
+                                        :to="{
+                                            name: 'checkout',
+                                        }" 
+                                        class="btn animate"
+                                    >
+                                        Mua ngay   
                                     </router-link>
                                 </div>
                             </div>
@@ -363,17 +389,17 @@
                         </div>
                         <ul class="sub-user" v-if="getUser">
                             <li>
-                                <a href="">Hello {{ getUser.name }}</a>
+                                <a href="" class="text-bold">{{ getUser.name }}</a>
                             </li>
                             <li>
-                                <a href="/profiles">Tài khoản</a>
+                                <a href="/customer/profiles">Tài khoản</a>
                             </li>
                             <li>
-                                <a href="/profiles/purchases">Đơn mua</a>
+                                <a href="/customer/purchases">Đơn mua</a>
                             </li>
                             <li>
                                 <a @click="logout">
-                                    Đăng xuất<i class="bi bi-power"></i>
+                                    Đăng xuất
                                 </a>
                             </li>
                         </ul>
@@ -391,16 +417,15 @@
         </div>
 
         <div class="header-bottom">
-            <div class="mega-category-menu">
-                <router-link :to="{
-                    name: 'product.all',
-                }">
+            <div class="mega-category-menu"  @click="subCategory = !subCategory">
+                <a href="javascript:void(0)">
                     <span class="cat-button">
                         <i class="bi bi-list"></i>
                         Tất cả danh mục
                     </span>
-                </router-link>
-                <ul class="sub-category">
+                </a>
+                <ul class="sub-category" v-if="subCategory">
+                    <button class="close"><i class="bi bi-x-lg"></i></button>
                     <li>
                         <router-link :to="{
                             name: 'product.all',
@@ -431,15 +456,18 @@
                             </li>
                         </ul>
                     </li>
+                    <div>
+                        <img src="/images/hero/slider-bg3.jpg" alt="">
+                    </div>
                 </ul>
             </div>
             <div class="nav-inner">
                 <nav class="navbar navbar-expand-md">
-                    <button class="navbar-toggler mobile-menu-btn" type="button" @click="toggleNavbar">
+                    <!-- <button class="navbar-toggler mobile-menu-btn" type="button" @click="toggleNavbar">
                         <span class="toggler-icon"></span>
                         <span class="toggler-icon"></span>
                         <span class="toggler-icon"></span>
-                    </button>
+                    </button> -->
                     <div class="collapse navbar-collapse sub-menu-bar">
                         <ul id="nav" class="navbar-nav ms-aut">
                             <li class="nav-item">
@@ -610,6 +638,7 @@ export default {
             ],
             searchHistory: [],
             maxSearchHistory: 8,
+            subCategory: false
         };
     },
     async created() {

@@ -1,76 +1,75 @@
 <template>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="dash_blog">
-                    <div class="dash_blog_inner">
-                        <div class="dash_head">
-                            <h3>ĐỊA CHỈ GIAO HÀNG</h3>
+    <div class="dash_blog_inner">
+        <div class="dash_head">
+            <h3>ĐỊA CHỈ GIAO HÀNG</h3>
+        </div>
+        <div class="liveAlert"></div>
+        <div class="list_cont">
+            <p>Địa chỉ</p>
+        </div>
+        <div class="dash_main">
+            <ul class="item item1">
+                <li 
+                    v-for="(address, index) in addresses"
+                    :key="address"
+                >
+                    <Field name="address" type="radio" :value="address" v-model="orderLocal.delivery_address"/>
+                    <div class="ms-4">
+                        <div>
+                            <span class="acc-name">{{ address.name }}</span>
+                            <span>{{ address.phone }}</span>
                         </div>
-                        <div class="list_cont">
-                            <p>Địa chỉ</p>
+                        <div>
+                            {{ address.address_detail }}
                         </div>
-                        <div class="dash_main">
-                            <ul class="item">
-                                <li 
-                                    v-for="(address, index) in addresses"
-                                    :key="address"
-                                >
-                                    <Field name="address" type="radio" :value="address.id" v-model="orderLocal.contact_id"/>
-                                        <span class="text-bold ms-3">{{ address.name }}</span>
-                                        <p class="ms-address">Địa chỉ:
-                                            {{ address.address }}, {{ address.ward }}, 
-                                            {{ address.district }}, {{ address.city }}
-                                        </p>
-                                        <p class="ms-address">Điện thoại: {{ address.phone }}</p>
-                                </li>
-                            </ul>
+                        <div>
+                            {{ address.address }}
                         </div>
-                        <div class="item_more">
-                            <div class="center">
-                                Bạn muốn giao hàng đến địa chỉ khác?
-                                <a class="main_bt read_bt" @click="openModel">
-                                    Thêm địa chỉ giao hàng mới
-                                </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="item_more">
+            <div class="center">
+                Bạn muốn giao hàng đến địa chỉ khác?
+                <a class="main_bt read_bt" @click="myModel = !myModel">
+                    Thêm địa chỉ giao hàng mới
+                </a>
+            </div>
+            <div v-if="myModel">
+                <div class="modal d-block address">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title fw-bold">Thêm địa chỉ mới</h4>
+                                <button type="button" class="btn-close"  @click="myModel = !myModel"></button>
                             </div>
-                            <div v-if="myModel">
-                                <div class="modal d-block">
-                                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="updateAddressModalLabel">Thêm địa chỉ mới</h5>
-                                                <button type="button" class="btn-close"  @click="closeModel"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <AddressForm 
-                                                    :cities="cities"
-                                                    :contact="contact"
-                                                    @submit:contact="createContact"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="modal-body">
+                                <AddressForm 
+                                    :reset="reset" 
+                                    :accountAddress="accountAddress"
+                                    @submit:accountAddress="createAddress"
+                                />
                             </div>
-                        </div>
-                        <div class="list_cont">
-                            <p>Hình thức giao hàng</p>
-                        </div>
-                        <div class="dash_main">
-                            <ul class="item">
-                                <li>
-                                    <p class="mb-3">
-                                        <input type="checkbox" checked>
-                                        Giao hàng tiêu chuẩn
-                                    </p>
-                                    <p>Ghi chú đơn hàng</p>
-                                    <textarea name="" id="" cols="50" rows="3" v-model="orderLocal.note"></textarea>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="list_cont">
+            <p>Hình thức giao hàng</p>
+        </div>
+        <div class="dash_main">
+            <ul class="item">
+                <li class="py-0">
+                    <p class="mb-3">
+                        <input type="checkbox" checked>
+                        Giao hàng tiêu chuẩn
+                    </p>
+                    <p>Ghi chú đơn hàng</p>
+                    <textarea name="" id="" cols="50" rows="4" v-model="orderLocal.note"></textarea>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -79,7 +78,8 @@
     import AddressService from "@/services/user/address.service";
     import {mapGetters} from 'vuex';
     import { Form, Field, ErrorMessage } from "vee-validate";
-    import AddressForm from "@/components/user/checkouts/AddressForm.vue";
+    import AddressForm from "@/components/user/addresses/AddressForm.vue";
+    import { showAlert } from '@/utils';
 
     export default {
         components: {
@@ -94,14 +94,13 @@
         data() {
             return {
                 addresses: [],
-                cities: [],
                 orderLocal: this.order,
                 myModel: false,
-                contact: {
-                    'ward_id': "",
+                accountAddress: {
                     'name': "",
+                    'phone': "",
                     'address': "",
-                    'phone': ""
+                    'ward_id': "",
                 },
             };
         },
@@ -109,65 +108,35 @@
             this.refreshList();
         },
         methods: { 
-            openModel() {
-                this.myModel = true;
-            },
-            closeModel() {
-                this.myModel = false;
-            },
-            async retrieveCities() {
-                try {
-                    this.cities = await AddressService.getCities();
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            async retrieveAddressByUser() {
-                await AddressService.getAddresses(this.getUser.id).then((response) => {
-                    this.addresses = response;
-                });
+            async retrieveAddress() {
+                await AddressService.getAllAdress(this.getUser.id).then((res) => {
+                    this.addresses = res;
+                    res.forEach((index) => {
+                        if(index.default == 1) {
+                            this.orderLocal.delivery_address = index;
+                        }
+                    });
+                })
             },
             refreshList() {
-                this.retrieveAddressByUser();
-                this.retrieveCities();
+                this.retrieveAddress();
             },
-            async createContact(data) {
-                try {      
-                    await AddressService.createNewAddress(this.getUser.id, data).then((response) => {
-                        const Toast = this.$swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', this.$swal.stopTimer)
-                                toast.addEventListener('mouseleave', this.$swal.resumeTimer)
-                            }
-                        })
-
-                        if(response.success == true) {
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Địa chỉ được thêm thành công.'
-                            })
-
-                            this.refreshList();
-                        } 
-                        
+            async createAddress(data) {
+                try {
+                    await AddressService.create(this.getUser.id, data).then((response) => {
+                        showAlert(response);
+                        this.refreshList();
                         this.myModel = false;
-
-                        if(response.success == false) {
-                            Toast.fire({
-                                icon: 'warning',
-                                title: 'Địa chỉ đã tồn tại.'
-                            })
-                        }
-    
-                    });     
+                    });
                 } catch (error) {
                     console.log(error);
                 }
+            },
+            reset() {
+                this.accountAddress.name = "";
+                this.accountAddress.phone = "";
+                this.accountAddress.address = "";
+                this.accountAddress.ward_id = "";
             },
         },
         computed: {
@@ -178,18 +147,9 @@
 
 
 <style>
-    .dash_blog {
-        min-height: 600px;
-        background: #fafafa;
-        border-radius: 5px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        float: left;
-        width: 100%;
-        margin-bottom: 15px;
-    }
     .dash_blog_inner .list_cont {
-        border-bottom: 1px solid #e2e2e2;
         padding: 15px 30px;
+        text-transform: uppercase;
     }
     .dash_blog_inner .list_cont p {
         margin: 2px 0 0 0;
@@ -205,17 +165,19 @@
         font-weight: normal;
         height: auto;
         border-radius: 5px 5px 0 0;
-        padding: 20px 30px;
+        padding: 25px 30px;
         background-size: cover;
-        background-color: #003e92;
+        background-color: #f3faff;
         position: relative;
+        border-bottom: 1px solid #ccc;
     }
     .dash_head h3 {
-        color: #fff;
+        color: #000;
         text-transform: none;
         font-weight: 600;
         font-size: 20px;
         text-align: center;
+        margin: 0;
     }
     .item {
         float: left;
@@ -225,21 +187,35 @@
     }
     .item li,
     .item .form-check {
-        padding: 16px 25px;
-        border-bottom: solid #eee 1px;
+        padding: 12px 25px;
         line-height: normal;
-        font-size: 12px;
-        border-left: solid 5px #666;
-        color: #292929;
+        font-size: 14px;
+        color: #333333;
     }
-    .item li p {
+    .item.item1 li {
+        flex-basis: 48%; 
+        display: flex;
+        border: solid #dbdbdb 1px;
+        border-left: solid 5px #3872b2;
+        margin-bottom: 10px;
+        background-color: #f8f8f8;
+    }
+    .item.item1 {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .item li div {
         color: #292929;
         font-size: 14px;
+        margin-bottom: 4px;
     }
     .item_more {
         float: left;
         width: 100%;
-        margin: 25px 15px 70px 15px;
+        margin: 25px 15px 30px 15px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid #ccc;
     }
     .item_more a {
         color: #000;

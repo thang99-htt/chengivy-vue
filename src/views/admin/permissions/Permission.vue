@@ -1,112 +1,104 @@
 <template>
-    <section class="content">  
-      <div class="row center-block">
-        <div class="col-md-12">
-          <div class="box">
-            <div class="box-header">
-              <h3 class="box-title">Danh sách quyền</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <div class="row">
-                    <div class="mb-5 col-4">              
-                        <div class="d-flex align-items-center">
-                            <button class="btn me-4 btn-primary" @click="refreshList()">
-                                <i class="fas fa-redo"></i> Làm mới
-                            </button>
-                            <button class="btn me-3 btn-success" @click="goToAddPermission">
-                                <i class="fas fa-plus"></i> Thêm mới
-                            </button>
-                            <button
-                                class="btn me-3 btn-danger"
-                                @click="removeAllPermissions"
-                            >
-                                <i class="fas fa-trash"></i> Xóa tất cả
-                            </button>
+    <section class="content">
+        <div class="row center-block">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="group-btn">
+                            <div class="d-flex align-items-center justify-content-end mb-3">
+                                <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
+                                <input type="button" name="btnAdd" value="Thêm mới" @click="goToAddPermission">
+                                <input type="button" name="btnAdd" value="Thêm từ file">
+                                <input type="button" name="btnDelete" value="Xóa" @click="deletePermission()">
+                                <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
+                                <input type="button" id="exportExcelBtn" name="btnExcel" value="Xuất Excel">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 table-responsive">
+                                <PermissionList 
+                                    v-if="filteredPermissionsCount > 0" 
+                                    :permissions="filteredPermissions" 
+                                    :selectedIds="selectedIds" 
+                                />
+                                <p v-else>Không có quyền nào.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                  <div class="col-sm-12 table-responsive">
-                    <PermissionList
-                        v-if="filteredPermissionsCount > 0"
-                        :permissions="filteredPermissions"
-                    />
-                    <p v-else>Không có quyền nào.</p>
-                    </div>
-                
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </section>
- <!-- end dashboard inner -->
 </template>
 <script>
-    import PermissionList from "@/components/admin/permissions/PermissionList.vue";
-    import PermissionService from "@/services/admin/permission.service";
+import $ from 'jquery'
+import { initializeDataTable } from '../../../utils';
+import PermissionList from "@/components/admin/permissions/PermissionList.vue";
+import PermissionService from "@/services/admin/permission.service";
 
-    export default {
-        components: {
-            PermissionList,
+export default {
+    components: {
+        PermissionList,
+    },
+    name: 'permission',
+    data() {
+        return {
+            permissions: [],
+            selectedIds: [],
+        };
+    },
+    computed: {
+        filteredPermissions() {
+            return this.permissions;
         },
-        name: 'permission',
-        data() {
-            return {
-                permissions: [],
-            };
+        filteredPermissionsCount() {
+            return this.filteredPermissions.length;
         },
-        computed: {
-            // Trả về các permission có chứa thông tin cần tìm kiếm.
-            filteredPermissions() {
-                return this.permissions;
-            },
-            filteredPermissionsCount() {
-                return this.filteredPermissions.length;
-            },
+    },
+    beforeUpdate() {
+        $('.example1').DataTable().destroy();
+    },
+    methods: {
+        async retrievePermissions() {
+            try {
+                this.permissions = await PermissionService.getAll();
+                this.$nextTick(() => {
+                    initializeDataTable();
+                });
+            } catch (error) {
+                console.log(error);
+            }
         },
-        methods: {
-            async retrievePermissions() {
-                try {
-                    this.permissions = await PermissionService.getAll();
-                } catch (error) {
-                    console.log(error);
+        refreshList() {
+            this.retrievePermissions();
+        },
+        goToAddPermission() {
+            this.$router.push({ name: "permission.add" });
+        },
+        deletePermission() {
+            this.$swal.fire({
+                title: 'Bạn có chắc?',
+                text: "Bạn sẽ không thể hoàn tác lại điều này!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.value) {
+                    PermissionService.delete(this.selectedIds).then((res) => {
+                        if (res.success) {
+                            this.refreshList();
+                        }
+                    })
+                    this.$swal.fire('Đã xóa thành công!', '', 'success')
                 }
-            },
-            refreshList() {
-                this.retrievePermissions();
-            },
-            async removeAllPermissions() {
-                this.$swal.fire({
-                    title: 'Bạn muốn xóa tất cả Quyền?',
-                    text: "Bạn sẽ không thể hoàn tác lại điều này!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.value) {
-                        PermissionService.deleteAll().then((res) => {
-                            if(res.success) {
-                                this.refreshList();
-                            }
-                        })
-                        this.$swal.fire('Đã xóa thành công!','','success')
-                    }
-                })
-            },
-            goToAddPermission() {
-                this.$router.push({ name: "permission.add" });
-            },
+            })
         },
-        mounted() {
-            this.refreshList();
-        },
-    };
+    },
+    mounted() {
+        this.refreshList();
+    },
+};
 </script>
-<style scoped>
-    
-</style>

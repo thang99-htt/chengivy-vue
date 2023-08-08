@@ -1,11 +1,14 @@
 <template>
-    <Form @submit="submitCategory" :validation-schema="categoryFormSchema">
+    <Form 
+        @submit="submitCategory" 
+        :validation-schema="categoryFormSchema"
+    >
         <div class="form-group">
             <label for="name">Danh mục cha
                 <span class="error-feedback">*</span>
             </label>
             <div class="aselect" :data-value="value" :data-list="categories">
-                <div class="selector" @click="toggleSelect()">
+                <div class="selector" @click="visible = !visible">
                     <div class="label">
                             <span>{{ valueSelect }}</span>
                     </div>
@@ -60,7 +63,6 @@
     </Form>
 </template>
 <script>
-import $ from 'jquery'
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import CategoryService from "@/services/admin/category.service";
@@ -128,9 +130,6 @@ export default {
             this.categoryLocal.description = "";
             this.categoryLocal.url = "";
         },
-        toggleSelect() {
-			this.visible = !this.visible;
-		},
 		selectOption(category) {
             if(category == 0) this.categoryLocal.parent_id = 0;
 			else {

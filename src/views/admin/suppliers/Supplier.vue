@@ -1,89 +1,102 @@
 <template>
-    <section class="content">  
-      <div class="row center-block">
-        <div class="col-md-12">
-          <div class="box">
-            <div class="box-header">
-              <h3 class="box-title">Danh sách nhà cung cấp</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <div class="row">
-                    <div class="mb-5 col-4">              
-                        <div class="d-flex align-items-center">
-                            <button class="btn me-4 btn-primary" @click="refreshList()">
-                                <i class="fas fa-redo"></i> Làm mới
-                            </button>
-                            <button class="btn me-3 btn-success" @click="goToAddSupplier">
-                                <i class="fas fa-plus"></i> Thêm mới
-                            </button>
-                            <button
-                                class="btn me-3 btn-danger"
-                            >
-                                <i class="fas fa-trash"></i> Xóa tất cả
-                            </button>
+    <section class="content">
+        <div class="row center-block">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="group-btn">
+                            <div class="d-flex align-items-center justify-content-end mb-3">
+                                <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
+                                <input type="button" name="btnAdd" value="Thêm mới" @click="goToAddSupplier">
+                                <input type="button" name="btnAdd" value="Thêm từ file">
+                                <input type="button" name="btnDelete" value="Xóa" @click="deleteSupplier()">
+                                <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
+                                <input type="button" id="exportExcelBtn" name="btnExcel" value="Xuất Excel">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 table-responsive">
+                                <SupplierList v-if="filteredSuppliersCount > 0" :suppliers="filteredSuppliers" :selectedIds="selectedIds" />
+                                <p v-else>Không có nhà cung cấp nào.</p>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                  <div class="col-sm-12 table-responsive">
-                    <SupplierList
-                        v-if="filteredSuppliersCount > 0"
-                        :suppliers="filteredSuppliers"
-                    />
-                    <p v-else>Không có nhà cung cấp nào.</p>
-                    </div>
-                
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </section>
- <!-- end dashboard inner -->
 </template>
 <script>
-    import SupplierList from "@/components/admin/suppliers/SupplierList.vue";
-    import SupplierService from "@/services/admin/supplier.service";
+import $ from 'jquery'
+import { initializeDataTable } from '../../../utils';
+import SupplierList from "@/components/admin/suppliers/SupplierList.vue";
+import SupplierService from "@/services/admin/supplier.service";
 
-    export default {
-        components: {
-            SupplierList,
+export default {
+    components: {
+        SupplierList,
+    },
+    name: 'supplier',
+    data() {
+        return {
+            suppliers: [],
+            selectedIds: [],
+        };
+    },
+    computed: {
+        filteredSuppliers() {
+            return this.suppliers;
         },
-        name: 'supplier',
-        data() {
-            return {
-                suppliers: [],
-            };
+        filteredSuppliersCount() {
+            return this.filteredSuppliers.length;
         },
-        computed: {
-            filteredSuppliers() {
-                return this.suppliers;
-            },
-            filteredSuppliersCount() {
-                return this.filteredSuppliers.length;
-            },
+    },
+    beforeUpdate() {
+        $('.example1').DataTable().destroy();
+    },
+    methods: {
+        async retrieveSuppliers() {
+            try {
+                this.suppliers = await SupplierService.getAll();
+                this.$nextTick(() => {
+                    initializeDataTable();
+                });
+            } catch (error) {
+                console.log(error);
+            }
         },
-        methods: {
-            async retrieveSuppliers() {
-                try {
-                    this.suppliers = await SupplierService.getAll();
-                } catch (error) {
-                    console.log(error);
+        refreshList() {
+            this.retrieveSuppliers();
+        },
+        goToAddSupplier() {
+            this.$router.push({ name: "supplier.add" });
+        },
+        deleteSupplier() {
+            this.$swal.fire({
+                title: 'Bạn có chắc?',
+                text: "Bạn sẽ không thể hoàn tác lại điều này!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.value) {
+                    SupplierService.delete(this.selectedIds).then((res) => {
+                        if (res.success) {
+                            this.refreshList();
+                        }
+                    })
+                    this.$swal.fire('Đã xóa thành công!', '', 'success')
                 }
-            },
-            refreshList() {
-                this.retrieveSuppliers();
-            },
-            goToAddSupplier() {
-                this.$router.push({ name: "supplier.add" });
-            },
+            })
         },
-        mounted() {
-            this.refreshList();
-        },
-    };
+    },
+    mounted() {
+        this.refreshList();
+    },
+};
 </script>
-<style scoped>
-    
-</style>
+<style scoped></style>

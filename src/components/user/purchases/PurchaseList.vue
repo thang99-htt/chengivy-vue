@@ -1,13 +1,18 @@
 <template>
-    <div class="accordion mt-3">
+    <div class="purchase">
         <div
-            class="accordion-item"
+            class="purchase-container"
             v-for="(purchase, index) in purchasesList"
             :key="purchase.id"
         >
-            <div class="accordion-status">
-                <span>{{ purchase.status.description }}</span>
-                <span> {{ purchase.status.name }}</span>
+            <div class="purchase-head">
+                <div class="purchase-id">
+                    Đơn hàng #{{ purchase.id }}
+                </div>
+                <div class="purchase-status">
+                    <span>{{ purchase.status.description }}</span>
+                    <span> {{ purchase.status.name }}</span>
+                </div>
             </div>
             <hr>
             <router-link
@@ -17,83 +22,93 @@
                         params: { id: purchase.id },
                     }" 
             >
-                <div class="accordion-content">
+                <div class="purchase-content">
                     <div 
-                        class="row"
-                        v-for="(product, index) in purchase.order_details"
+                        class="purchase-item"
+                        v-for="(product, index) in purchase.items"
                         :key="product.id"
                     >
-                        <div class="col-8">
-                            <div class="d-flex my-2">
-                                <img class="d-block me-3" width="100" :src="getImage(product.product_image)" alt="">
+                        <div class="purchase-info">
+                            <div class="d-flex">
+                                <img class="d-block me-3" width="100" :src="getImage(product.image)" alt="">
                                 <div>
                                     <router-link 
                                         :to="{
                                             name: 'product.detail',
-                                            params: { id: product.product_id },
+                                            params: { id: product.id },
                                         }" 
                                         class="text-dark"
                                     >
-                                        {{ product.product_name }}
+                                        {{ product.name }}
                                     </router-link>
-                                    <p>Size: {{ product.product_size }}</p>
-                                    <p>x{{ product.product_quantity }}</p>
+                                    <p>Size: {{ product.size }}</p>
+                                    <p>
+                                        <span class="me-1">{{ product.quantity }} x </span>
+                                        <span class="me-3 text-danger "
+                                            v-if="product.price_discount > 0">
+                                            {{ formatPrice(product.price_discount) }}
+                                        </span>
+                                        <span :class="{ 'text-decoration-line-through ': product.price_discount > 0 }">
+                                            {{ formatPrice(product.price) }}
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4 accordion-price">
-                            <p class="fs-6">{{ formatPrice(product.product_price) }}</p>
+                        <div class="purchase-price">
+                            <p v-if="product.price_discount > 0">{{ formatPrice(product.price_discount*product.quantity) }}</p>
+                            <p v-else>{{ formatPrice(product.price*product.quantity) }}</p>
                         </div>
                     </div>
                 </div>
             </router-link>
             <hr>
-            <div class="accordion-btn">
-                <div>
-                    <span>Thành tiền: </span><span class="fs-4 ms-3">{{ formatPrice(purchase.total_price) }}</span>
+            <div class="purchase-btn">
+                <div class="purchase-price__item">
+                    <p class="fw-bold">Thành tiền: </p>
+                    <p class="total-price">{{ formatPrice(purchase.total_price) }}</p>
                 </div>
-                <button
-                    v-if="purchase.status.id == 1"
-                    type="button"
-                    class="btn btn-danger"
-                    @click="cancleOrder(purchase)"
-                >
-                    Hủy đơn
-                </button>
-                <div v-else-if="purchase.status.id == 9">
+                <div class="purchase-btn__item">
                     <button
+                        v-if="purchase.status.id == 1"
                         type="button"
-                        class="btn btn-success me-3"
+                        class="btn btn-danger"
+                        @click="cancleOrder(purchase)"
+                    >
+                        Hủy đơn
+                    </button>
+                    <button
+                        v-if="purchase.status.id == 9"
+                        type="button"
+                        class="btn btn-warning me-3"
                         @click="openModel(purchase.order_details)"
                     >
                         Đánh giá
                     </button>  
                     <button
+                        v-if="purchase.status.id == 9"
                         type="button"
-                        class="btn btn-warning"
+                        class="btn btn-light"
                     >
                         Mua lại
+                    </button> 
+                    <button
+                        v-else-if="purchase.status.id == 10"
+                        type="button"
+                        class="btn btn-secondary"
+                    >
+                        Đã hủy
+                    </button>              
+                    <button
+                        v-else-if="purchase.status.id == 7"
+                        type="button"
+                        class="btn btn-success"
+                        v-if="!isClicked"
+                        @click="receiptOrder(purchase)"
+                    >
+                        Đã nhận hàng
                     </button>  
                 </div>
-                <button
-                    v-else-if="purchase.status.id == 10"
-                    type="button"
-                    class="btn btn-secondary"
-                >
-                    Đã hủy
-                </button>              
-                <button
-                    v-else-if="purchase.status.id == 7"
-                    type="button"
-                    class="btn btn-success"
-                    v-if="!isClicked"
-                    @click="receiptOrder(purchase)"
-                >
-                    Đã nhận hàng
-                </button>  
-                <button v-else class="btn btn-success" disabled>
-                    Đã nhận hàng
-                </button>
             </div>
             <div v-if="myModel">
                 <div class="modal d-block">
@@ -140,7 +155,7 @@
                 myModel: false,
                 selectedPurchase: null,
                 // review: {
-                //     'product_id': this.id,
+                //     'id': this.id,
                 //     'user_id': "",
                 //     'content': "",
                 //     'rate': 0,
@@ -150,6 +165,11 @@
                     review: []
                 }
             };
+        },
+        watch: {
+            purchases(newPurchases) {
+                this.purchasesList = newPurchases.slice();
+            },
         },
         methods: {
             getImage,
@@ -256,66 +276,3 @@
         
     };
 </script>
-
-<style>
-    .accordion-item {
-        background-color: #fffdfd;
-        box-shadow: 0 0 10px #00000012;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
-    .accordion-item img {
-        border-radius: 4px;
-    }
-
-    .accordion-item hr {
-        height: 1px;
-        color: #aeaeaeee;
-    }
-
-    .accordion-status {
-        display: flex;
-        justify-content: end;
-    }
-    
-    .accordion-status span {
-        padding: 0 10px ;
-    }
-    
-    .accordion-status span:nth-child(1) {
-        border-right: 1px solid #ccc;
-        color: #26aa99;
-    }
-
-    .accordion-status span:nth-child(2) {
-        color: orangered;
-        text-transform: uppercase;
-    }
-
-    .accordion-price {
-        display: flex;
-        align-items: center;
-        justify-content: end;
-    }
-    
-    .accordion-btn {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-items: flex-end;
-    }
-    
-    .accordion-btn button {
-        margin: 10px 0;
-        padding: 8px 30px ;
-    }
-    .accordion-btn span:nth-child(2) {
-        color: #0167f3;
-    }
-
-    .modal-content {
-        max-height: 500px;
-        overflow-y: auto;
-    }
-</style>

@@ -2,19 +2,15 @@
     <div class="detail-image">
         <div class="d-flex">
             <div class="d-flex flex-column">
-                <div class="left-image">
-                    <img class="demo" :src="getImage(product.image)" alt="" @mouseover="changPicture(product.image)"
-                        :class="{ active: product.image === activeIndex ? true : false }">
-                </div>
-                <div v-for="(image, index) in product.images" :key="image" class="left-image"
-                    @mouseover="changPicture(image.image)">
-                    <img class="demo" :src=getImage(image.image) alt=""
-                        :class="{ active: image.image === activeIndex ? true : false }" width="100">
+                <div v-for="img in isColorSelected.items" :key="img" class="left-image"
+                    @mouseover="changPicture(img.image)">
+                    <img class="demo" :src=getImage(img.image) alt=""
+                        :class="{ active: img.image === activeImage ? true : false }" width="100">
                 </div>
             </div>
             <div class="container" @mousemove="handleMouseMove" @mouseleave="resetZoom">
                 <div class="mySlides">
-                    <img :src="getImage(image)" :style="zoomStyle" class="img-main">
+                    <img :src="getImage(activeImage)" :style="zoomStyle" class="img-main">
                 </div>
             </div>
         </div>
@@ -25,21 +21,29 @@ import { getImage } from '../../../utils';
 export default {
     props: {
         product: { type: Object, required: true },
+        isColorSelected: { type: Object, required: true },
     },
     data() {
         return {
-            image: this.product.image,
-            activeIndex: this.product.image,
+            activeImage: this.product.image,
             zoomStyle: {
                 transform: 'scale(1)', // Tỷ lệ phóng ban đầu
             },
         };
     },
+    watch: {
+        // Watch for changes in the 'product' prop
+        'isColorSelected': {
+            immediate: true, // Run the handler immediately on component mount
+            handler(newValue) {
+                this.activeImage = newValue.items[0].image;
+            },
+        },
+    },
     methods: {
         getImage,
         changPicture(image) {
-            this.image = image;
-            this.activeIndex = image;
+            this.activeImage = image;
         },
         handleMouseMove(event) {
             const container = event.currentTarget;
@@ -75,12 +79,11 @@ export default {
 }
 
 .demo {
-    width: 70px;
-    height: 100px;
+    width: 90px;
+    height: 120px;
 }
 
 .img-main {
-    width: 500px !important;
     height: 700px;
 }
 </style>

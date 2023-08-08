@@ -6,6 +6,7 @@
         <thead>
             <tr role="row">
                 <th>#</th>
+                <th>Màu sắc</th>
                 <th>Hình ảnh</th>
                 <th>Tùy chọn</th>
             </tr>
@@ -17,6 +18,9 @@
             >
                 <td>
                     {{ index + 1 }}
+                </td>
+                <td>
+                    {{ image.color }}
                 </td>
                 <td>
                     <img :src="getImage(image.image)"

@@ -5,6 +5,9 @@ class FavoriteService {
     }
     async create(id, data) {
         return (await this.api.post(`/add/${id}`, data)).data;
+    }    
+    async addToCart(id, data) {
+        return (await this.api.post(`/add-to-cart/${id}`, data)).data;
     }
     async getFavorite(id) {
         return (await this.api.get(`/${id}`)).data;
@@ -12,8 +15,11 @@ class FavoriteService {
     async updateQuantity(id, quantity, data) {
         return (await this.api.put(`/${id}/${quantity}`, data)).data;
     }
-    async delete(user, product) {
-        return (await this.api.delete(`/${user}/${product}`)).data;
+    async deleteByUser(user, product) {
+        return (await this.api.delete(`/delete-by-user/${user}/${product}`)).data;
+    }
+    async delete(id) {
+        return (await this.api.delete(`/${id}`)).data;
     }
 }
 export default new FavoriteService();

@@ -78,6 +78,7 @@
   .skin-blue .sidebar-menu > li > .treeview-menu {
     margin: 0;
     background: #f1f1f1;
+    margin-top: -4px;
   }
   .skin-blue .sidebar a {
     color: #3f3f3f;

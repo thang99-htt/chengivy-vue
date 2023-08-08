@@ -28,24 +28,9 @@
             <ErrorMessage name="description" class="error-feedback" />
         </div>
         <div class="form-group">
-            <button class="me-2 btn btn-success">
-                <i class="fas fa-save"></i> Lưu
-            </button>
-            <button
-                v-if="permissionLocal.id"
-                type="button"
-                class="btn btn-danger"
-                @click="deletePermission"
-            >
-                <i class="fas fa-trash"></i> Xóa
-            </button>
-            <button
-                v-else
-                class="btn btn-primary"
-                @click="reset"
-            >
-                <i class="fas fa-redo"></i> Hủy
-            </button>
+            <input type="submit" name="btnSave" value="Thực hiện">
+            <input type="button" name="btnDelete" value="Xóa" v-if="permissionLocal.id">
+            <input type="button" name="btnBack" value="Hủy" v-else @click="reset">
         </div>
     </Form>
     
@@ -80,7 +65,6 @@
             return {
                 permissionLocal: this.permission,
                 permissionFormSchema,
-                searchText: "",
             };
         },
         methods: {
@@ -94,11 +78,6 @@
                 this.permissionLocal.name = "";
                 this.permissionLocal.description = "";
             },
-        },
-        computed: {
-            datetime () {
-                return new Date()
-            }
         },
     };
 </script>

@@ -3457,7 +3457,7 @@ table.projects tr td:first-child {
 
 .content-wrapper {
     padding-top: 50px;
-    min-height: 785px !important;
+    min-height: 500px !important;
 }
 
 .swal2-popup.swal2-toast.swal2-show {
@@ -3492,7 +3492,7 @@ table.projects tr td:first-child {
 
 .btn-show, 
 .btn-hide {
-    width: 50px;
+    width: 70px;
     height: 20px;
     padding: 0 !important;
     font-size: 12px !important;

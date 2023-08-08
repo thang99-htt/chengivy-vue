@@ -1,197 +1,129 @@
 <template>
-    <table
-        aria-describedby="example1_info" role="grid" 
-        class="example1 table table-bordered table-striped dataTable"
-    >
-      <thead>
-        <tr role="row">
-            <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">Họ tên</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">CMT/CCCD</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Email</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Số điện thoại</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Giới tính</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày sinh</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Địa chỉ</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Trạng thái</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Tùy chọn</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr role="row"
-            v-for="(staff, index) in staffs"
-            :key="staff"
-            :class="{ active: index === activeIndex }"
-        >
-            <td class="sorting_1" >
-                {{ index + 1 }}
-            </td>
-            <td>{{ staff.name }}</td>
-            <td>{{ staff.identity_card }}</td>
-            <td>{{ staff.email }}</td>
-            <td>{{ staff.phone }}</td>
-            <td>
-                <span v-if="staff.gender === 'Male'">Nam</span>
-                <span v-if="staff.gender === 'Female'">Nữ</span>
-            </td>
-            <td>{{  new Date(staff.birth_date).toLocaleString() }}</td>
-            <td>{{ staff.address }}</td>
-            <td>
-                <button
-                    class="btn-sm"
-                    :class="[staff.status == 1 ? 'btn-show' : 'btn-hide']"
-                    @click="statusUpdate(staff)"
-                >
-                    {{staff.status == 1 ? 'Kích hoạt' : 'Tạm khóa'}}    
-                </button>
-            </td>
-            <td>
-                <button
-                    type="button"
-                    class="ml-2 btn btn-primary"
-                >
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button
-                    type="button"
-                    class="ms-2 btn btn-success"
-                >
-                    <router-link
-                          :to="{
-                              name: 'staff.edit',
-                              params: { id: staff.id },
-                          }" 
-                    >
-                        <i class="fa fa-pen"></i>
-                    </router-link>
-                </button>
-                <button
-                    v-if="staff.id"
-                    type="button"
-                    class="ms-2 btn btn-danger"
-                    @click="deleteStaff(staff.id)"
-                >
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-      </tbody>
+    <table class="example1 table table-bordered table-striped dataTable">
+        <thead>
+            <tr role="row">
+                <th width="2%">ID</th>
+                <th width="12%">Họ tên</th>
+                <th width="4%">Email</th>
+                <th width="8%">Số điện thoại</th>
+                <th width="6%">Giới tính</th>
+                <th width="14%">Địa chỉ</th>
+                <th width="16%">Vai trò</th>
+                <th width="8%">Trạng thái</th>
+                <th width="6%">Tùy chọn</th>
+                <th width="4%">Chọn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr role="row" v-for="(staff, index) in staffsList" :key="staff">
+                <td>{{ staff.id }}</td>
+                <td>{{ staff.name }}</td>
+                <td>{{ staff.email }}</td>
+                <td>{{ staff.phone }}</td>
+                <td>{{ staff.gender }}</td>
+                <td>{{ staff.address }}</td>
+                <td>
+                    <div v-for="role in staff.roles" class="btn-staff">
+                        {{ role.name }}
+                    </div>    
+                </td>
+                <td>
+                    <button class="btn-sm" :class="[staff.actived == 1 ? 'btn-show' : 'btn-hide']"
+                        @click="statusUpdate(staff)">
+                        {{ staff.actived == 1 ? 'Kích hoạt' : 'Tạm khóa' }}
+                    </button>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn" @click="showModalEdit(staff.id)">
+                        <img src="/images/icon/iconedit.png" alt="">
+                    </button>
+                </td>
+                <td class="text-center">
+                    <input type="checkbox" @change="idSelected(staff.id)" :checked="selectedIds.includes(staff.id)">
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="9" class="text-center text-bold">Chọn tất cả</th>
+                <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
+            </tr>
+        </tfoot>
     </table>
 </template>
 
 <script>
-    import $ from 'jquery'
-    import StaffService from "@/services/admin/staff.service";
-    import 'datatables.net'
-    import 'datatables.net-bs'
-    
-    export default {
-        name: 'StaffList',
-        components: {
-            
-        },
-        props: {
-            staffs: { type: Array, default: [] },
-            activeIndex: { type: Number, default: -1 },
-        },
-        mounted() {
-            StaffService.getAll().then((response) => {
-                this.staffs = response;
-                this.$nextTick(() => {
-                    $('.example1').DataTable()
-                })
-            });
-        },
-        data() {
-            return {
-                staffs: [],
-                status: 0,
-            };
-        },
-        beforeUpdate() {
-            $('.example1').DataTable().destroy();
-        },
-        methods: {
-            async retrieveStaffs() {
-                try {
-                    this.staffs= await StaffService.getAll();
-                    this.$nextTick(() => {
-                        $('.example1').DataTable();
-                    })
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            refreshList() {
-                this.retrieveStaffs();
-            },
-            deleteStaff(id) {
-                this.$swal.fire({
-                    title: 'Bạn có chắc?',
-                    text: "Bạn sẽ không thể hoàn tác lại điều này!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.value) {
-                        StaffService.delete(id).then((res) => {
-                            if(res.success) {
-                                this.refreshList();
-                            }
-                        })
-                        this.$swal.fire('Đã xóa thành công!','','success')
-                    }
-                })
-            },
-            statusUpdate(staff) {
-                try {
-                    console.log(staff.status);
-                    StaffService.updateStatus(staff.id, staff.status)
-                    .then( (response) => {
-                        this.refreshList();
-                        console.log(response.staff.status);
-                    })                  
+import StaffService from "@/services/admin/staff.service";
 
-                } catch (error) {
-                    console.log(error);
-                }   
-            },
+export default {
+    name: 'StaffList',
+    props: {
+        staffs: { type: Array, required: true },
+        staffID: { type: Number, required: true },
+        selectedIds: { type: Array, required: true },
+        showModal: { type: Boolean, required: true },
+    },
+    computed: {
+        staffsList() {
+            return this.staffs;
         },
-        
-    };
+    },
+    data() {
+        return {
+            status: 0,
+        };
+    },
+    methods: {
+        statusUpdate(staff) {
+            try {
+                StaffService.updateStatus(staff.id, staff.status).then(() => {
+                    this.$parent.refreshList();
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        idSelected(id) {
+            const index = this.selectedIds.indexOf(id);
+            if (index === -1) {
+                // Nếu id chưa tồn tại trong mảng, thêm nó vào
+                this.selectedIds.push(id);
+            } else {
+                // Ngược lại, loại bỏ id khỏi mảng
+                this.selectedIds.splice(index, 1);
+            }
+        },
+        idAllSelected() {
+            if(this.selectedIds.length == this.staffsList.length) {
+                this.selectedIds.splice(0, this.selectedIds.length); // Bỏ hết các phần tử trong selectedIds
+            } else if(this.selectedIds.length) {
+                this.selectedIds.splice(0, this.selectedIds.length);
+                this.staffs.forEach(staff => {
+                    this.selectedIds.push(staff.id);
+                });
+            } else {
+                this.staffs.forEach(staff => {
+                    this.selectedIds.push(staff.id);
+                });
+            }
+        },
+        showModalEdit(staffID) {
+            this.$emit('update-modal', true);
+            this.$emit('update-staffID', staffID);
+        }
+    },
+
+};
 </script>
 
 <style>
-    
-    @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
-    @import url('/static/css/bootstrap.min.css');
-
-    table.dataTable thead .sorting:after,
-    table.dataTable thead .sorting_asc:after,
-    table.dataTable thead .sorting_desc:after {
-        font-family: 'FontAwesome';
-    }
-    
-    table.dataTable thead .sorting:after {
-        content: '\f0dc';
-    }
-    
-    table.dataTable thead .sorting_asc:after {
-        content: '\f0dd';
-    }
-    
-    table.dataTable thead .sorting_desc:after {
-        content: '\f0de';
-    }
-
-    select.input-sm {
-        line-height: unset;
-    }
-    .btn-show,
-    .btn-hide {
-        width: 80px !important;
-    }
+.btn-staff {
+    color: #000;
+    background-color: #f2a900;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 4px 10px;
+    margin-bottom: 6px;
+}
 </style>

@@ -4,10 +4,12 @@
             <div class="col-md-12">
                 <div v-if="permission" class="box box-info">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Hiệu chỉnh Vai trò</h3>
+                        <router-link to="/admin/permissions">
+                            <input type="button" name="btnBack" value="Trở về">
+                        </router-link>
                     </div>
                     
-                    <div class="box-body">
+                    <div class="box-body offset-3 col-6">
                         <PermissionForm
                             :permission="permission"
                             @submit:permission="updatePermission"

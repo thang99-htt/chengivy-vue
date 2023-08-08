@@ -4,51 +4,77 @@
         :validation-schema="passwordFormSchema"
     > 
         <div class="form-group">
-            <label for="password">Mật khẩu hiện tại
-                <span class="error-feedback">*</span>
-            </label>
-            <Field 
-                name="password"
-                type="password"
-                class="form-control"
-                v-model="passwordLocal.password"
-            />
-            <ErrorMessage name="password" class="error-feedback" />            
+            <div class="form-group__container">
+                <div class="form-group__label">
+                    <label for="password">Mật khẩu hiện tại
+                        <span class="error-feedback">*</span>
+                    </label>
+                </div>
+                <div class="form-group__input">
+                    <div class="input-group">
+                        <Field 
+                            name="password"
+                            :type="showPassword ? 'text' : 'password'"
+                            class="form-control"
+                            v-model="passwordLocal.password"
+                        />
+                        <button @mousedown="showPassword = !showPassword" @mouseup="showPassword = !showPassword">
+                            <i class="bi bi-eye-fill"></i>
+                        </button>     
+                    </div>
+                    <ErrorMessage name="password" class="error-feedback" />       
+                </div>
+            </div>
         </div>
         <div class="form-group">
-            <label for="new_password">Mật khẩu mới
-                <span class="error-feedback">*</span>
-            </label>
-            <Field 
-                name="new_password"
-                type="password"
-                class="form-control"
-                v-model="passwordLocal.new_password"
-            />
-            <ErrorMessage name="new_password" class="error-feedback" />            
+            <div class="form-group__container">
+                <div class="form-group__label">
+                    <label for="new_password">Mật khẩu mới
+                        <span class="error-feedback">*</span>
+                    </label>
+                </div>
+                <div class="form-group__input">
+                    <div class="input-group">
+                        <Field 
+                            name="new_password"
+                            type="password"
+                            class="form-control"
+                            v-model="passwordLocal.new_password"
+                        />
+                        <button @mousedown="showPasswordNew = !showPasswordNew" @mouseup="showPasswordNew = !showPasswordNew">
+                            <i class="bi bi-eye-fill"></i>
+                        </button>
+                    </div>
+                    <ErrorMessage name="new_password" class="error-feedback" />    
+                </div>
+            </div>
         </div>
         <div class="form-group">
-            <label for="confirm_password">Nhập lại mật khẩu
-                <span class="error-feedback">*</span>
-            </label>
-            <Field 
-                name="confirm_password"
-                type="password"
-                class="form-control"
-                v-model="passwordLocal.confirm_password"
-            />
-            <ErrorMessage name="confirm_password" class="error-feedback" />            
+            <div class="form-group__container">
+                <div class="form-group__label">
+                    <label for="confirm_password">Nhập lại mật khẩu
+                        <span class="error-feedback">*</span>
+                    </label>
+                </div>
+                <div class="form-group__input">
+                    <div class="input-group">
+                        <Field 
+                            name="confirm_password"
+                            type="password"
+                            class="form-control"
+                            v-model="passwordLocal.confirm_password"
+                        />
+                        <button @mousedown="showPasswordConfirm = !showPasswordConfirm" @mouseup="showPasswordConfirm = !showPasswordConfirm">
+                            <i class="bi bi-eye-fill"></i>
+                        </button>
+                    </div>
+                    <ErrorMessage name="confirm_password" class="error-feedback" />    
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <button class="me-2 btn btn-success">
-                <i class="fas fa-save"></i> Lưu
-            </button>
-            <button
-                class="btn btn-primary"
-                @click="reset"
-            >
-                <i class="fas fa-redo"></i> Hủy
-            </button>
+        <div class="form-group text-center mb-0">
+            <input type="button" name="btnBack" value="Hủy" @click="reset">
+            <input type="submit" name="btnSave" value="Thực hiện">
         </div>
     </Form>
     
@@ -64,31 +90,40 @@
             Field,
             ErrorMessage,
         },
-        emits: ["submit:password"],
+        emits: ["submit:accountPassword"],
         props: {
             accountPassword: { type: Object, required: true },
         },
         data() {
             const passwordFormSchema = yup.object().shape({
-                // phone: yup
-                // .string()
-                // .required("Số điện thoại phải có giá trị.")
-                // .matches(
-                //     /((09|03|07|08|05)+([0-9]{8})\b)/g,
-                //     "Số điện thoại không hợp lệ."
-                // ),
-                // name: yup
-                // .string()
-                // .required("Họ tên phải có giá trị."),
+                password: yup
+                .string()
+                .required("Vui lòng nhập mật khẩu.")
+                .min(6, "Mật khẩu phải ít nhất 6 ký tự.")
+                .max(30, "Mật khẩu có nhiều nhất 12 ký tự."),
+                new_password: yup
+                .string()
+                .required("Vui lòng nhập mật khẩu mới.")
+                .min(6, "Mật khẩu phải ít nhất 6 ký tự.")
+                .max(30, "Mật khẩu có nhiều nhất 12 ký tự."),
+                confirm_password: yup
+                .string()
+                .required("Vui lòng nhập lại mật khẩu.")
+                .min(6, "Mật khẩu phải ít nhất 6 ký tự.")
+                .max(30, "Mật khẩu có nhiều nhất 30 ký tự.")
+                .oneOf([yup.ref('new_password'), null], 'Mật khẩu phải khớp.'),
             });
             return {
                 passwordFormSchema,
                 passwordLocal: this.accountPassword,
+                showPassword: false,
+                showPasswordNew: false,
+                showPasswordConfirm: false,
             };
         },
         methods: {
             submitPassword() {
-                this.$emit("submit:password", this.passwordLocal);
+                this.$emit("submit:accountPassword", this.passwordLocal);
             },
             reset () {
                 this.passwordLocal.password = "";
@@ -98,4 +133,3 @@
         },
     };
 </script>
-

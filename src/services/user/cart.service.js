@@ -9,14 +9,14 @@ class CartService {
     async getCart(id) {
         return (await this.api.get(`/${id}`)).data;
     }
-    async updateQuantity(id, quantity, data) {
-        return (await this.api.put(`/quantity/${id}/${quantity}`, data)).data;
+    async updateQuantity(data) {
+        return (await this.api.put(`/quantity`, data)).data;
     }
-    async updateSize(id, size, quantity, data) {
-        return (await this.api.put(`/size/${id}/${size}/${quantity}`, data)).data;
+    async updateColorAndSize(data) {
+        return (await this.api.put(`/size-and-color`, data)).data;
     }
-    async delete(id) {
-        return (await this.api.delete(`/${id}`)).data;
+    async delete(user, product, color, size) {
+        return (await this.api.delete(`/${user}/${product}/${color}/${size}`)).data;
     }
 }
 export default new CartService();

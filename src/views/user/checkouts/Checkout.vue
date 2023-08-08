@@ -1,83 +1,43 @@
 <template>
     <div class="mt-4 mb-5">
-        <div class="cart-list list">
-            <div class='container'>
-                <div v-if="stepCheck == 0" class="checkout-progress step-1"  id="" data-current-step="1">
-                    <div class="progress-bar">
-                        <div class="step step-1 active">
-                            <span>1</span>
-                            <div class="fa fa-check"></div>
-                            <div class="step-label">Vận chuyển</div>
-                        </div>
-                        <div class="step step-2">
-                            <span>2</span>
-                            <div class="fa fa-check"></div>
-                            <div class="step-label">Thanh toán</div>
-                        </div>
-                        <div class="step step-3">
-                            <span>3</span>
-                            <div class="fa fa-check"></div>
-                            <div class="step-label">Hoàn tất</div>
-                        </div>
+        <div class='container'>
+            <div class="checkout-progress" :class="(stepCheck === 0 || stepCheck === 1) || stepCheck === 2 ? 'step-1' : 'step-2'">
+                <div v-if="stepCheck == 1" class="step-1 checkout-progress-fill-1"></div>
+                <div v-if="stepCheck == 2" class="step-1 checkout-progress-fill-2"></div>
+                <div class="progress-bar">
+                    <div class="step step-1 active" :class="{'step-fill-1': stepCheck === 1 || stepCheck === 2}">
+                        <span>1</span>
+                        <div class="fa fa-check" :class="{'check-1': stepCheck === 1 || stepCheck === 2}"></div>
+                        <div class="step-label">Vận chuyển</div>
+                    </div>
+                    <div class="step step-2" :class="{'active step-fill-2': stepCheck === 2}">
+                        <span>2</span>
+                        <div class="fa fa-check" :class="{'check-2': stepCheck === 2}"></div>
+                        <div class="step-label">Kiểm tra & Thanh toán</div>
+                    </div>
+                    <div class="step step-3">
+                        <span>3</span>
+                        <div class="fa fa-check"></div>
+                        <div class="step-label">Thành công</div>
                     </div>
                 </div>
-                <div v-if="stepCheck == 1" class="checkout-progress step-1" id="" data-current-step="1">
-                    <div class="step-1 checkout-progress-fill-1"></div>
-                    <div class="progress-bar">
-                        <div class="step step-1 active step-fill-1">
-                            <span>1</span>
-                            <div class="fa fa-check check-1"></div>
-                            <div class="step-label">Vận chuyển</div>
-                        </div>
-                        <div class="step step-2">
-                            <span>2</span>
-                            <div class="fa fa-check"></div>
-                            <div class="step-label">Thanh toán</div>
-                        </div>
-                        <div class="step step-3">
-                            <span>3</span>
-                            <div class="fa fa-check"></div>
-                            <div class="step-label">Hoàn tất</div>
-                        </div>
-                    </div>
-                </div>
-                <div v-if="stepCheck == 2" class="checkout-progress step-2" id="" data-current-step="1">
-                    <div class="step-1 checkout-progress-fill-2"></div>
-                    <div class="progress-bar">
-                        <div class="step step-1 active step-fill-1">
-                            <span>1</span>
-                            <div class="fa fa-check check-1"></div>
-                            <div class="step-label">Vận chuyển</div>
-                        </div>
-                        <div class="step step-2 active step-fill-2">
-                            <span>2</span>
-                            <div class="fa fa-check check-2"></div>
-                            <div class="step-label">Thanh toán</div>
-                        </div>
-                        <div class="step step-3">
-                            <span>3</span>
-                            <div class="fa fa-check"></div>
-                            <div class="step-label">Hoàn tất</div>
-                        </div>
-                    </div>
-                </div> 
+            </div>
+            <div class="dash_blog">
+                <div class="liveAlert"></div>
                 <CheckoutShipping 
                     v-if="stepCheck == 0"
                     :order="order"
                 />
                 <CheckoutPayment 
                     v-if="stepCheck == 1"
+                    :addressOrder="addressOrder"
                     :carts="carts"
                     :order="order"
-                    @submit:order="createOrder"
                 />
                 <CheckoutComplete v-if="stepCheck == 2"/>
                 <div class="button-container">
-                    <div v-if="stepCheck == 0" class="btn btn-prev disabled" @click="shipping">Trước đó</div>
-                    <div v-if="stepCheck == 1" class="btn btn-prev" @click="shipping">Trước đó</div>
                     <div v-if="stepCheck == 0" class="btn btn-next" @click="payment">Tiếp tục</div>
-                    <!-- <div v-if="stepCheck == 1" class="btn btn-next" @click="complete">Hoàn tất thanh toán</div> -->
-                    <!-- <div v-if="stepCheck == 2" class="btn btn-next" @click="payment">Tiếp tục mua sắp</div> -->
+                    <div v-if="stepCheck == 1 && order.payment_id != 3" class="btn btn-next" @click="createOrder(order)">Hoàn tất thanh toán</div>
                 </div>
             </div>
         </div>
@@ -89,6 +49,8 @@
     import CheckoutComplete from "@/components/user/checkouts/CheckoutComplete.vue";
     import OrderService from "@/services/user/order.service";
     import {mapGetters} from 'vuex';
+    import { showAlert } from '@/utils';
+
     export default {
         components: {
             CheckoutShipping,
@@ -99,11 +61,13 @@
             return {
                 stepCheck: 0,  
                 order: {
-                    'contact_id': 0,
-                    'payment_id': 1,
+                    'delivery_address': "",
+                    'payment_method_id': 1,
+                    'voucher_id': 1,
                     'note': "",
                     'paid': 0
                 },
+                addressOrder: null
             }
         },
         methods: {
@@ -117,58 +81,41 @@
                 this.stepCheck = 0;
             },
             async createOrder(data) {
-                try {
-                    const Toast = this.$swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', this.$swal.stopTimer)
-                            toast.addEventListener('mouseleave', this.$swal.resumeTimer)
-                        }
-                    });
-                    await OrderService.create(this.getUser.id, data).then((response) => {
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Đặt hàng thành công.'
-                        })
-                    });
-                    this.stepCheck = 2;
-                } catch (error) {
-                    console.log(error);
+                if(this.productBuyNow) {
+                    try {
+                        await OrderService.addBuyNow(this.getUser.id, Object.assign({}, data, this.productBuyNow)).then((response) => {
+                            showAlert(response);
+                            this.$store.dispatch('removeProductBuyNow');
+                        });
+                        this.stepCheck = 2;
+                    } catch (error) {
+                        console.log(error.response);
+                    }
+                } else {
+                    try {
+                        await OrderService.create(this.getUser.id, data).then((response) => {
+                            showAlert(response);
+                        });
+                        this.stepCheck = 2;
+                    } catch (error) {
+                        console.log(error);
+                    }
                 }
             },
         },
         computed: {
-            ...mapGetters(['getUser', 'carts']),
+            ...mapGetters(['getUser', 'carts', 'productBuyNow']),
         },
     }
 </script>
     
 <style>
-    .progress-bar {
-        flex-direction: unset;
-        overflow: unset;
-    }
     .checkout-progress {
         width: 50%;
-        margin: 0px auto;
+        margin: 30px auto 0;
         font-size: 25px;
         font-weight: 900;
         position: relative;
-    }
-    .checkout-progress:before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        height: 10px;
-        width: 100%;
-        background-color: #ccc;
-        -webkit-transform: translateY(-50%) perspective(1000px);
-        transform: translateY(-50%) perspective(1000px);
     }
     .checkout-progress.step-2:after {
         -webkit-transform: scaleX(0.333) translateY(-50%) perspective(1000px);
@@ -193,9 +140,14 @@
     .checkout-progress .progress-bar {
         width: 100%;
         display: flex;
-        height: 100px;
+        height: 10px;
         justify-content: space-between;
         align-items: center;
+        flex-direction: unset;
+        overflow: unset;
+        background-color: #ccc;
+        position: relative;
+        box-shadow: none;
     }
     .checkout-progress .progress-bar .step {
         z-index: 2;
@@ -203,23 +155,18 @@
     }
     .checkout-progress .progress-bar .step .step-label {
         position: absolute;
-        top: calc(100% + 25px);
+        top: calc(100% + 15px);
         left: 50%;
         -webkit-transform: translateX(-50%) perspective(1000px);
         transform: translateX(-50%) perspective(1000px);
         white-space: nowrap;
         font-size: 15px;
-        font-weight: 600;
-        color: #ccc;
+        font-weight: 500;
+        color: #2d2d2d;
         transition: 0.3s ease;
     }
-    @media (max-width: 767px) {
-        .checkout-progress .progress-bar .step .step-label {
-            top: calc(100% + 15px);
-        }
-    }
     .checkout-progress .progress-bar .step span {
-        color: #ccc;
+        color: #868686;
         transition: 0.3s ease;
         display: block;
         -webkit-transform: translate3d(0, 0, 0) scale(1) perspective(1000px);
@@ -232,7 +179,11 @@
         top: 7px;
     }
     .checkout-progress .progress-bar .step.active span, .checkout-progress .progress-bar .step.active .step-label {
-        color: #2C3E50;
+        font-weight: 600;
+    }
+    
+    .step.active span {
+        color: #2C3E50 !important;        
     }
     
     .checkout-progress .progress-bar .step.valid span {
@@ -266,61 +217,50 @@
         border: 5px solid #2C3E50;
     }
     .button-container {
-    display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        width: 100%;
-        margin: 20px auto 0px;
+        position: absolute;
+        bottom: 20px;
+        left: 0;
     }
     .button-container .btn {
         display: inline-block;
-        background-color: #2C3E50;
+        background-color: #000;
         color: #fff;
         padding: 10px 20px;
-        border-radius: 10px;
+        border-radius: 4px;
         text-transform: uppercase;
         font-size: 15px;
-        font-weight: 500;
-        border: 3px solid #2C3E50;
+        font-weight: 600;
+        letter-spacing: 2px;
         transition: 0.3s ease;
         cursor: pointer;
         text-align: center;
+        width: 380px;
+        margin-left: 25px;
     }
-    @media (max-width: 767px) {
-        .button-container .btn {
-            width: 100%;
-            margin-bottom: 15px;
-        }
-    }
-    .button-container .btn:hover {
-        background-color: transparent;
-        color: #2C3E50;
-        -webkit-transform: scale(1.02) perspective(1000px);
-        transform: scale(1.02) perspective(1000px);
-    }
-
     .checkout-progress-fill-1:before {
         content: "";
         position: absolute;
         left: 0;
-        top: 50%;
+        top: 5px;
         height: 10px;
         width: 50%;
         background-color: #00b141;
         -webkit-transform: translateY(-50%) perspective(1000px);
         transform: translateY(-50%) perspective(1000px);
+        z-index: 1;
     }
 
     .checkout-progress-fill-2:before {
         content: "";
         position: absolute;
         left: 0;
-        top: 50%;
+        top: 5px;
         height: 10px;
         width: 100%;
         background-color: #00b141;
         -webkit-transform: translateY(-50%) perspective(1000px);
         transform: translateY(-50%) perspective(1000px);
+        z-index: 2;
     }
 
     .step-fill-1:after,
@@ -333,4 +273,14 @@
         color: #fff !important;
     }
     
+    .dash_blog {
+        min-height: 750px;
+        background: #fafdff;
+        border-radius: 5px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        float: left;
+        width: 100%;
+        margin-top: 50px;
+        position: relative;
+    }
 </style>

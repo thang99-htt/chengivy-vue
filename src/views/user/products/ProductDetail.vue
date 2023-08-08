@@ -4,18 +4,26 @@
             <div class="detail">
                 <div class="container">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="liveAlert"></div>
+                        <div class="col-7">
                             <ProductDetailImage
                                 :product="product"
+                                :isColorSelected="isColorSelected"
                             /> 
                         </div>
-                        <div class="col-6">
+                        <div class="col-5">
                             <ProductDetailInfor
                                 :product="product"
+                                v-model:isColorSelected="isColorSelected"
+                                :inventoryLocal="inventoryLocal"
+                                :cart="cart"
                             />
                             <ProductDetailAddCart
                                 :product="product"
+                                :inventoryLocal="inventoryLocal"
                                 :cart="cart"
+                                :inventory="inventory"
+                                :isColorSelected="isColorSelected"
                                 @submit:cart="addToCart"
                             />
                         </div>
@@ -41,7 +49,7 @@
     import ReviewService from "@/services/user/review.service";
     
     import {mapGetters} from 'vuex';
-
+    import { showAlert } from '@/utils';
     
     export default {
         components: {
@@ -53,64 +61,77 @@
         props: {
             id: { type: String, required: true },
         },
+        watch: {
+            '$route.params.id'(newId) {
+                this.getProduct(newId);
+            },
+            inventoryLocal: {
+                handler() {
+                    this.findMatchingInventory();
+                },
+                deep: true, // Watch for nested changes inside inventoryLocal
+            },
+        },
         data() {
             return {
                 product: null,
                 cart: {
                     'product_id': this.id,
-                    'size': "",
+                    'size_id': "",
+                    'color_id': "",
                     'quantity': 1,
                 },
+                isColorSelected: null,
+                inventoryLocal: {
+                    'product_id': this.id,
+                    'size_id': "",
+                    'color_id': "",
+                },
+                inventory: null
             };
         },
         methods: {
             async getProduct(id) {
                 try {
                     this.product = await ProductService.getDetail(id);
-                    // console.log(this.cart.size);
+                    
+                    this.isColorSelected = Object.values(this.product.images)[0];
+                    this.inventoryLocal.color_id = this.isColorSelected.color_id;
+
+                    this.inventoryLocal.size_id = Object.values(this.product.inventories)[0].items.find(item => {
+                        return item.color_id === this.isColorSelected.color_id && item.total_final !== 0;
+                    }).size_id;
+
+                    // Cart
+                    this.cart.color_id = this.isColorSelected.color_id;
+                    this.cart.size_id = Object.values(this.product.inventories)[0].items.find(item => {
+                        return item.color_id === this.isColorSelected.color_id && item.total_final !== 0;
+                    }).size_id;
+
+                    this.findMatchingInventory();
                 } catch (error) {
                     console.log(error);
-                    // Chuyển sang trang NotFound đồng thời giữ cho URL không đổi
-                    this.$router.push({
-                        name: "notfound",
-                        params: {
-                            pathMatch: this.$route.path.split("/").slice(1)
-                        },
-                        query: this.$route.query,
-                        hash: this.$route.hash,
-                    });
                 }
             },
-            async addToCart(data) {
-                const Toast = this.$swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
-                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+            findMatchingInventory() {
+                this.inventory = null;
+                for (const item of Object.values(this.product.inventories)[0].items) {
+                    if (
+                        item.product_id == this.inventoryLocal.product_id &&
+                        item.size_id == this.inventoryLocal.size_id &&
+                        item.color_id == this.inventoryLocal.color_id
+                    ) {
+                        this.inventory = item;
                     }
-                })
+                }
+                
+            },
+            async addToCart(data) {
                 try {
                     if(this.getUser) {
                         await CartService.create(this.getUser.id, data).then(async (response) => {
-                            if(response == true) {
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Sản phẩm đã được thêm vào giỏ hàng.'
-                                });
-                                this.$store.commit('addToCart', await CartService.getCart(this.getUser.id, data.id));
-                                
-                            } else {
-                                this.$swal.fire({
-                                    icon: 'warning',
-                                    text: response.message
-                                    }
-                                )
-                            }
-                            // console.log(response);
+                            showAlert(response);
+                            this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                         });
                     } else {
                         Toast.fire({
@@ -128,7 +149,7 @@
             this.getProduct(this.id);
         },
         computed: {
-            ...mapGetters(['getUser'])
+            ...mapGetters(['getUser']),
         }
     };
 </script>

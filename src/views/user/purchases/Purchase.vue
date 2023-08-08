@@ -1,23 +1,30 @@
-<template>
-    <div class="ms-3">
-        <div class="box-header with-border p-0 mb-4">
-            <h3>Đơn hàng gần đây</h3>
+<template>    
+    <div class="profile-info">
+        <div class="liveAlert"></div>
+        <div class="purchase-filter">
+            <span :class="{'active': purchaseStatus == 0}" @click="purchaseStatus=0">Tất cả</span>
+            <span :class="{'active': purchaseStatus == 1}" @click="purchaseStatus=1">Chờ xác nhận</span>
+            <span :class="{'active': purchaseStatus == 2}" @click="purchaseStatus=2">Vận chuyển</span>
+            <span :class="{'active': purchaseStatus == 6}" @click="purchaseStatus=6">Đang giao</span>
+            <span :class="{'active': purchaseStatus == 9}" @click="purchaseStatus=9">Hoàn thành</span>
+            <span :class="{'active': purchaseStatus == 10}" @click="purchaseStatus=10">Đã hủy</span>
+            <span :class="{'active': purchaseStatus == 11}" @click="purchaseStatus=11">Trả hàng</span>
         </div>
-        <PurchaseList 
-            v-if="filteredPurchasesCount > 0"
-            :purchases="filteredPurchases"
-        />
-        <div v-else>
-            <img src="/images/cart/empty-cart.svg" class="d-block m-auto" alt="" />
-            <h6 class="text-center mt-4">Chưa có đơn hàng nào.</h6>
-            <div class="d-flex justify-content-center">
-                <router-link 
-                    :to="{name: 'home'}" 
-                >
-                    <button class="btn btn-dark mt-4">
-                        TIẾP TỤC MUA SẮM
-                    </button>
-                </router-link>
+        <div class="profile-item">
+            <PurchaseList 
+                v-if="filteredPurchasesCount > 0"
+                :purchases="filteredPurchases"
+            />
+            <div v-else class="m-auto">
+                <img src="/images/cart/empty-cart.svg" class="d-block m-auto" alt="" />
+                <h6 class="text-center mt-4">Chưa có đơn hàng nào.</h6>
+                <div class="d-flex justify-content-center">
+                    <a href="/products/all" class="button">
+                        <button class="btn">
+                            TIẾP TỤC MUA SẮM
+                        </button>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -35,6 +42,7 @@
         data() {
             return {
                 purchases: [],
+                purchaseStatus: 0
             };
         },
         methods: {
@@ -51,7 +59,14 @@
         },
         computed: {
             filteredPurchases() {
-                return this.purchases;
+                let filtered = [...this.purchases];
+                if (this.purchaseStatus === 0) {
+                    return [...this.purchases];
+                } else {
+                    return filtered = filtered.filter(item => {
+                        return item.status.id === this.purchaseStatus;
+                    });
+                }
             },
             filteredPurchasesCount() {
                 return this.filteredPurchases.length;

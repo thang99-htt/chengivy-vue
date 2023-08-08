@@ -29,7 +29,12 @@ import './assets/responsive.css';
 import './assets/admin.js';
 import './assets/bootstrap.bundle.min.js';
 
-import $ from 'jquery'
+import '../static/js/plugins/datatables/dataTables.bootstrap.css';
+import '../static/css/bootstrap.min.css';
+import '../static/unpkg.com_xlsx@0.18.5_dist_xlsx.full.min.js';
+
+import 'datatables.net'
+import 'datatables.net-bs'
 
 import router from "./router";
 
@@ -41,3 +46,19 @@ app.use(router)
    .mount('#app')
 
 app.config.globalProperties.$swal = Swal;
+
+var alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+var alertTrigger = document.getElementById('liveAlertBtn')
+
+function alert(message, type) {
+  var wrapper = document.createElement('div')
+  wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+
+  alertPlaceholder.append(wrapper)
+}
+
+if (alertTrigger) {
+  alertTrigger.addEventListener('click', function () {
+    alert('Nice, you triggered this alert message!', 'success')
+  })
+}

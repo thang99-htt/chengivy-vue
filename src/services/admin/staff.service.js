@@ -18,8 +18,8 @@ class StaffService {
     async updateStatus(id, status, data) {
         return (await this.api.put(`/${id}/${status}`, data)).data;
     }
-    async delete(id) {
-        return (await this.api.delete(`/${id}`)).data;
+    async delete(selectedIds) {
+        return (await this.api.delete("/", { data: selectedIds })).data;
     }
     async deleteAll() {
         return (await this.api.delete("/")).data;

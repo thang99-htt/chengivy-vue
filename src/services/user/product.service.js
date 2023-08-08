@@ -19,8 +19,8 @@ class ProductService {
         return (await this.api.get(`/detail/${id}`)).data;
     }
     
-    async getStock(product, size) {
-        return (await this.api.get(`/get-stock/product-${product}/size-${size}`)).data;
+    async getInventory(product, size) {
+        return (await this.api.get(`/get-inventory/product-${product}/size-${size}`)).data;
     }
     
 }

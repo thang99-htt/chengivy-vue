@@ -13,7 +13,8 @@
                         <div class="filters-panel">
                             <div class="filters-panel__wrapper">
                                 <div class="zds-accordion-item">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedSort = !isExpandedSort">
+                                    <button class="zds-accordion-item__trigger" id="color-145"
+                                        @click="isExpandedSort = !isExpandedSort">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span
@@ -50,11 +51,13 @@
                                     </div>
                                 </div>
                                 <div class="zds-accordion-item">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedCategory = !isExpandedCategory">
+                                    <button class="zds-accordion-item__trigger" id="color-145"
+                                        @click="isExpandedCategory = !isExpandedCategory">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span
-                                                    class="filters-panel__filter-name filters-panel__filter-name--highlight">Danh mục</span>
+                                                    class="filters-panel__filter-name filters-panel__filter-name--highlight">Danh
+                                                    mục</span>
                                             </span>
                                         </span>
                                         <span class="zds-accordion-item__icon-wrapper">
@@ -65,51 +68,43 @@
                                     <div v-show="isExpandedCategory" class="zds-accordion-item__panel">
                                         <fieldset class="filters-panel-group-item d-block">
                                             <div class="form-input filters-panel-group-item__value w-100"
-                                                v-for="(category, index) in categories"
-                                                :key="category"
+                                                v-for="(category, index) in categories" :key="category"
                                                 :class="{ 'filters-panel-group-item__value--checked': isCategorySelected(category.name) }"
-                                                @click.stop="categoryProducts(category)"
-                                            >
+                                                @click.stop="categoryProducts(category)">
                                                 <div class="form-input__wrapper d-flex justify-content-between">
                                                     <label class="form-input-checkbox">
                                                         <div class="form-input-checkbox__input-wrapper checkbox-type">
                                                             <input class="form-input-checkbox__input" type="checkbox"
                                                                 id="color-146" name="colorPrinted"
-                                                                data-qa-input-qualifier="colorPrinted"
-                                                                :value="category.id"
+                                                                data-qa-input-qualifier="colorPrinted" :value="category.id"
                                                                 @change="categoryProducts(category)">
                                                         </div>
                                                         <span class="form-input-checkbox__label">
                                                             <span class="filters-panel-group-item__text">{{ category.name
                                                             }}</span>
                                                         </span>
-                                                        <span class="zds-accordion-item__icon-wrapper zds-accordion-item__icon-child-category" 
-                                                            v-if="category.childs.length > 0" 
-                                                            @click="category.isExpandedChild = !category.isExpandedChild"
-                                                        >
+                                                        <span
+                                                            class="zds-accordion-item__icon-wrapper zds-accordion-item__icon-child-category"
+                                                            v-if="category.childs.length > 0"
+                                                            @click="category.isExpandedChild = !category.isExpandedChild">
                                                             <i v-if="category.isExpandedChild" class="bi bi-dash-lg"></i>
                                                             <i v-else class="bi bi-plus-lg"></i>
                                                         </span>
                                                     </label>
                                                 </div>
-                                                <ul v-show="category.isExpandedChild" class="inner-sub-category" v-if="category.childs.length > 0">
-                                                    <li
-                                                        v-for="(child, index) in category.childs"
-                                                        :key="child"
+                                                <ul v-show="category.isExpandedChild" class="inner-sub-category"
+                                                    v-if="category.childs.length > 0">
+                                                    <li v-for="(child, index) in category.childs" :key="child"
                                                         :class="{ 'filters-panel-group-item__value--checked': isCategorySelected(child.name) }"
-                                                        @click.stop="categoryProducts(child); $event.stopPropagation()"
-                                                    >
+                                                        @click.stop="categoryProducts(child); $event.stopPropagation()">
                                                         <div>
                                                             <div class="form-input-checkbox__input-wrapper checkbox-type">
                                                                 <input class="form-input-checkbox__input" type="checkbox"
                                                                     id="color-146" name="colorPrinted"
-                                                                    data-qa-input-qualifier="colorPrinted"
-                                                                    :value="child.id"
+                                                                    data-qa-input-qualifier="colorPrinted" :value="child.id"
                                                                     @change="categoryProducts(child)">
                                                             </div>
-                                                            <span
-                                                                v-if="child.status == 1"
-                                                            >
+                                                            <span v-if="child.status == 1">
                                                                 {{ child.name }}
                                                             </span>
                                                         </div>
@@ -120,37 +115,40 @@
                                     </div>
                                 </div>
                                 <div class="zds-accordion-item">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedType = !isExpandedType">
+                                    <button class="zds-accordion-item__trigger" id="color-145"
+                                        @click="isExpandedBrand = !isExpandedBrand">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
-                                                <span class="filters-panel__filter-name filters-panel__filter-name--highlight">
-                                                    Thể Loại
+                                                <span
+                                                    class="filters-panel__filter-name filters-panel__filter-name--highlight">
+                                                    Thương hiệu
                                                 </span>
-                                                <span class="filters-panel__filter-count ms-2">{{ selectedTypeIds.length }}</span>
+                                                <span class="filters-panel__filter-count ms-2">{{ selectedBrandIds.length
+                                                }}</span>
                                             </span>
                                         </span>
                                         <span class="zds-accordion-item__icon-wrapper">
-                                            <i v-if="isExpandedType" class="bi bi-dash-lg"></i>
+                                            <i v-if="isExpandedBrand" class="bi bi-dash-lg"></i>
                                             <i v-else class="bi bi-plus-lg"></i>
                                         </span>
                                     </button>
-                                    <div v-show="isExpandedType" class="zds-accordion-item__panel">
+                                    <div v-show="isExpandedBrand" class="zds-accordion-item__panel">
                                         <fieldset class="filters-panel-group-item d-block">
                                             <div class="form-input filters-panel-group-item__value w-100"
-                                                v-for="typ in types" :key="typ"
-                                                :class="{ 'filters-panel-group-item__value--checked': isTypeSelected(typ.id) }"
-                                                @click="typeProducts(typ)">
+                                                v-for="brand in brands" :key="brand"
+                                                :class="{ 'filters-panel-group-item__value--checked': isBrandSelected(brand.id) }"
+                                                @click="brandProducts(brand)">
                                                 <div class="form-input__wrapper">
                                                     <label class="form-input-checkbox">
                                                         <div class="form-input-checkbox__input-wrapper checkbox-type">
                                                             <input class="form-input-checkbox__input" type="checkbox"
                                                                 id="color-146" name="colorPrinted"
-                                                                data-qa-input-qualifier="colorPrinted" 
-                                                                :value="typ.id"
-                                                                @change="typeProducts(typ)">
+                                                                data-qa-input-qualifier="colorPrinted" :value="brand.id"
+                                                                @change="brandProducts(brand)">
                                                         </div>
                                                         <span class="form-input-checkbox__label">
-                                                            <span class="filters-panel-group-item__text">{{ typ.description }}</span>
+                                                            <span class="filters-panel-group-item__text">{{
+                                                                brand.name }}</span>
                                                         </span>
                                                     </label>
                                                 </div>
@@ -159,13 +157,15 @@
                                     </div>
                                 </div>
                                 <div class="zds-accordion-item">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedColor = !isExpandedColor">
+                                    <button class="zds-accordion-item__trigger" id="color-145"
+                                        @click="isExpandedColor = !isExpandedColor">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span
                                                     class="filters-panel__filter-name filters-panel__filter-name--highlight">MÀU
                                                     SẮC</span>
-                                                <span class="filters-panel__filter-count ms-2">{{ selectedColorIds.length }}</span>
+                                                <span class="filters-panel__filter-count ms-2">{{ selectedColorIds.length
+                                                }}</span>
                                             </span>
                                         </span>
                                         <span class="zds-accordion-item__icon-wrapper">
@@ -175,26 +175,22 @@
                                     </button>
                                     <div v-show="isExpandedColor" class="zds-accordion-item__panel">
                                         <fieldset class="filters-panel-group-item">
-                                            <div class="form-input filters-panel-group-item__value"
-                                                v-for="color in colors"
+                                            <div class="form-input filters-panel-group-item__value" v-for="color in colors"
                                                 :key="color"
                                                 :class="{ 'filters-panel-group-item__value--checked': isColorSelected(color.id) }"
-                                                @click="colorProducts(color)"
-                                            >
+                                                @click="colorProducts(color)">
                                                 <div class="form-input__wrapper">
                                                     <label class="form-input-checkbox">
                                                         <div class="form-input-checkbox__input-wrapper">
                                                             <input class="form-input-checkbox__input" type="checkbox"
                                                                 id="color-146" name="colorPrinted"
-                                                                data-qa-input-qualifier="colorPrinted" 
-                                                                :value="color.id"
-                                                                @change="colorProducts(color)"
-                                                                >
+                                                                data-qa-input-qualifier="colorPrinted" :value="color.id"
+                                                                @change="colorProducts(color)">
                                                         </div>
                                                         <span class="form-input-checkbox__label">
                                                             <span class="filters-panel-group-item__item-box"
                                                                 :style="`background-color: ${color.color}`"></span>
-                                                            <span class="filters-panel-group-item__text">{{ color.description
+                                                            <span class="filters-panel-group-item__text">{{ color.name
                                                             }}</span>
                                                         </span>
                                                     </label>
@@ -204,13 +200,15 @@
                                     </div>
                                 </div>
                                 <div class="zds-accordion-item">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedSize != isExpandedSize">
+                                    <button class="zds-accordion-item__trigger" id="color-145"
+                                        @click="isExpandedSize != isExpandedSize">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span
                                                     class="filters-panel__filter-name filters-panel__filter-name--highlight">KÍCH
                                                     CỠ</span>
-                                                <span class="filters-panel__filter-count ms-2">{{ selectedSizeIds.length }}</span>
+                                                <span class="filters-panel__filter-count ms-2">{{ selectedSizeIds.length
+                                                }}</span>
                                             </span>
                                         </span>
                                         <span class="zds-accordion-item__icon-wrapper">
@@ -222,24 +220,20 @@
                                         <fieldset class="filters-panel-group-box">
                                             <div
                                                 class="multi-size-selector multi-size-selector--4-columns filters-panel-group-box__value-selector">
-                                                <div class="form__column" 
-                                                    v-for="size in sizes" :key="size"
-                                                    @click="sizeProducts(size)"
-                                                >
+                                                <div class="form__column" v-for="size in sizes" :key="size"
+                                                    @click="sizeProducts(size)">
                                                     <div class="form-input multi-size-selector__size"
                                                         :class="{ 'multi-size-selector__size--is-checked': isSizeSelected(size.id) }">
                                                         <div class="form-input__wrapper">
                                                             <label class="form-input-checkbox">
                                                                 <div class="form-input-checkbox__input-wrapper">
                                                                     <input class="form-input-checkbox__input"
-                                                                        type="checkbox" id="zds-165"
-                                                                        name="size"
-                                                                        data-qa-input-qualifier="size" 
-                                                                        :value="size.id"
-                                                                        @change="sizeProducts(size)"
-                                                                        checked="">
+                                                                        type="checkbox" id="zds-165" name="size"
+                                                                        data-qa-input-qualifier="size" :value="size.id"
+                                                                        @change="sizeProducts(size)" checked="">
                                                                 </div>
-                                                                <span class="form-input-checkbox__label">{{ size.name }}</span>
+                                                                <span class="form-input-checkbox__label">{{ size.name
+                                                                }}</span>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -249,7 +243,8 @@
                                     </div>
                                 </div>
                                 <div class="zds-accordion-item">
-                                    <button class="zds-accordion-item__trigger" id="color-145" @click="isExpandedPrice = !isExpandedPrice">
+                                    <button class="zds-accordion-item__trigger" id="color-145"
+                                        @click="isExpandedPrice = !isExpandedPrice">
                                         <span class="zds-accordion-item__title-text">
                                             <span>
                                                 <span
@@ -285,7 +280,8 @@
                                 </div>
                             </div>
                             <div class="filters-panel__buttons">
-                                <button class="filters-panel__buttons-results" data-bs-dismiss="offcanvas" aria-label="Close">
+                                <button class="filters-panel__buttons-results" data-bs-dismiss="offcanvas"
+                                    aria-label="Close">
                                     <span>Xem kết quả</span> {{ filteredProductsCount }}
                                 </button>
                                 <button class="filters-panel__buttons-clear" @click="clearFiltered()">
@@ -310,7 +306,7 @@
         </div>
         <div :class="[{ 'grid2': clickCount === 2 }, { 'grid1 container': clickCount === 1 }]">
             <div v-if="filteredProductsCount">
-                <div class="row">
+                <div class="row mt-5">
                     <div :class="[{ 'col-lg-2 col-md-3 col-6': clickCount === 2 },
                     { 'col-lg-3 col-md-4 col-12': clickCount === 1 || clickCount === 0 }]"
                         v-for="(product, index) in displayedProducts" :key="product">
@@ -322,12 +318,11 @@
                                 }">
                                     <img :src="getImage(product.image)" alt="#" />
                                 </router-link>
-                                <span v-if="product.discount_percent > 0" class="sale-tag">
-                                    SALE
-                                </span>
                                 <div class="product-item__favorite" @click="toggleFavorite(product)">
-                                    <span class="product-item__favorite-item" :class="{ 'product-item__favorite-item-fill': favoriteProductIds.includes(product.id) }">
-                                        <i class="bi" :class="favoriteProductIds.includes(product.id) ? 'bi-heart-fill' : 'bi-heart'"></i>
+                                    <span class="product-item__favorite-item"
+                                        :class="{ 'product-item__favorite-item-fill': favoriteProductIds.includes(product.id) }">
+                                        <i class="bi"
+                                            :class="favoriteProductIds.includes(product.id) ? 'bi-heart-fill' : 'bi-heart'"></i>
                                     </span>
                                 </div>
                                 <div class="button">
@@ -342,35 +337,32 @@
                                 params: { id: product.id },
                             }">
                                 <div class="product-info">
-                                    <span class="category">{{ product.category }}</span>
+                                    <span class="category">{{ product.brand }}</span>
                                     <h4 class="title">
                                         <a href="#">{{ product.name }}</a>
                                     </h4>
-                                    <ul class="review">
-                                        <li><i class="fa fa-star"></i></li>
-                                        <li><i class="fa fa-star"></i></li>
-                                        <li><i class="fa fa-star"></i></li>
-                                        <li><i class="fa fa-star"></i></li>
-                                        <li><i class="fa fa-star"></i></li>
-                                        <li><span>(123)</span></li>
-                                    </ul>
                                     <div class="price">
-                                        <span>
-                                            {{ formatPrice(product.final_price) }}
-                                        </span>
-                                        <span class="text-decoration-line-through float-end text-secondary"
+                                        <span class="text-decoration-line-through text-secondary me-3"
                                             v-if="product.discount_percent > 0">
                                             {{ formatPrice(product.price) }}
+                                        </span>
+                                        <span :class="{ 'text-danger': product.discount_percent > 0 }">
+                                            {{ formatPrice(product.price_final) }}
+                                        </span>
+                                    </div>
+                                    <div class="color">
+                                        <span v-for="(color, index) in getUniqueColors(Object.values(product.images))" :key="color">
+                                            <span
+                                            class="filters-panel-group-item__item-box circle"
+                                            :style="`background-color: ${color.color}`"
+                                            >
+                                            </span>
                                         </span>
                                     </div>
                                 </div>
                             </router-link>
                             <div class="product-item__sale">
-                                <!-- <span v-if="product.type === 'Thông thường'">Thông thường</span>
-                                <span v-if="product.type === 'Sản phẩm Cao cấp'">Cao cấp</span>
-                                <span v-if="product.type === 'Phiên bản giới hạn'">Giới hạn</span>
-                                <span v-if="product.type === 'Sản phẩm Thiết kế'">Thiết kế</span> -->
-                                <span>GIẢM {{ product.discount_percent }}%</span>
+                                <span v-if="product.discount_percent > 0">GIẢM {{ product.discount_percent }}%</span>
                             </div>
                         </div>
                     </div>
@@ -381,43 +373,40 @@
             </div>
         </div>
     </div>
-    <div class="me-3 mt-5">
-        <div class="row">
-            <div class="col-12">
-                <ul class="pagination justify-content-end">
-                    <li class="page-item" :class="{ disabled: currentPage <= 1 }">
-                        <a class="page-link" href="#" @click.prevent="currentPage = 1">
-                            <i class="fa fa-angle-double-left" aria-hidden="true"></i>
-                        </a>
-                    </li>
-                    <li class="page-item" :class="{ disabled: currentPage <= 1 }">
-                        <a class="page-link" href="#" @click.prevent="currentPage--">
-                            <i class="fa fa-angle-left" aria-hidden="true"></i>
-                        </a>
-                    </li>
-                    <li v-if="currentPage > maxVisibleButtons / 2 + 1" class="page-item disabled">
-                        <a class="page-link">...</a>
-                    </li>
-                    <li class="page-item" v-for="pageNumber in visiblePageButtons" :key="pageNumber"
-                        :class="{ active: currentPage === pageNumber }">
-                        <a class="page-link" href="#" @click.prevent="currentPage = pageNumber">{{ pageNumber }}</a>
-                    </li>
-                    <li v-if="currentPage < totalPages - maxVisibleButtons / 2" class="page-item disabled">
-                        <a class="page-link">...</a>
-                    </li>
-                    <li class="page-item" :class="{ disabled: currentPage >= totalPages }">
-                        <a class="page-link" href="#" @click.prevent="currentPage++">
-                            <i class="fa fa-angle-right" aria-hidden="true"></i>
-                        </a>
-                    </li>
-                    <li class="page-item" :class="{ disabled: currentPage >= totalPages }">
-                        <a class="page-link" href="#" @click.prevent="currentPage = totalPages">
-                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                        </a>
-                    </li>
-                </ul>
-
-            </div>
+    <div class="me-3">
+        <div class="d-flex justify-content-end">
+            <ul class="pagination justify-content-end">
+                <li class="page-item" :class="{ disabled: currentPage <= 1 }">
+                    <a class="page-link" href="#" @click.prevent="currentPage = 1">
+                        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage <= 1 }">
+                    <a class="page-link" href="#" @click.prevent="currentPage--">
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    </a>
+                </li>
+                <li v-if="currentPage > maxVisibleButtons / 2 + 1" class="page-item disabled">
+                    <a class="page-link">...</a>
+                </li>
+                <li class="page-item" v-for="pageNumber in visiblePageButtons" :key="pageNumber"
+                    :class="{ active: currentPage === pageNumber }">
+                    <a class="page-link" href="#" @click.prevent="currentPage = pageNumber">{{ pageNumber }}</a>
+                </li>
+                <li v-if="currentPage < totalPages - maxVisibleButtons / 2" class="page-item disabled">
+                    <a class="page-link">...</a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage >= totalPages }">
+                    <a class="page-link" href="#" @click.prevent="currentPage++">
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage >= totalPages }">
+                    <a class="page-link" href="#" @click.prevent="currentPage = totalPages">
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -443,15 +432,16 @@ export default {
             itemsPerPage: 16,
             sortId: 1,
             selectedCategoryValues: [],
-            selectedTypeIds: [],
-            selectedTypeValues: [],
+            selectedBrandIds: [],
+            selectedBrandValues: [],
             selectedSizeIds: [],
             selectedSizeValues: [],
             selectedColorIds: [],
             selectedColorValues: [],
             cart: {
                 'product_id': '',
-                'size': "",
+                'size_id': "",
+                'color_id': "",
                 'quantity': 1,
             },
             favorite: {
@@ -459,7 +449,7 @@ export default {
             },
             maxVisibleButtons: 2,
             clickCount: 0,
-            isExpandedType: false,
+            isExpandedBrand: false,
             isExpandedColor: true,
             isExpandedSize: true,
             isExpandedPrice: true,
@@ -473,8 +463,7 @@ export default {
                 { 'id': 4, 'value': 'Tên A đến Z' },
                 { 'id': 5, 'value': 'Tên Z đến A' }
             ],
-            types: [    { 'id': 4, 'value': 'Sản phẩm Thiết kế' }
-            ],
+            brands: [],
             colors: [],
             sizes: [],
             categories: [],
@@ -489,7 +478,7 @@ export default {
     async created() {
         this.categories = await CategoryService.getCategory();
         this.sizes = await ProductService.getSizeAll();
-        this.types = await ProductService.getTypeAll();
+        this.brands = await ProductService.getBrandAll();
         this.colors = await ProductService.getColorAll();
         this.isFavorite();
     },
@@ -506,13 +495,13 @@ export default {
     computed: {
         ...mapGetters(['getUser']),
         filteredProducts() {
-            this.currentPage = 1;  
-            
+            this.currentPage = 1;
+
             let filtered = [...this.products];
 
             if (this.category) {
                 this.selectedCategoryValues.push(this.category);
-            } 
+            }
 
             if (this.selectedCategoryValues.length != 0) {
                 filtered = filtered.filter(item =>
@@ -523,18 +512,18 @@ export default {
                 );
             }
 
-            // Lọc loại sản phẩm
-            if(this.selectedTypeValues.length!=0) {
+            // Lọc thương hiệu sản phẩm
+            if (this.selectedBrandValues.length != 0) {
                 filtered = filtered.filter(item =>
-                    Object.values(this.selectedTypeValues).some(value =>
-                        item.type.toLowerCase().includes(value.toLowerCase())
+                    Object.values(this.selectedBrandValues).some(value =>
+                        item.brand.toLowerCase().includes(value.toLowerCase())
                     )
                 );
             }
 
             if (this.selectedSizeValues.length != 0) {
                 filtered = filtered.filter(item =>
-                    item.sizes.some(index =>
+                    item.inventories.some(index =>
                         Object.values(this.selectedSizeValues).some(value =>
                             index.size_name.toLowerCase().includes(value.toLowerCase())
                         )
@@ -544,15 +533,17 @@ export default {
 
             if (this.selectedColorValues.length != 0) {
                 filtered = filtered.filter(item =>
-                    Object.values(this.selectedColorValues).some(value =>
-                        item.color.description.toLowerCase().includes(value.toLowerCase())
+                    item.images.some(index =>
+                        Object.values(this.selectedColorValues).some(value =>
+                            index.color_name.toLowerCase().includes(value.toLowerCase())
+                        )
                     )
                 );
             }
 
             // Lọc theo minPrice và maxPrice
             filtered = filtered.filter(item =>
-                item.final_price >= this.minPrice && item.final_price <= this.maxPrice
+                item.price_final >= this.minPrice && item.price_final <= this.maxPrice
             );
             return filtered;
         },
@@ -560,9 +551,9 @@ export default {
             let sorted = [...this.filteredProducts];
 
             if (this.sortId === 2) {
-                sorted.sort((a, b) => a.final_price - b.final_price);
+                sorted.sort((a, b) => a.price_final - b.price_final);
             } else if (this.sortId === 3) {
-                sorted.sort((a, b) => b.final_price - a.final_price);
+                sorted.sort((a, b) => b.price_final - a.price_final);
             } else if (this.sortId === 4) {
                 sorted.sort((a, b) => a.name.localeCompare(b.name));
             } else if (this.sortId === 5) {
@@ -619,16 +610,16 @@ export default {
         sortProducts(sort) {
             this.sortId = sort.id;
         },
-        typeProducts(typ) {
-            const index = this.selectedTypeIds.indexOf(typ.id);
+        brandProducts(brand) {
+            const index = this.selectedBrandIds.indexOf(brand.id);
             if (index === -1) {
-                // Nếu typ.id chưa tồn tại trong mảng, thêm nó vào
-                this.selectedTypeIds.push(typ.id);
-                this.selectedTypeValues.push(typ.description);
+                // Nếu brand.id chưa tồn tại trong mảng, thêm nó vào
+                this.selectedBrandIds.push(brand.id);
+                this.selectedBrandValues.push(brand.name);
             } else {
-                // Ngược lại, loại bỏ typ.id khỏi mảng
-                this.selectedTypeIds.splice(index, 1);
-                this.selectedTypeValues.splice(index, 1);
+                // Ngược lại, loại bỏ brand.id khỏi mảng
+                this.selectedBrandIds.splice(index, 1);
+                this.selectedBrandValues.splice(index, 1);
             }
         },
         sizeProducts(size) {
@@ -648,7 +639,7 @@ export default {
             if (index === -1) {
                 // Nếu color.id chưa tồn tại trong mảng, thêm nó vào
                 this.selectedColorIds.push(color.id);
-                this.selectedColorValues.push(color.description);
+                this.selectedColorValues.push(color.name);
             } else {
                 // Ngược lại, loại bỏ color.id khỏi mảng
                 this.selectedColorIds.splice(index, 1);
@@ -692,7 +683,7 @@ export default {
             })
             try {
                 if (this.getUser) {
-                    if (!this.favoriteProductIds.includes(product.id)) { 
+                    if (!this.favoriteProductIds.includes(product.id)) {
                         // Thêm vào yêu thích sản phẩm
                         await FavoriteService.create(this.getUser.id, this.favorite).then(async (response) => {
                             if (response == true) {
@@ -701,7 +692,7 @@ export default {
                                     title: 'Sản phẩm đã được thêm vào danh sách yêu thích.'
                                 });
                                 this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id, this.favorite.id));
-    
+
                             } else if (response == false) {
                                 Toast.fire({
                                     icon: 'warning',
@@ -735,11 +726,16 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-            
+
         },
         async addToCart(product) {
             this.cart.product_id = product.id;
-            this.cart.size = product.sizes[0].size_id;
+
+            this.cart.color_id = Object.values(product.images)[0].color_id;
+            this.cart.size_id = Object.values(product.inventories)[0].items.find(item => {
+                return item.color_id === this.cart.color_id && item.total_final !== 0;
+            }).size_id;
+
             const Toast = this.$swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -754,14 +750,14 @@ export default {
             try {
                 if (this.getUser) {
                     await CartService.create(this.getUser.id, this.cart).then(async (response) => {
-                        if (response == true) {
+                        if (response.success == 'success') {
                             Toast.fire({
                                 icon: 'success',
                                 title: 'Sản phẩm đã được thêm vào giỏ hàng.'
                             });
                             this.$store.commit('addToCart', await CartService.getCart(this.getUser.id, this.cart.id));
 
-                        } else if (response == false) {
+                        } else if (response.success == 'warning') {
                             Toast.fire({
                                 icon: 'warning',
                                 title: 'Số lượng của sản phẩm này đã được bán hết.'
@@ -816,8 +812,8 @@ export default {
                 this.clickCount = 0; // Đặt lại biến đếm về 0
             }
         },
-        isTypeSelected(selectedTypeIds) {
-            return this.selectedTypeIds.includes(selectedTypeIds);
+        isBrandSelected(selectedBrandIds) {
+            return this.selectedBrandIds.includes(selectedBrandIds);
         },
         isColorSelected(selectedColorIds) {
             return this.selectedColorIds.includes(selectedColorIds);
@@ -857,8 +853,8 @@ export default {
             this.maxPrice = Math.round((this.maxKnob / sliderWidth) * priceRange) + 200000;
         },
         clearFiltered() {
-            this.selectedTypeIds = [];
-            this.selectedTypeValues = [];
+            this.selectedBrandIds = [];
+            this.selectedBrandValues = [];
             this.selectedSizeIds = [];
             this.selectedSizeValues = [];
             this.selectedColorIds = [];
@@ -868,7 +864,7 @@ export default {
             this.sortId = 1;
             this.minKnob = 0;
             this.maxKnob = 350;
-            
+
             // Xóa giá trị truy vấn 'category'
             this.$router.replace({ query: { ...this.$route.query, category: undefined } });
             this.selectedCategoryValues = [];
@@ -884,9 +880,23 @@ export default {
                 }
             }
             return false;
-        }
-
-
+        },
+        getUniqueColors(images) {
+            const uniqueColors = [];
+            const colorsSet = new Set();
+            for (const image of images) {
+                if (!colorsSet.has(image.color)) {
+                colorsSet.add(image.color);
+                uniqueColors.push(image);
+                }
+            }
+            return uniqueColors;
+        },
     },
 };
 </script>
+<style>
+#offcanvasRight {
+    overflow-y: scroll;
+}
+</style>

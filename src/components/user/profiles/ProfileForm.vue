@@ -1,26 +1,34 @@
 <template>
     <Form
         @submit="submitProfile"
-        :validation-schema="pấFormSchema"
-    > 
+        :validation-schema="profileFormSchema"
+    >
         <div class="form-group">
-            <div class="row">
-                <div class="col-6">
+            <div class="form-group__container">
+                <div class="form-group__label">
                     <label for="name">Họ Tên
                         <span class="error-feedback">*</span>
                     </label>
+                </div>
+                <div class="form-group__input">
                     <Field 
                         name="name"
                         type="text"
                         class="form-control"
                         v-model="profileLocal.name"
                     />
-                    <ErrorMessage name="name" class="error-feedback" />
+                    <ErrorMessage name="name" class="error-feedback" />     
                 </div>
-                <div class="col-6">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-group__container">
+                <div class="form-group__label">
                     <label for="phone">Số điện thoại
                         <span class="error-feedback">*</span>
                     </label>
+                </div>
+                <div class="form-group__input">
                     <Field 
                         name="phone"
                         type="text"
@@ -32,59 +40,56 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="row">
-                <div class="col-6">
-                    <label for="birth_date">Ngày sinh
-                        <span class="error-feedback">*</span>
-                    </label>
-                    <div>
-                        <input 
-                            type="text" onfocus="(this.type='date')" 
-                            class="datepicker booking_input booking_input_a booking_in" 
-                            placeholder="Ngày sinh"
-                            v-model="profileLocal.birth_date">
-                    </div>
-                </div>
-                <div class="col-6">
+            <div class="form-group__container">
+                <div class="form-group__label">
                     <label for="gender">Giới tính
                         <span class="error-feedback">*</span>
                     </label>
-                    <div class="mt-1">
-                        <Field name="gender" type="radio" value="Male" v-model="profileLocal.gender"/>
-                        <span class="text-dark ms-2">Nam</span>
-                        <Field name="gender" type="radio" value="Female" v-model="profileLocal.gender" class="ms-4"/>
-                        <span class="text-dark ms-2">Nữ</span>           
-                    </div>
-
                 </div>
+                <div class="form-group__input">
+                    <ErrorMessage name="new_password" class="error-feedback" />    
+                    <Field name="gender" type="radio" value="Nam" v-model="profileLocal.gender" :checked="profileLocal.gender === 'Nam'"/>
+                    <span class="text-dark ms-2">Nam</span>
+                    <Field name="gender" type="radio" value="Nữ" v-model="profileLocal.gender" :checked="profileLocal.gender === 'Nữ'" class="ms-4"/>
+                    <span class="text-dark ms-2">Nữ</span>           
+                </div>
+            </div>
+            <div>
             </div>
         </div>
         <div class="form-group">
-            <div class="row">
-                <div class="col-6">
-                    <label for="account_number">Số tài khoản
+            <div class="form-group__container">
+                <div class="form-group__label">
+                    <label for="birth_date">Ngày sinh
                         <span class="error-feedback">*</span>
                     </label>
-                    <Field 
-                        name="account_number"
-                        type="text"
-                        class="form-control"
-                        v-model="profileLocal.account_number"
-                    />
-                    <ErrorMessage name="account_number" class="error-feedback" />
+                </div>
+                <div class="form-group__input">
+                    <input type="date" v-model="profileLocal.birth_date" class="p-1">
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <button class="me-2 btn btn-success">
-                <i class="fas fa-save"></i> Lưu
-            </button>
-            <button
-                class="btn btn-primary"
-                @click="reset"
-            >
-                <i class="fas fa-redo"></i> Hủy
-            </button>
+            <div class="form-group__container">
+                <div class="form-group__label">
+                    <label for="bank_account">Số tài khoản
+                        <span class="error-feedback">*</span>
+                    </label>
+                </div>
+                <div class="form-group__input">  
+                    <Field 
+                        name="bank_account"
+                        type="text"
+                        class="form-control"
+                        v-model="profileLocal.bank_account"
+                    />
+                    <ErrorMessage name="bank_account" class="error-feedback" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group text-center">
+            <input type="button" name="btnBack" value="Hủy" @click="reset">
+            <input type="submit" name="btnSave" value="Thực hiện">
         </div>
     </Form>
     
@@ -100,12 +105,12 @@
             Field,
             ErrorMessage,
         },
-        emits: ["submit:profile"],
+        emits: ["submit:accountProfile"],
         props: {
-            profile: { type: Object, required: true },
+            accountProfile: { type: Object, required: true },
         },
         data() {
-            const pấFormSchema = yup.object().shape({
+            const profileFormSchema = yup.object().shape({
                 phone: yup
                 .string()
                 .required("Số điện thoại phải có giá trị.")
@@ -118,13 +123,13 @@
                 .required("Họ tên phải có giá trị."),
             });
             return {
-                pấFormSchema,
-                profileLocal: this.profile,
+                profileFormSchema,
+                profileLocal: this.accountProfile,
             };
         },
         methods: {
             submitProfile() {
-                this.$emit("submit:profile", this.profileLocal);
+                this.$emit("submit:accountProfile", this.profileLocal);
             },
             reset () {
                 this.profileLocal.phone = "";
@@ -133,4 +138,3 @@
         },
     };
 </script>
-

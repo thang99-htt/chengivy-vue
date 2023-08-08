@@ -1,13 +1,11 @@
 <template>
-    <div class="container mt-5">
-        <div class="row">
-            <img class="img-checkout" src="images/checkout/checkout-success-page.png" alt="">
-            <p class="track-checkout text-center">
-                <router-link :to="{ name: 'purchase' }" class="main-btn">
-                    Theo dõi đơn hàng của bạn tại đây.
-                </router-link>
-            </p>
-        </div>
+    <div class="checkout-complete">
+        <img class="img-checkout" src="images/checkout/checkout-success-page.png" alt="">
+        <p class="track-checkout text-center">
+            <router-link :to="{ name: 'purchase' }" class="main-btn">
+                Theo dõi đơn hàng của bạn tại đây.
+            </router-link>
+        </p>
     </div>
 </template>
 
@@ -19,6 +17,9 @@
 
 
 <style>
+    .checkout-complete {
+        margin-top: 100px;
+    }
     .img-checkout {
         width: 600px;
         display: block;

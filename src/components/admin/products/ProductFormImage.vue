@@ -16,12 +16,6 @@
                     hidden
                 />
             </div>
-            <div class="form-group">
-                <p>
-                    <img :src="getImage(productLocal.image)"
-                        alt="Image" class="img-edit img-responsive">
-                </p>
-            </div>
             <div class="form-group mt-3">
                 <label for="image">Hình ảnh
                     <span class="error-feedback">*</span>

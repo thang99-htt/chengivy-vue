@@ -5,14 +5,8 @@
                 <div v-if="supplier" class="box box-info">
                     <div class="box-header with-border">
                         <router-link to="/admin/payment-vouchers">
-                            <button
-                                type="button"
-                                class="btn btn-dark me-4"
-                            >
-                                <i class="fa fa-arrow-left"></i>
-                            </button>
+                            <input type="button" name="btnBack" value="Trở về">
                         </router-link>
-                        <h3 class="box-title">Hiệu chỉnh Phiếu chi</h3>
                     </div>
                     
                     <div class="box-body offset-3 col-6">
@@ -30,6 +24,7 @@
 <script>
     import SupplierForm from "@/components/admin/suppliers/SupplierForm.vue";
     import SupplierService from "@/services/admin/supplier.service";
+    
     export default {
         components: {
             SupplierForm,
@@ -76,7 +71,7 @@
 
                     Toast.fire({
                         icon: 'success',
-                        title: 'Vai trò được cập nhật thành công.'
+                        title: 'Nhà cung cấp được cập nhật thành công.'
                     })
 
                     this.$router.push({ name: "supplier" });

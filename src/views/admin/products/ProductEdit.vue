@@ -5,16 +5,9 @@
                 <div v-if="product" class="box box-info">
                     <div class="box-header with-border">
                         <router-link to="/admin/products">
-                            <button
-                                type="button"
-                                class="btn btn-dark me-4"
-                            >
-                                <i class="fa fa-arrow-left"></i>
-                            </button>
+                            <input type="button" name="btnBack" value="Trở về">
                         </router-link>
-                        <h3 class="box-title">Hiệu chỉnh Sản phẩm</h3>
                     </div>
-                    
                     <div class="box-body offset-3 col-6">
                         <ProductForm
                             :product="product"

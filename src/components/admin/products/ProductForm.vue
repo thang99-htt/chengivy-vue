@@ -127,40 +127,28 @@
         <div class="form-group">
             <label for="image">Hình ảnh</label>
             <span class="error-feedback">*</span>
-            <Field 
-                name="image"
-                type="file"
-                class="form-control frm-file"
-                accept="image/*"
-                @change="onFileChange"
-                v-model="productLocal.image"
-            />
-            <img v-if="image" :src="getImage(image)"
-                 alt="Image" class="img-edit img-responsive center-block">
+            <div>
+                <Field 
+                    name="image"
+                    type="file"
+                    class="form-control frm-file"
+                    accept="image/*"
+                    @change="onFileChange"
+                    v-model="productLocal.image"
+                />
+            </div>
+            <div>
+                <img v-if="image" :src="getImage(image)" alt="Hình ảnh" class="img-edit img-responsive center-block">
+                <img v-else :src="productLocal.image" alt="Hình ảnh" class="img-edit img-responsive center-block">
+            </div>
             <ErrorMessage name="image" class="error-feedback" />
         </div>
         <div class="form-group">
-            <button class="me-2 btn btn-success">
-                <i class="fas fa-save"></i> Lưu
-            </button>
-            <button
-                v-if="productLocal.id"
-                type="button"
-                class="btn btn-danger"
-                @click="deleteProduct"
-            >
-                <i class="fas fa-trash"></i> Xóa
-            </button>
-            <button
-                v-else
-                class="btn btn-primary"
-                @click="reset"
-            >
-                <i class="fas fa-redo"></i> Hủy
-            </button>
+            <input type="submit" name="btnSave" value="Thực hiện">
+            <input type="button" name="btnDelete" value="Xóa" v-if="productLocal.id">
+            <input type="button" name="btnBack" value="Hủy" v-else @click="reset">
         </div>
     </Form>
-    
 </template>
 <script>
     import * as yup from "yup";

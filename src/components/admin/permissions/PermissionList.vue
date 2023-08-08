@@ -1,162 +1,85 @@
-<script>
-    import $ from 'jquery'
-    import PermissionService from "@/services/admin/permission.service";
-    import 'datatables.net'
-    import 'datatables.net-bs'
-    import { initializeDataTable } from '../../../utils';
-    
-    export default {
-        name: 'PermissionList',
-        components: {
-            
-        },
-        props: {
-            permissions: { type: Array, default: [] },
-            activeIndex: { type: Number, default: -1 },
-        },
-        mounted() {
-            PermissionService.getAll().then((response) => {
-                this.permissions = response;
-                this.$nextTick(() => {
-                    initializeDataTable();
-                })
-            });
-        },
-        data() {
-            return {
-                permissions: [],
-            };
-        },
-        beforeUpdate() {
-            $('.example1').DataTable().destroy();
-        },
-        methods: {
-            async retrievePermissions() {
-                try {
-                    this.permissions= await PermissionService.getAll();
-                    this.$nextTick(() => {
-                        $('.example1').DataTable();
-                    })
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            refreshList() {
-                this.retrievePermissions();
-            },
-            deletePermission(id) {
-                this.$swal.fire({
-                    title: 'Bạn có chắc?',
-                    text: "Bạn sẽ không thể hoàn tác lại điều này!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.value) {
-                        PermissionService.delete(id).then((res) => {
-                            if(res.success) {
-                                this.refreshList();
-                            }
-                        })
-                        this.$swal.fire('Đã xóa thành công!','','success')
-                    }
-                })
-            },
-            deleteAll(id){
-                alert(id)
-            }
-        },
-        
-    };
-</script>
 <template>
-    <table
-        aria-describedby="example1_info" role="grid" 
-        class="example1 table table-bordered table-striped dataTable"
-    >
-      <thead>
-        <tr role="row">
-            <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">Vai Trò</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mô Tả</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting" style="width: 150px;">Tùy chọn</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr role="row"
-            v-for="(permission, index) in permissions"
-            :key="permission"
-            :class="{ active: index === activeIndex }"
-        >
-            <td class="sorting_1" >
-                {{ index + 1 }}
-            </td>
-            <td>{{ permission.name }}</td>
-            <td>{{ permission.description }}</td>
-            <td>{{ new Date(permission.created_at).toLocaleString() }}</td>
-            <td>
-                <button
-                    type="button"
-                    class="ml-2 btn btn-primary"
-                >
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button
-                    type="button"
-                    class="ms-2 btn btn-success"
-                >
-                    <router-link
-                          :to="{
-                              name: 'permission.edit',
-                              params: { id: permission.id },
-                          }" 
-                    >
-                        <i class="fa fa-pen"></i>
-                    </router-link>
-                </button>
-                <button
-                    v-if="permission.id"
-                    type="button"
-                    class="ms-2 btn btn-danger"
-                    @click="deletePermission(permission.id)"
-                >
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-      </tbody>
+    <table class="example1 table table-bordered table-striped dataTable">
+        <thead>
+            <tr role="row">
+                <th width="4%">#</th>
+                <th width="28%">Quyền</th>
+                <th width="28%">Mô Tả</th>
+                <th width="28%">Ngày</th>
+                <th width="7%">Tùy chọn</th>
+                <th width="5%">Chọn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr role="row" v-for="(permission, index) in permissionsList" :key="permission">
+                <td class="sorting_1">
+                    {{ index + 1 }}
+                </td>
+                <td>{{ permission.name }}</td>
+                <td>{{ permission.description }}</td>
+                <td>{{ new Date(permission.created_at).toLocaleString() }}</td>
+                <td class="text-center">
+                    <button type="button" class="btn">
+                        <router-link :to="{
+                            name: 'permission.edit',
+                            params: { id: permission.id },
+                        }">
+                            <img src="/images/icon/iconedit.png" alt="">
+                        </router-link>
+                    </button>
+                </td>
+                <td class="text-center">
+                    <input type="checkbox" @change="idSelected(permission.id)" :checked="selectedIds.includes(permission.id)">
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="5" class="text-center text-bold">Chọn tất cả</th>
+                <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
+            </tr>
+        </tfoot>
     </table>
 </template>
 
-<style>
-    
-    @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
-    @import url('/static/css/bootstrap.min.css');
+<script>
+export default {
+    name: 'PermissionList',
+    props: {
+        permissions: { type: Array, default: [] },
+        selectedIds: { type: Array, default: [] },
+    },
+    computed: {
+        permissionsList() {
+            return this.permissions;
+        },
+    },
+    methods: {
+        idSelected(id) {
+            const index = this.selectedIds.indexOf(id);
+            if (index === -1) {
+                // Nếu id chưa tồn tại trong mảng, thêm nó vào
+                this.selectedIds.push(id);
+            } else {
+                // Ngược lại, loại bỏ id khỏi mảng
+                this.selectedIds.splice(index, 1);
+            }
+        },
+        idAllSelected() {
+            if(this.selectedIds.length == this.permissionsList.length) {
+                this.selectedIds.splice(0, this.selectedIds.length); // Bỏ hết các phần tử trong selectedIds
+            } else if(this.selectedIds.length) {
+                this.selectedIds.splice(0, this.selectedIds.length);
+                this.permissions.forEach(permission => {
+                    this.selectedIds.push(permission.id);
+                });
+            } else {
+                this.permissions.forEach(permission => {
+                    this.selectedIds.push(permission.id);
+                });
+            }
+        }
+    },
 
-    table.dataTable thead .sorting:after,
-    table.dataTable thead .sorting_asc:after,
-    table.dataTable thead .sorting_desc:after {
-        font-family: 'FontAwesome';
-    }
-    
-    table.dataTable thead .sorting:after {
-        content: '\f0dc';
-    }
-    
-    table.dataTable thead .sorting_asc:after {
-        content: '\f0dd';
-    }
-    
-    table.dataTable thead .sorting_desc:after {
-        content: '\f0de';
-    }
-
-    select.input-sm {
-        line-height: unset;
-    }
-    
-</style>
+};
+</script>

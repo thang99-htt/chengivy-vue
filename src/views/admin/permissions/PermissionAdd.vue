@@ -4,13 +4,14 @@
             <div class="col-md-12">
                 <div v-if="permission" class="box box-info">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Thêm mới Quyền</h3>
+                        <router-link to="/admin/permissions">
+                            <input type="button" name="btnBack" value="Trở về">
+                        </router-link>
                     </div>
-                    
-                    <div class="box-body">
+                    <div class="box-body offset-3 col-6">
                         <PermisssionForm
-                        :permission="permission"
-                        @submit:permission="createPermission"
+                            :permission="permission"
+                            @submit:permission="createPermission"
                         />
                     </div>
                 </div>
@@ -19,14 +20,12 @@
     </section>
 </template>
 <script>
-    import PermisssionForm from "@/components/admin/permissions/PermisssionForm.vue";
+    import PermisssionForm from "@/components/admin/permissions/PermissionForm.vue";
     import PermissionService from "@/services/admin/permission.service";
+
     export default {
         components: {
             PermisssionForm,
-        },
-        props: {
-            id: { type: String, required: true },
         },
         data() {
             return {

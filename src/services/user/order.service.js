@@ -9,6 +9,9 @@ class OrderService {
     async create(id, data) {
         return (await this.api.post(`/add/${id}`, data)).data;
     }
+    async addBuyNow(id, data) {
+        return (await this.api.post(`/add-buy-now/${id}`, data)).data;
+    }
     async getAllPurchase(id) {
         return (await this.api.get(`purchases/user-${id}`)).data;
     }

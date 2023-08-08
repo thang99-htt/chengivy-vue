@@ -1,130 +1,176 @@
 <template>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="dash_blog">
-                    <div class="dash_blog_inner">
-                        <div class="dash_head">
-                            <h3>KIỂM TRA VÀ THANH TOÁN</h3>
+    <div class="dash_blog">
+        <div class="dash_blog_inner">
+            <div class="dash_head">
+                <h3>KIỂM TRA VÀ THANH TOÁN</h3>
+            </div>
+            <Form
+                @submit="submitOrder"
+            >
+                <div class="row">
+                    <div class="col-6">
+                        <div class="list_cont">
+                            <p>Hình thức thanh toán</p>
                         </div>
-                        <Form
-                            @submit="submitOrder"
+                        <div class="dash_main item mb-3">
+                            <div 
+                                class="form-check"
+                                v-for="(payment, index) in payments"
+                                :key="payment"
+                            >
+                                <Field name="payment" type="radio" :value="payment.id" v-model="orderLocal.payment_method_id"/>
+                                <label class="form-check-label ms-2" for="exampleRadios1">
+                                    <img :src="getImagePayment(payment.image)" width="25" alt="">
+                                    {{ payment.description }}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="list_cont">
+                            <p>Gửi đến</p>
+                        </div>
+                        <div
+                            class="dash_main ps-5"
                         >
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="list_cont">
-                                        <p>Hình thức thanh toán</p>
+                            <div>
+                                <span class="acc-name">{{ order.delivery_address.name }}</span>
+                                <span>{{ order.delivery_address.phone }}</span>
+                            </div>
+                            <div>
+                                {{ order.delivery_address.address_detail }}
+                            </div>
+                            <div>
+                                {{ order.delivery_address.address }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="view-product">
+                            <div class="product-items">                                
+                                <div class="shopping-item" v-if="!productBuyNow">
+                                    <div class="text-dark text-bold">
+                                        <span>{{ cartLocal.count_item }} sản phẩm</span>
                                     </div>
-                                    <div class="dash_main item mb-3">
-                                        <div 
-                                            class="form-check"
-                                            v-for="(payment, index) in payments"
-                                            :key="payment"
-                                        >
-                                            <Field name="payment" type="radio" :value="payment.id" v-model="orderLocal.payment_id"/>
-                                            <label class="form-check-label ms-2" for="exampleRadios1">
-                                                <img :src="getImagePayment(payment.image)" width="25" alt="">
-                                                {{ payment.description }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="list_cont">
-                                        <p>Gửi đến</p>
-                                    </div>
-                                    <div
-                                        v-if="address_order == null"
-                                        class="dash_main ps-4"
-                                    >
-                                        <p>Địa chỉ chưa được chọn.</p>
-                                    </div>
-                                    <div
-                                        v-else
-                                        class="dash_main ps-4"
-                                    >
-                                        <p>{{ address_order.name }} </p>
-                                        <p>Điện thoại: {{ address_order.phone }} </p>
-                                        <p>Địa chỉ:
-                                            {{ address_order.address }}, {{  address_order.ward }}, 
-                                            {{  address_order.district }}, {{  address_order.city }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="view-product">
-                                        <div class="product-items">                                
-                                            <div class="shopping-item">
-                                                <div class="text-dark text-bold">
-                                                    <span>{{ cartLocal.count_item }} sản phẩm</span>
-                                                </div>
-                                                <hr>
-                                                <ul class="shopping-list">
-                                                    <li 
-                                                        v-for="(cart, index) in cartLocal.getCartItems"
-                                                        :key="cart"
-                                                    >  
-                                                        <div class="product-img-head">
-                                                            <a class="cart-img" href="product-details.html">
-                                                                <img v-if="cart.product.image" :src="getImage(cart.product.image)" alt="#" />
-                                                            </a>
-                                                        </div>
-                                                        <div class="">
-                                                            <h6><a href="product-details.html">{{ cart.product.name }}</a></h6>
-                                                            <p>Size: {{ cart.size }}</p>
-                                                            <p class="quantity">
-                                                                {{ cart.quantity }} x - {{ formatPrice(cart.final_price) }}
-                                                            </p>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <hr>
-                                                <div class="bottom mt-4">
-                                                    <div class="total">
-                                                        <span>Tổng tiền</span>
-                                                        <span class="total-amount">{{ formatPrice(cartLocal.into_money) }}</span>
-                                                    </div>
-                                                    <div class="total">
-                                                        <span>Phí vận chuyển</span>
-                                                        <span class="total-amount">25.000 VNĐ</span>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="bottom mt-4">
-                                                    <div class="total">
-                                                        <span>Tổng đơn đặt hàng</span>
-                                                        <span class="total-amount">{{ formatPrice(cartLocal.into_money + 25000) }}</span>
-                                                    </div>
-                                                    <Field    
-                                                        hidden
-                                                        name="order_total_price" type="number"
-                                                        class="form-control select" id="order_total_price"
-                                                       :value="((cartLocal.into_money+25000)/23795).toFixed()"
-                                                    />
-                                                </div>
-                                                
-                                                <div v-show="orderLocal.payment_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
-                                                    <div ref="paypal"></div>
-                                                </div>
+                                    <hr>
+                                    <ul class="shopping-list">
+                                        <li 
+                                            v-for="(cart, index) in cartAvailable"
+                                            :key="cart"
+                                        >  
+                                            <div class="product-img-head">
+                                                <a class="cart-img" href="product-details.html">
+                                                    <img v-if="cart.image" :src="getImage(cart.image)" alt="#" />
+                                                </a>
                                             </div>
+                                            <div class="">
+                                                <h6><a href="product-details.html">{{ cart.product.name }}</a></h6>
+                                                <p>Size: {{ cart.size_name }}</p>
+                                                <p class="quantity">
+                                                    <span class="me-1">{{ cart.quantity }} x </span>
+                                                    <span :class="{ 'text-danger': cart.product.discount_percent > 0 }">
+                                                         {{ formatPrice(cart.product.price_final) }}
+                                                    </span>
+                                                    <span class="text-decoration-line-through text-secondary ms-3"
+                                                        v-if="cart.product.discount_percent > 0">
+                                                        {{ formatPrice(cart.product.price) }}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <hr>
+                                    <div class="bottom mt-4">
+                                        <div class="total">
+                                            <span>Tổng tiền</span>
+                                            <span class="total-amount">{{ formatPrice(cartLocal.into_money) }}</span>
                                         </div>
+                                        <div class="total">
+                                            <span>Phí vận chuyển</span>
+                                            <span class="total-amount">25.000 VNĐ</span>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="bottom mt-4">
+                                        <div class="total">
+                                            <span>Tổng đơn đặt hàng</span>
+                                            <span class="total-amount">{{ formatPrice(cartLocal.into_money + 25000) }}</span>
+                                        </div>
+                                        <Field    
+                                            hidden
+                                            name="order_total_price" type="number"
+                                            class="form-control select" id="order_total_price"
+                                           :value="((cartLocal.into_money+25000)/23795).toFixed()"
+                                        />
+                                    </div>
+                                    
+                                    <div v-show="orderLocal.payment_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
+                                        <div ref="paypal"></div>
+                                    </div>
+                                </div>
+                                <div class="shopping-item" v-else>
+                                    <div class="text-dark text-bold">
+                                        <span> 1 sản phẩm</span>
+                                    </div>
+                                    <hr>
+                                    <ul class="shopping-list">
+                                        <li>  
+                                            <div class="product-img-head">
+                                                <a class="cart-img" href="product-details.html">
+                                                    <img v-if="productBuyNow.image" :src="getImage(productBuyNow.image)" alt="#" />
+                                                </a>
+                                            </div>
+                                            <div class="">
+                                                <h6><a href="product-details.html">{{ productBuyNow.name }}</a></h6>
+                                                <p>Size: {{ productBuyNow.sizes[0].size_name }}</p>
+                                                <p class="quantity">
+                                                   1 x - {{ formatPrice(productBuyNow.final_price) }}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <hr>
+                                    <div class="bottom mt-4">
+                                        <div class="total">
+                                            <span>Tổng tiền</span>
+                                            <span class="total-amount">{{ formatPrice(productBuyNow.final_price) }}</span>
+                                        </div>
+                                        <div class="total">
+                                            <span>Phí vận chuyển</span>
+                                            <span class="total-amount">25.000 VNĐ</span>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="bottom mt-4">
+                                        <div class="total">
+                                            <span>Tổng đơn đặt hàng</span>
+                                            <span class="total-amount">{{ formatPrice(productBuyNow.final_price + 25000) }}</span>
+                                        </div>
+                                        <Field    
+                                            hidden
+                                            name="order_total_price" type="number"
+                                            class="form-control select" id="order_total_price"
+                                           :value="((productBuyNow.final_price+25000)/23795).toFixed()"
+                                        />
+                                    </div>
+                                    
+                                    <div v-show="orderLocal.payment_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
+                                        <div ref="paypal"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="button-container btn-submit-order">
-                                <button v-if="address_order != null && orderLocal.payment_id != 3 || paymentStatus === 'paid'" class="btn btn-next" @click="complete">Hoàn tất thanh toán</button>
-                            </div>
-                        </Form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </Form>
         </div>
     </div>
 </template>
 
 <script>
-    import AddressService from "@/services/user/address.service";
     import PaymentMethodService from "@/services/admin/payment.service";
+    import ProductService from "@/services/user/product.service";
     import { Form, Field, ErrorMessage } from "vee-validate";
     import { formatPrice, getImage } from '@/utils';
+    import {mapGetters} from 'vuex';
 
     export default {
         name: 'Header',
@@ -139,12 +185,11 @@
         },
         data() {
             return {
-                address_order: null,
                 payments: [],
                 cartLocal: this.carts,
                 orderLocal: this.order,
-                myModel: false,
-                paymentStatus: ''
+                paymentStatus: '',
+                cartAvailable: [],
             };
         },
         mounted: function() {
@@ -157,13 +202,6 @@
         emits: ["submit:order"],
         methods: {
             formatPrice,
-            async retrieveAddressOrder(order) {
-                try {
-                    this.address_order = await AddressService.getAddressOrder(order.contact_id);
-                } catch (error) {
-                    console.log(error);
-                }
-            },
             async retrievePaymentMethod() {
                 try {
                     this.payments = await PaymentMethodService.getAll();
@@ -172,7 +210,6 @@
                 }
             },
             refreshList() {
-                this.retrieveAddressOrder(this.order);
                 this.retrievePaymentMethod();
             },
             getImage,
@@ -182,28 +219,22 @@
             submitOrder() {
                 this.$emit("submit:order", this.orderLocal);
             },
-            openModel() {
-                this.myModel = true;
-            },
-            closeModel() {
-                this.myModel = false;
-            },
             setLoaded: function() {
                 var order_total_price = $("#order_total_price").val();
                 this.loaded = true;
                 window.paypal
                     .Buttons({
-                    createOrder: (data, actions) => {
-                        return actions.order.create({
-                        purchase_units: [
-                            {
-                            description: "Thanh toán Paypal",
-                            amount: {
-                                currency_code: "USD",
-                                value: order_total_price
-                            }
-                            }
-                        ]
+                        createOrder: (data, actions) => {
+                            return actions.order.create({
+                            purchase_units: [
+                                {
+                                description: "Thanh toán Paypal",
+                                amount: {
+                                    currency_code: "USD",
+                                    value: order_total_price
+                                }
+                                }
+                            ]
                         });
                     },
 
@@ -224,11 +255,16 @@
                     onError: err => {
                         console.log(err);
                     }
-                    })
-                    
-                    .render(this.$refs.paypal);
-                }
-            },         
+                })
+                .render(this.$refs.paypal);
+            },
+        }, 
+        computed: {
+            ...mapGetters(['productBuyNow']),
+            cartAvailable() {
+                return this.cartLocal.getCartItems.filter(cart => cart.inventory.total_final > 0);
+            },
+        },        
      };
 </script>
 
@@ -280,7 +316,7 @@
     .view-product .product-items .shopping-item .shopping-list li .cart-img {
         border: 1px solid #ededed;
         overflow: hidden;
-        height: 80px;
+        height: 105px;
         width: 80px;
         border-radius: 4px;
         float: left;
@@ -315,15 +351,6 @@
 
     form {
         position: relative;
-    }
-
-    .btn-submit-order {
-        position: absolute;
-        bottom: -38%;
-        right: -15px;
-        justify-content: end !important;
-        z-index: 10;
-        width: 60% !important;
     }
 
     .paypal-btn {

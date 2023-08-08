@@ -6,36 +6,47 @@
         <thead>
             <tr role="row">
                 <th>#</th>
-                <th>Size</th>
-                <th>Số lượng</th>
-                <th>Tồn kho</th>
+                <th>Kích cỡ</th>
+                <th>Màu sắc</th>
+                <th>Số lượng đầu</th>
+                <th>Số lượng nhập</th>
+                <th>Số lượng xuất</th>
+                <th>Số lượng cuối</th>
                 <th>Tùy chọn</th>
             </tr>
         </thead>
         <tbody>
             <tr role="row"
-                v-for="(size, index) in productLocal.sizes"
-                    :key="size" 
-                    :value="size.id"
+                v-for="(inventory, index) in productLocal.inventories"
+                    :key="inventory" 
+                    :value="inventory.id"
             >
                 <td>
-                    {{ index + 1 }}
+                    {{ inventory.month_year }}
                 </td>
                 <td>
-                    {{ size.size_name }}
+                    {{ inventory.size_name }}
                 </td>
                 <td>
-                    {{ size.quantity }}
+                    {{ inventory.color_name }}
                 </td>
                 <td>
-                    {{ size.stock }}
+                    {{ inventory.total_initial }}
+                </td>
+                <td>
+                    {{ inventory.total_import }}
+                </td>
+                <td>
+                    {{ inventory.total_export }}
+                </td>
+                <td>
+                    {{ inventory.total_final }}
                 </td>
                 <td>
                     <button
-                        v-if="size.id"
                         type="button"
                         class="ml-2 btn btn-danger"
-                        @click="deleteProduct(size.id)"
+                        @click="deleteProduct(inventory.id)"
                     >
                         <i class="fas fa-trash"></i>
                     </button>

@@ -7,20 +7,23 @@
                         Size
                         <span class="error-feedback">*</span>
                     </p>
-                    <p v-if="product_stock" class="guide size-available">{{ product_stock }} sản phẩm có sẵn</p>
-                    <p v-if="product_stock == 0" class="guide text-danger">Hết hàng</p>
+                    <p v-if="inventory.total_final == 0" class="guide text-danger">Hết hàng</p>
+                    <p v-else class="guide size-available">{{ inventory.total_final }} sản phẩm có sẵn</p>
                 </div>
                 <div class="form-group">
                     <div class="multi-size-selector multi-size-selector--4-columns filters-panel-group-box__value-selector">
-                        <div class="form__column" v-for="size in product.sizes" :key="size" @click="sizeProducts(size)">
-                            <div class="form-input multi-size-selector__size" :class="{ 'multi-size-selector__size--is-checked': size.size_id == selectedSize }">
+                        <div class="form__column" v-for="size in getUniqueSizes(Object.values(product.inventories)[0].items)" :key="size"
+                            @click="sizeProducts(size.size_id)">
+                            <div class="form-input multi-size-selector__size" :class="{
+                                'multi-size-selector__size--is-checked': size.size_id == inventoryLocal.size_id,
+                                'multi-size-selector__size--out-stock': getOutStock.includes(size.size_id)
+                            }">
                                 <div class="form-input__wrapper">
                                     <label class="form-input-checkbox">
                                         <div class="form-input-checkbox__input-wrapper">
-                                            <input class="form-input-checkbox__input" type="checkbox" id="zds-165"
-                                                name="size_id" data-qa-input-qualifier="size" :value="size.size_id"
-                                                @change="sizeProducts(size)"
-                                                checked="">
+                                            <input class="form-input-checkbox__input" type="checkbox"
+                                                name="size_id" :value="size.size_id"
+                                                @change="sizeProducts(size.size_id)">
                                         </div>
                                         <span class="form-input-checkbox__label">{{ size.size_name }}</span>
                                     </label>
@@ -53,15 +56,19 @@
             </div>
             <hr>
             <div class="info-add">
-                <div class="row">
-                    <div class="d-grid gap-2">
-                        <button class="btn bag" type="submit">Thêm vào giỏ hàng</button>
-                    </div>
+                <div class="info-add__item">
+                    <button class="btn bag" type="submit">Thêm vào giỏ hàng</button>
                 </div>
-                <div class="row">
-                    <div class="d-grid gap-2">
-                        <button class="btn checkout" type="submit">Mua ngay</button>
+                <div class="info-add__item">
+                    <div class="btn wish" @click="toggleFavorite(product)">
+                        <span class="product-item__favorite-item"
+                            :class="{ 'product-item__favorite-item-fill': favoriteProductIds.includes(product.id) }">
+                            <i class="bi"
+                                :class="favoriteProductIds.includes(product.id) ? 'bi-heart-fill' : 'bi-heart'"></i>
+                        </span>
+                        <span>Yêu thích</span>
                     </div>
+                    <div class="btn checkout" @click="goToCheckout">Mua ngay</div>
                 </div>
             </div>
         </div>
@@ -69,7 +76,11 @@
 </template>
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
+import { mapGetters } from 'vuex';
+import { showAlert } from '@/utils';
 import ProductService from "@/services/user/product.service";
+import FavoriteService from "@/services/user/favorite.service";
+
 export default {
     components: {
         Form,
@@ -79,19 +90,34 @@ export default {
     props: {
         product: { type: Object, required: true },
         cart: { type: Object, required: true },
+        inventoryLocal: { type: Object, required: true },
+        inventory: { type: Object, required: true },
+        isColorSelected: { type: Object, required: true },
     },
     emits: ["submit:cart"],
     data() {
         return {
             productLocal: this.product,
             cartLocal: this.cart,
-            product_stock: null,
-            selectedSize: this.product.sizes[0].size_id
+            favorite: {
+                'product_id': '',
+            },
+            favoriteProductIds: [],
+            getOutStock: []
         };
     },
     async created() {
-        this.product_stock = await ProductService.getStock(this.productLocal.id, this.selectedSize);
-        this.cart.size = this.selectedSize;
+        this.isFavorite();
+        this.updateOutStock();
+    },
+    watch: {
+        isColorSelected: {
+            immediate: true, // Call the watcher immediately on component creation
+            handler: function (newValue) {
+                // Call the function to filter and update out-of-stock sizes whenever isColorSelected changes
+                this.updateOutStock();
+            },
+        },
     },
     methods: {
         submitCart() {
@@ -104,26 +130,96 @@ export default {
             this.cartLocal.quantity++;
         },
         async sizeProducts(size) {
-            this.selectedSize = size.size_id;
-            this.product_stock = await ProductService.getStock(this.productLocal.id, this.selectedSize);
-            this.cartLocal.size = this.selectedSize;
-        },   
+            if(!this.getOutStock.includes(size)) {
+                this.inventoryLocal.size_id = size;
+                this.cartLocal.size_id = size;
+            }
+        },
+        async toggleFavorite(product) {
+            this.favorite.product_id = product.id;
+            try {
+                if (this.getUser) {
+                    if (!this.favoriteProductIds.includes(product.id)) {
+                        // Thêm vào yêu thích sản phẩm
+                        await FavoriteService.create(this.getUser.id, this.favorite).then(async (response) => {
+                            showAlert(response);
+                            this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id, this.favorite.id));
+                        });
+                    } else {
+                        // Bỏ yêu thích sản phẩm
+                        await FavoriteService.deleteByUser(this.getUser.id, product.id).then(async (response) => {
+                            showAlert(response);
+                            this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id));
+                        });
+                    }
+
+                    // Cập nhật trạng thái yêu thích
+                    this.isFavorite();
+                } else {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Bạn phải là thành viên.'
+                    });
+                    this.$router.push({ name: "login" });
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        },
+        async isFavorite() {
+            if (this.getUser) {
+                try {
+                    let favoriteList = await FavoriteService.getFavorite(this.getUser.id);
+                    this.favoriteProductIds = favoriteList.getFavoriteItems.map(item => item.product_id);
+                    return true;
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            return false;
+        },
+        goToCheckout() {
+            this.$store.commit('addBuyNow', Object.assign({}, this.cartLocal, this.productLocal));
+        },
+        getUniqueSizes(sizes) {
+            const uniqueSizes = [];
+            const sizesSet = new Set();
+            for (const size of sizes) {
+                if (!sizesSet.has(size.size_name)) {
+                    sizesSet.add(size.size_name);
+                    uniqueSizes.push(size);
+                }
+            }
+            return uniqueSizes;
+        },
+        filterByColor(inventories, color_id) {
+            return inventories.filter(item => item.color_id === color_id);
+        },
+        updateOutStock() {
+            this.getOutStock = [];
+            const desiredColorId = this.isColorSelected.color_id; // Use the value of isColorSelected
+
+            const filteredInventories = this.filterByColor(Object.values(this.product.inventories)[0].items, desiredColorId);
+
+            filteredInventories.forEach(item => {
+                if (item.total_final == 0) {
+                    this.getOutStock.push(item.size_id);
+                }
+            });
+        },
+    },
+    computed: {
+        ...mapGetters(['getUser', 'productBuyNow']),
     },
 };
 </script>
 <style scoped>
-.img-edit {
-    width: 100px;
-    margin: 10px 0 0 0;
-}
-
-.active {
-    opacity: 1;
-}
-
 .select {
     appearance: auto;
 }
+
 .cart .info-size .multi-size-selector--4-columns .form__column {
     width: calc(10%);
 }

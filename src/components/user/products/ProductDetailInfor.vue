@@ -2,21 +2,37 @@
     <div class="detail-info">
         <div class="info-name">
             <h3>{{ product.name }}</h3>
-            <div class="product-item__favorite" @click="toggleFavorite(product)">
-                <span class="product-item__favorite-item"
-                    :class="{ 'product-item__favorite-item-fill': favoriteProductIds.includes(product.id) }">
-                    <i class="bi" :class="favoriteProductIds.includes(product.id) ? 'bi-heart-fill' : 'bi-heart'"></i>
-                </span>
-            </div>
         </div>
         <div class="info-category">
-            <p>{{ product.category }} - {{ product.type }}</p>
+            <p>{{ product.brand }} - {{ product.category }}</p>
         </div>
         <div class="info-price">
-            <p>{{ formatPrice(product.final_price) }}</p>
+            <div class="price">
+                <span :class="{'text-danger': product.discount_percent}">{{ formatPrice(product.price_final) }}</span>
+                <span 
+                    class="text-decoration-line-through text-secondary ms-4"
+                    v-if="product.discount_percent"
+                >
+                    {{ formatPrice(product.price) }}
+                </span>
+            </div>
+            <ul class="review">
+                <li><i class="fa fa-star"></i></li>
+                <li><i class="fa fa-star"></i></li>
+                <li><i class="fa fa-star"></i></li>
+                <li><i class="fa fa-star"></i></li>
+                <li><i class="fa fa-star"></i></li>
+                <li><span>(123)</span></li>
+            </ul>
         </div>
-        <div class="info-price">
-            <span class="filters-panel-group-item__item-box circle" :style="`background-color: ${product.color.color}`"></span>
+        <div class="info-color">
+            <span v-for="(color, index) in Object.values(product.images)" :key="color"
+                class="filters-panel-group-item__item-box circle" 
+                :class="{'active': color.color === isColorSelected.color}"
+                :style="`background-color: ${color.color}`"
+                @click="changeColor(color)"
+            >
+            </span>
         </div>
         <hr>
         <div class="info-des">
@@ -25,102 +41,33 @@
     </div>
 </template>
 <script>
-import FavoriteService from "@/services/user/favorite.service";
 import { formatPrice } from '@/utils';
-import { mapGetters } from 'vuex';
 
 export default {
     props: {
         product: { type: Object, required: true },
-    },
-    data() {
-        return {
-            favorite: {
-                'product_id': '',
-            },
-            favoriteProductIds: []
-        }
-    },
-    computed: {
-        ...mapGetters(['getUser']),
-    },
-    async created() {
-        this.isFavorite();
+        isColorSelected: { type: Object, required: true },
+        inventoryLocal: { type: Object, required: true },
+        cart: { type: Object, required: true },
     },
     methods: {
         formatPrice,
-        async toggleFavorite(product) {
-            this.favorite.product_id = product.id;
-            const Toast = this.$swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
-                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
-                }
-            })
-            try {
-                if (this.getUser) {
-                    if (!this.favoriteProductIds.includes(product.id)) {
-                        // Thêm vào yêu thích sản phẩm
-                        await FavoriteService.create(this.getUser.id, this.favorite).then(async (response) => {
-                            if (response == true) {
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Sản phẩm đã được thêm vào danh sách yêu thích.'
-                                });
-                                this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id, this.favorite.id));
+        changeColor(color) {
+            const colorId = color.color_id;
+            const selectedColor = Object.values(this.product.images).find(item => item.color_id === colorId);
+            this.$emit('update:isColorSelected', selectedColor);
+            this.inventoryLocal.color_id = color.color_id;
 
-                            } else if (response == false) {
-                                Toast.fire({
-                                    icon: 'warning',
-                                    title: 'Sản phẩm đã được yêu thích.'
-                                });
-                            }
-                        });
-                    } else {
-                        // Bỏ yêu thích sản phẩm
-                        await FavoriteService.delete(this.getUser.id, product.id).then(async (response) => {
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Sản phẩm đã được xoá khỏi danh sách yêu thích.'
-                            });
-                            this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id));
+            this.inventoryLocal.size_id = Object.values(this.product.inventories)[0].items.find(item => {
+                return item.color_id === colorId && item.total_final !== 0;
+            }).size_id;
 
-                            // this.$store.commit('removeFavorite', await FavoriteService.delete(this.getUser.id, product.id));
-                        });
-                    }
 
-                    // Cập nhật trạng thái yêu thích
-                    this.isFavorite();
-                } else {
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Bạn phải là thành viên.'
-                    });
-                    this.$router.push({ name: "login" });
-                }
-
-            } catch (error) {
-                console.log(error);
-            }
-
+            this.cart.color_id = colorId;
+            this.cart.size_id = Object.values(Object.values(this.product.inventories)[0].items).find(item => {
+                return item.color_id === colorId && item.total_final !== 0;
+            }).size_id;
         },
-        async isFavorite() {
-            if (this.getUser) {
-                try {
-                    let favoriteList = await FavoriteService.getFavorite(this.getUser.id);
-                    this.favoriteProductIds = favoriteList.getFavoriteItems.map(item => item.product_id);
-                    return true;
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-            return false;
-        }
     }
 };
 </script>

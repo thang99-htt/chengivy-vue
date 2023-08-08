@@ -8,7 +8,6 @@
                             <input type="button" name="btnBack" value="Trở về">
                         </router-link>
                     </div>
-                    
                     <div class="box-body offset-3 col-6">
                         <CategoryForm
                             :category="category"
@@ -27,9 +26,6 @@
     export default {
         components: {
             CategoryForm,
-        },
-        props: {
-            id: { type: String, required: true },
         },
         data() {
             return {

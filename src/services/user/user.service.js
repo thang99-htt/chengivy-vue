@@ -10,5 +10,9 @@ class UserService {
     async updateProfile(id, data) {
         return (await this.api.put(`/update-profile/${id}`, data)).data;
     }
+
+    async updatePassword(id, data) {
+        return (await this.api.put(`/update-password/${id}`, data)).data;
+    }
 }
 export default new UserService();

@@ -1,74 +1,150 @@
 <template>
-    <div class="row">
-        <div class="col-md-12">
-            <div v-if="order">
-                <div class="mb-5">
-                    <div class="checkout-progress"  id="" data-current-step="1">
-                    <div v-if="!order.receipt_date && !order.cancle_date" class="checkout-progress-fill-1"></div>
-                        <div class="progress-bar">
-                            <div class="step">
-                                <span><i class="bi bi-receipt-cutoff"></i></span>
-                                <div class="step-label">Đơn hàng đã đặt</div>
-                                <div class="step-label-date">{{ order.order_date }}</div>
-                            </div>
-                            <div class="step" v-if="order.cancle_date">
-                                <span><i class="bi bi-x-square-fill"></i></span>
-                                <div class="step-label">Đơn hàng đã hủy</div>
-                                <div class="step-label-date">{{ order.cancle_date }}</div>
-                            </div>
-                            <div class="step" v-if="!order.cancle_date">
-                                <span><i class="bi bi-truck"></i></span>
-                                <div class="step-label">Ngày dự kiến giao hàng</div>
-                                <div class="step-label-date">{{ order.estimate_date }}</div>
-                            </div>
-                            <!-- <div class="step">
-                                <span><i class="bi bi-cash-coin"></i></span>
-                                <div class="step-label">Đã xác nhận đơn hàng</div>
-                                <div class="step-label-date">{{ order.order_date }}</div>
-                            </div>
-                            <div class="step">
-                                <span><i class="bi bi-truck"></i></span>
-                                <div class="step-label">Đã giao cho ĐVVC</div>
-                                <div class="step-label-date">{{ order.order_date }}</div>
-                            </div> -->
-                            <div class="step" v-if="!order.cancle_date">
-                                <span><i class="bi bi-journal-arrow-down"></i></span>
-                                <div class="step-label">Đã nhận được hàng</div>
-                                <div class="step-label-date">{{ order.receipt_date }}</div>
-                            </div>
-                            <!-- <div class="step">
-                                <span><i class="bi bi-star"></i></span>
-                                <div class="step-label">Đơn hàng đã hoàn thành</div>
-                                <div class="step-label-date">{{ order.receipt_date }}</div>
-                            </div> -->                            
-                        </div>
-                    </div>
+    <div v-if="order" class="profile-info">
+        <div class="purchase-head detail">
+            <div class="purchase-id">
+                <a href="/customer/purchases"><i class="bi bi-chevron-left"></i></a>
+                Đơn hàng #{{ order.id }}
+            </div>
+            <div class="purchase-status">
+                <span>{{ order.status.description }}</span>
+                <span> {{ order.status.name }}</span>
+            </div>
+        </div>        
+        <div class="checkout-progress__purchase" v-if="!order.cancled_at">
+            <div class="progress-bar">
+                <div class="step active">
+                    <span><i class="bi bi-receipt-cutoff"></i></span>
+                    <div class="step-label">Đơn hàng đã đặt</div>
+                    <div class="step-label-date">{{ order.ordered_at }}</div>
                 </div>
-                <div class="py-3"></div>
-                <div class="row">
-                    <div class="accordion-item">
-                        <div class="accordion-content">
-                            <div>
-                                <p class="fs-3 text-dark mb-3">Địa chỉ nhận hàng</p>
-                                <p class="my-2">{{ order.user_name }}</p>
-                                <p>{{ order.user_phone }}</p>
-                                <p>{{ order.user_address }}, {{ order.ward }}, {{ order.district }}, {{ order.city }}</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="step" :class="{'active': order.status.id == 2 || order.status.id == 4 || order.status.id == 8 || order.status.id == 9}">
+                    <span><i class="bi bi-cash-coin"></i></span>
+                    <div class="step-label">Đã xác nhận</div>
+                    <div class="step-label-date">{{ order.confirmed_at }}</div>
                 </div>
-                <div class="row">
-                    <PurchaseDetail
-                        :order="order"
-                    />                    
-                    <div class="accordion-btn">
-                        <div>
-                            <span>Tổng đơn đặt hàng: </span><span class="fs-4 ms-3">{{ formatPrice(order.total_price) }} VNĐ</span>
-                        </div>
+                <div class="step" :class="{'active': order.status.id == 4 || order.status.id == 8 || order.status.id == 9}">
+                    <span><i class="bi bi-truck"></i></span>
+                    <div class="step-label" v-if="order.status.id == 4 || order.status.id == 8 || order.status.id == 9">Đã giao cho ĐVVC</div>
+                    <div class="step-label-date" v-if="order.status.id == 4 || order.status.id == 8 || order.status.id == 9">{{ order.ordered_at }}</div>
+                    <div class="step-label" v-else>Vận chuyển</div>
+                </div>
+                <div class="step" :class="{'active': order.status.id == 4 || order.status.id == 8 || order.status.id == 9}">
+                    <span><i class="bi bi-journal-arrow-down"></i></span>
+                    <div class="step-label" v-if="order.status.id == 4 || order.status.id == 8 || order.status.id == 9">Đã nhận được hàng</div>
+                    <div class="step-label-date" v-if="order.status.id == 4 || order.status.id == 8 || order.status.id == 9">{{ order.receipted_at }}</div>
+                    <div class="step-label" v-else>Đang giao</div>
+                </div>
+                <div class="step" :class="{'active': order.status.id == 9}">
+                    <span><i class="bi bi-star"></i></span>
+                    <div class="step-label" v-if="order.status.id == 9">Đã hoàn thành</div>
+                    <div class="step-label-date" v-if="order.status.id == 9">{{ order.receipted_at }}</div>
+                    <div class="step-label" v-else>Đánh giá</div>
+                </div>                        
+            </div>
+        </div>
+        <div class="purchase-store">
+            <div class="purchase-store__rate" v-if="order.receipted_at && isCurrentDateLessThanReceiptDate ">
+                <p>Đánh giá trước ngày {{ addDays(order.receipted_at, 30) }} để nhận 200 xu tại Chengivy!</p>
+                <div class="purchase-btn">
+                    <div class="purchase-btn__item">
+                        <button
+                            type="button"
+                            class="btn btn-warning me-3"
+                        >
+                            Đánh giá
+                        </button>  
                     </div>
                 </div>
             </div>
+            <div class="purchase-store__thank" v-else>
+                <div v-if="order.cancled_at">
+                    <p class="order-cancel">Đơn hàng đã hủy</p>
+                    <p>vào 
+                        {{ new Date(order.cancled_at).toLocaleTimeString('en-US', { hour12: false }) }}
+                        {{ new Date(order.cancled_at).toLocaleDateString('en-US').replace(/\//g, '-') }}
+                    </p>
+               </div>
+                <p v-if="order.receipted_at">Cảm ơn bạn đã mua sắm tại Chengivy!</p>
+                <div class="purchase-btn" v-if="order.receipted_at">
+                    <div class="purchase-btn__item">
+                        <button
+                            type="button"
+                            class="btn btn-light me-3"
+                        >
+                            Mua lại
+                        </button>  
+                    </div>
+                </div>
+                <p v-else>Ngày nhận hàng dự kiến {{ order.estimated_at.split(' ')[0] }}. Bạn có thể kiểm tra hàng sau khi thanh toán.</p>
+            </div>
         </div>
+        <div class="purchase-img"></div>
+        <div class="purchase-list" v-if="!order.cancled_at">
+            <div class="purchase-summary">
+                <div class="purchase-content">
+                    <div class="purchase-summary__info">
+                        <h3>Địa chỉ nhận hàng</h3>
+                        <div>
+                            <span class="acc-name">{{ order.user_name }}</span>
+                            <span>{{ order.user_phone }}</span>
+                        </div>
+                        <div>
+                            {{ order.user_address_detail }}
+                        </div>
+                        <div>
+                            {{ order.user_address }}
+                        </div>
+                        <h3>Phương thức thanh toán</h3>
+                        <div>
+                            <span>{{ order.payment_method.description }}</span>
+                        </div>
+                    </div>
+                    <!-- <div class="purchase-summary__follow">
+                        <div class="follow-content">
+                            <div class="follow-item">
+                                <div class="follow-item__icon">
+                                    <i class="bi bi-receipt-cutoff"></i>
+                                </div>
+                                <div class="follow-item__tiem">
+                                    <p>
+                                        {{ new Date(order.ordered_at).toLocaleTimeString('en-US', { hour12: false }) }}
+                                        {{ new Date(order.ordered_at).toLocaleDateString('en-US').replace(/\//g, '-') }}    
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="follow-item">
+                                <div class="follow-item__status">
+                                    <p>{{ order.status.name }}</p>
+                                    <p>{{ order.status.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="follow-content">
+                            <div class="follow-item">
+                                <div class="follow-item__icon">
+                                    <i class="bi bi-receipt-cutoff"></i>
+                                </div>
+                                <div class="follow-item__tiem">
+                                    <p>
+                                        {{ new Date(order.ordered_at).toLocaleTimeString('en-US', { hour12: false }) }}
+                                        {{ new Date(order.ordered_at).toLocaleDateString('en-US').replace(/\//g, '-') }}    
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="follow-item" v-if="order.confirmed_at">
+                                <div class="follow-item__status">
+                                    <p>Đã được xử lý</p>
+                                    <p>Đã xác nhận đơn hàng</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <PurchaseDetail
+            :order="order"
+        />          
     </div>
 </template>
 <script>
@@ -88,6 +164,13 @@
                 token: localStorage.getItem('token'),
                 order: null,
             };
+        },
+        computed: {
+            isCurrentDateLessThanReceiptDate() {
+            const currentDate = new Date();
+            const receiptDte = new Date(this.addDays(this.order.receipted_at, 30));
+            return currentDate < receiptDte;
+            }
         },
         methods: {
             async getPurchase(id) {
@@ -171,6 +254,11 @@
             },
             formatPrice(value) {
                 return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
+            addDays(date, days) {
+                const newDate = new Date(date);
+                newDate.setDate(newDate.getDate() + days);
+                return newDate.toISOString().slice(0, 19).replace('T', ' ');
             }
         },
         created() {
@@ -178,46 +266,26 @@
         },
     };
 </script>
-<style>
-    .accordion-item {
+<style scoped>
+    .purchase-summary {
         background-color: #fffdfd;
         box-shadow: 0 0 10px #00000012;
-        padding: 20px;
-        margin-bottom: 20px;
+        padding: 0 20px 20px;
         border: 1px solid #dee2e6;
     }
-    .accordion-btn {
+    .purchase-btn {
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         align-items: flex-end;
     }
     
-    .accordion-btn button {
+    .purchase-btn button {
         margin: 10px 0;
         padding: 8px 30px ;
     }
-    .accordion-btn span:nth-child(2) {
+    .purchase-btn span:nth-child(2) {
         color: #0167f3;
-    }
-    .box-body {
-        padding: 30px;
-    }
-    .social_cont {
-        height: 230px;
-    }
-    .social_cont p {
-        text-align: left;
-        padding-left: 10px;
-    }
-    .head-product {
-        font-size: 25px;
-        font-weight: 500;
-        padding: 12px;
-        color: #fff;
-        background-color: #ff9800 ;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
     }
     .progress-bar {
         flex-direction: unset;
@@ -225,36 +293,42 @@
         background-color: transparent !important;
         box-shadow: unset !important;
     }
-    .checkout-progress {
-        width: 90%;
-        margin: 0 50px;
+    .checkout-progress__purchase {
+        width: 100%;
+        padding: 0 60px;
+        height: 140px;
         font-size: 25px;
         position: relative;
+        margin: 0 auto;
+        background-color: #fffdfd;
+        /* box-shadow: 0 0 10px #00000012; */
+        border: 1px solid #dee2e6;
+        border-top: 1px dotted #cacaca;
     }
-    .checkout-progress:before {
+    .checkout-progress__purchase:before {
         content: "";
         position: absolute;
         left: 0;
-        top: 50%;
+        right: 0;
+        top: 32%;
         height: 10px;
-        width: 100%;
-        background-color: #2dc258;
-        -webkit-transform: translateY(-50%) perspective(1000px);
-        transform: translateY(-50%) perspective(1000px);
+        width: 80%;
+        background-color: #ccc;
+        margin-left: 80px;
     }
     
-    .checkout-progress .progress-bar {
+    .checkout-progress__purchase .progress-bar {
+        margin-top: -20px;
         width: 100%;
         display: flex;
-        height: 100px;
         justify-content: space-between;
         align-items: center;
     }
-    .checkout-progress .progress-bar .step {
+    .checkout-progress__purchase .progress-bar .step {
         z-index: 2;
         position: relative;
     }
-    .checkout-progress .progress-bar .step .step-label {
+    .checkout-progress__purchase .progress-bar .step .step-label {
         position: absolute;
         top: calc(100% + 25px);
         left: 50%;
@@ -265,7 +339,7 @@
         color: #000;
         transition: 0.3s ease;
     }
-    .checkout-progress .progress-bar .step .step-label-date {
+    .checkout-progress__purchase .progress-bar .step .step-label-date {
         position: absolute;
         top: calc(100% + 45px);
         left: 50%;
@@ -277,18 +351,19 @@
         transition: 0.3s ease;
     }
     @media (max-width: 767px) {
-        .checkout-progress .progress-bar .step .step-label {
+        .checkout-progress__purchase .progress-bar .step .step-label {
             top: calc(100% + 15px);
         }
     }
-    .checkout-progress .progress-bar .step span {
+    .checkout-progress__purchase .progress-bar .step span {
+        font-size: 22px;
         color: #ccc;
         transition: 0.3s ease;
         display: block;
         -webkit-transform: translate3d(0, 0, 0) scale(1) perspective(1000px);
         transform: translate3d(0, 0, 0) scale(1) perspective(1000px);
     }
-    .checkout-progress .progress-bar .step:after {
+    .checkout-progress__purchase .progress-bar .step:after {
         content: "";
         position: absolute;
         z-index: -1;
@@ -300,56 +375,106 @@
         height: 65px;
         background-color: #fff;
         border-radius: 50%;
+        border: 4px solid #ccc;
+        transition: 0.3s ease;
+    }
+
+    .checkout-progress__purchase .progress-bar .step:not(:first-child).active::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        right: 0;
+        top: 50%;
+        -webkit-transform: translate(0, -50%) perspective(1000px);
+        transform: translate(0, -50%) perspective(1000px);
+        width: 145px;
+        height: 10px;
+        background-color: #2dc258;
         border: 4px solid #2dc258;
         transition: 0.3s ease;
     }
-    .checkout-progress .progress-bar .step span i::before {
-        color: #2dc258;
-        font-weight: 700 !important;
-    }
-    .button-container {
-    display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        width: 100%;
-        margin: 20px auto 0px;
-    }
-    .button-container .btn {
-        display: inline-block;
-        background-color: #2C3E50;
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 10px;
-        text-transform: uppercase;
-        font-size: 15px;
-        font-weight: 500;
-        border: 3px solid #2C3E50;
-        transition: 0.3s ease;
-        cursor: pointer;
-        text-align: center;
-    }
-    @media (max-width: 767px) {
-        .button-container .btn {
-            width: 100%;
-            margin-bottom: 15px;
-        }
-    }
-    .button-container .btn:hover {
-        background-color: transparent;
-        color: #2C3E50;
-        -webkit-transform: scale(1.02) perspective(1000px);
-        transform: scale(1.02) perspective(1000px);
+
+    .checkout-progress__purchase .progress-bar .step.active:after {
+        border: 4px solid #2dc258;
     }
 
-    .checkout-progress-fill-1:before {
-        content: "";
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        height: 10px;
-        width: 50%;
+    .checkout-progress__purchase .progress-bar .step span i::before {
+        color: #ccc;
+        font-weight: 700 !important;
+    }
+
+    .checkout-progress__purchase .progress-bar .step.active span i::before {
+        color: #2dc258;
+    }
+
+    .purchase-head.detail {
+        padding: 10px 20px;
         background-color: #ccc;
-        -webkit-transform: translateY(-50%) perspective(1000px);
-        transform: translateY(-50%) perspective(1000px);
+        margin-top: 20px;
+        background-color: #fffdfd;
+        box-shadow: 0 0 10px #00000012;
+        border: 1px solid #dee2e6;
+        border-bottom: none;
+    }
+
+    .order-cancel {
+        color: #ce1800 !important;
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    .purchase-summary__follow {
+        margin-left: 20px;
+        padding: 10px 0 10px 20px;
+        border-left: 1px solid #ccc ;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    /* .purchase-summary__info {
+        width: 40%;
+    } */
+
+    .follow-content {
+        display: flex;
+        justify-content: start;
+        align-items: start;
+        margin-bottom: 6px;
+        position: relative;
+    }
+
+    .follow-content:not(:first-child)::before {
+        position: absolute;
+        content: "";
+        bottom: -9px;
+        left: 12px;
+        width: 3px;
+        height: 28px;
+        background-color: #ccc;
+    }
+    
+    .purchase-summary__follow .follow-item {
+        display: flex;
+        align-items: center;
+        margin-right: 15px;
+    }
+
+    .purchase-summary__follow .follow-item__icon {
+        margin-right: 15px;
+        border: 1px solid #ccc;
+        padding: 2px 6px;
+        border-radius: 50%;
+    }
+
+    .purchase-summary__follow .follow-item__icon i {
+        color: #ccc;
+    }
+
+    .purchase-summary__follow .follow-item .follow-item__status p {
+        margin: 0;
+    }
+
+    .purchase-summary__follow .follow-item .follow-item__status p:first-child {
+        font-weight: 600;
     }
 </style>

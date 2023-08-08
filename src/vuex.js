@@ -7,12 +7,14 @@ const store = createStore({
     admin: null,
     carts: [],
     favorites: [],
+    productBuyNow: null,
   },
   getters: {
     getUser: state => state.user,
     getAdmin: state => state.admin,
     carts: (state) =>  state.carts,
-    favorites: (state) =>  state.favorites
+    favorites: (state) =>  state.favorites,
+    productBuyNow: (state) => state.productBuyNow,
   },
   mutations: {
     setUser: (state, user) => {
@@ -33,12 +35,9 @@ const store = createStore({
     addToFavorite(state, items) {
       state.favorites = items;
     },
-    removeFavorite(state, item) {
-      const index = state.favorites.getFavoriteItems.findIndex(favorite => favorite.product.id === item.product_id && favorite.user.id === item.user_id);
-      if (index !== -1) {
-        state.favorites.splice(index, 1);
-      }
-    }
+    clearProductBuyNow(state, items) {
+      state.productBuyNow = items; 
+    },
   },
   actions: {
     updateUser: ({ commit }, user) => {
@@ -59,8 +58,8 @@ const store = createStore({
     addProductToFavorite(context, product) {
       context.commit('addToFavorite', product);
     },
-    removeProductFromFavorite(context, product) {
-      context.commit('removeFavorite', product);
+    removeProductBuyNow(context, data) {
+      context.commit('clearProductBuyNow', data);
     }
   },
   plugins: [
@@ -71,7 +70,11 @@ const store = createStore({
     createPersistedState({
       key: 'admin',
       paths: ['admin']
-    })
+    }),
+    createPersistedState({
+      key: 'productBuyNow',
+      paths: ['productBuyNow']
+    }),
   ]
 });
 

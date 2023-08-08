@@ -1,161 +1,89 @@
-<script>
-    import $ from 'jquery'
-    import RoleService from "@/services/admin/role.service";
-    import 'datatables.net'
-    import 'datatables.net-bs'
-    
-    export default {
-        name: 'RoleList',
-        components: {
-            
-        },
-        props: {
-            roles: { type: Array, default: [] },
-            activeIndex: { type: Number, default: -1 },
-        },
-        mounted() {
-            RoleService.getAll().then((response) => {
-                this.roles = response;
-                this.$nextTick(() => {
-                    $('.example1').DataTable()
-                })
-            });
-        },
-        data() {
-            return {
-                roles: [],
-            };
-        },
-        beforeUpdate() {
-            $('.example1').DataTable().destroy();
-        },
-        methods: {
-            async retrieveRoles() {
-                try {
-                    this.roles= await RoleService.getAll();
-                    this.$nextTick(() => {
-                        $('.example1').DataTable();
-                    })
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            refreshList() {
-                this.retrieveRoles();
-            },
-            deleteRole(id) {
-                this.$swal.fire({
-                    title: 'Bạn có chắc?',
-                    text: "Bạn sẽ không thể hoàn tác lại điều này!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.value) {
-                        RoleService.delete(id).then((res) => {
-                            if(res.success) {
-                                this.refreshList();
-                            }
-                        })
-                        this.$swal.fire('Đã xóa thành công!','','success')
-                    }
-                })
-            },
-            deleteAll(id){
-                alert(id)
-            }
-        },
-        
-    };
-</script>
 <template>
-    <table
-        aria-describedby="example1_info" role="grid" 
-        class="example1 table table-bordered table-striped dataTable"
-    >
-      <thead>
-        <tr role="row">
-            <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">Vai Trò</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mô Tả</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting" style="width: 150px;">Tùy chọn</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr role="row"
-            v-for="(role, index) in roles"
-            :key="role"
-            :class="{ active: index === activeIndex }"
-        >
-            <td class="sorting_1" >
-                {{ index + 1 }}
-            </td>
-            <td>{{ role.name }}</td>
-            <td>{{ role.description }}</td>
-            <td>{{ new Date(role.created_at).toLocaleString() }}</td>
-            <td>
-                <button
-                    type="button"
-                    class="ml-2 btn btn-primary"
-                >
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button
-                    type="button"
-                    class="ms-2 btn btn-success"
-                >
-                    <router-link
-                          :to="{
-                              name: 'role.edit',
-                              params: { id: role.id },
-                          }" 
-                    >
-                        <i class="fa fa-pen"></i>
-                    </router-link>
-                </button>
-                <button
-                    v-if="role.id"
-                    type="button"
-                    class="ms-2 btn btn-danger"
-                    @click="deleteRole(role.id)"
-                >
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-      </tbody>
+    <table class="example1 table table-bordered table-striped dataTable">
+        <thead>
+            <tr role="row">
+                <th width="8%">#</th>
+                <th width="30%">Vai Trò</th>
+                <th width="40%">Mô Tả</th>
+                <th width="7%">Tùy chọn</th>
+                <th width="5%">Chọn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr role="row" v-for="(role, index) in rolesList" :key="role">
+                <td class="sorting_1">
+                    {{ index + 1 }}
+                </td>
+                <td>{{ role.name }}</td>
+                <td>{{ role.description }}</td>
+                <td class="text-center">
+                    <button type="button" class="btn" @click="showModalEdit(role.id)">
+                        <img src="/images/icon/iconedit.png" alt="">
+                    </button>
+                    <button type="button" class="btn" @click="showModalEdit(role.id)">
+                        <img src="/images/icon/icondetail.png" alt="">
+                    </button>
+                </td>
+                <td class="text-center">
+                    <input type="checkbox" @change="idSelected(role.id)" :checked="selectedIds.includes(role.id)">
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="4" class="text-center text-bold">Chọn tất cả</th>
+                <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
+            </tr>
+        </tfoot>
     </table>
 </template>
 
-<style>
-    
-    @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
-    @import url('/static/css/bootstrap.min.css');
-
-    table.dataTable thead .sorting:after,
-    table.dataTable thead .sorting_asc:after,
-    table.dataTable thead .sorting_desc:after {
-        font-family: 'FontAwesome';
-    }
-    
-    table.dataTable thead .sorting:after {
-        content: '\f0dc';
-    }
-    
-    table.dataTable thead .sorting_asc:after {
-        content: '\f0dd';
-    }
-    
-    table.dataTable thead .sorting_desc:after {
-        content: '\f0de';
-    }
-
-    select.input-sm {
-        line-height: unset;
-    }
-    
-</style>
+<script>
+export default {
+    name: 'RoleList',
+    props: {
+        roles: { type: Array, default: [] },
+        roleID: { type: Number, required: true },
+        selectedIds: { type: Array, default: [] },
+    },
+    computed: {
+        rolesList() {
+            return this.roles;
+        },
+    },
+    methods: {
+        idSelected(id) {
+            const index = this.selectedIds.indexOf(id);
+            if (index === -1) {
+                // Nếu id chưa tồn tại trong mảng, thêm nó vào
+                this.selectedIds.push(id);
+            } else {
+                // Ngược lại, loại bỏ id khỏi mảng
+                this.selectedIds.splice(index, 1);
+            }
+        },
+        idAllSelected() {
+            if(this.selectedIds.length == this.rolesList.length) {
+                this.selectedIds.splice(0, this.selectedIds.length); // Bỏ hết các phần tử trong selectedIds
+            } else if(this.selectedIds.length) {
+                this.selectedIds.splice(0, this.selectedIds.length);
+                this.roles.forEach(role => {
+                    this.selectedIds.push(role.id);
+                });
+            } else {
+                this.roles.forEach(role => {
+                    this.selectedIds.push(role.id);
+                });
+            }
+        },
+        showModalEdit(roleID) {
+            this.$emit('update-modal', true);
+            this.$emit('update-roleID', roleID);
+        },
+        showModalAuthorization(roleID) {
+            this.$emit('update-modal', true);
+            this.$emit('update-roleID', roleID);
+        }
+    },
+};
+</script>
