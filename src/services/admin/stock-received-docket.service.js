@@ -1,6 +1,6 @@
 import createApiClient from "../api.service";
-class ImportCouponService {
-    constructor(baseUrl = "/api/admin/import-coupons") {
+class StockReceivedDocketService {
+    constructor(baseUrl = "/api/admin/import/stock-received-docket") {
         this.api = createApiClient(baseUrl);
     }
     async getAll() {
@@ -22,4 +22,4 @@ class ImportCouponService {
         return (await this.api.get("/")).data;
     }
 }
-export default new ImportCouponService();
+export default new StockReceivedDocketService();

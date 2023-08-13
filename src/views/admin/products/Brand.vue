@@ -1,4 +1,6 @@
 <template>
+    <BrandModal v-if="showModal" :showModal="showModal" 
+        @closeModal="closeModal" :brandID="brandID"/>
     <section class="content">
         <div class="row center-block">
             <div class="col-md-12">
@@ -7,21 +9,25 @@
                         <div class="group-btn">
                             <div class="d-flex align-items-center justify-content-end mb-3">
                                 <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
-                                <input type="button" name="btnAdd" value="Thêm mới" @click="goToAddPermission">
+                                <input type="button" name="btnAdd" value="Thêm mới" @click="showModal = !showModal">
                                 <input type="button" name="btnAdd" value="Thêm từ file">
-                                <input type="button" name="btnDelete" value="Xóa" @click="deletePermission()">
+                                <input type="button" name="btnDelete" value="Xóa" @click="deleteBrand()">
                                 <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
                                 <input type="button" id="exportExcelBtn" name="btnExcel" value="Xuất Excel">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 table-responsive">
-                                <PermissionList 
-                                    v-if="filteredPermissionsCount > 0" 
-                                    :permissions="filteredPermissions" 
+                                <BrandList 
+                                    v-if="filteredBrandsCount > 0" 
+                                    :brands="filteredBrands"
                                     :selectedIds="selectedIds" 
+                                    :showModal="showModal"
+                                    @update-modal="updateShowModal"
+                                    :brandID="brandID"
+                                    @update-brandID="updateBrand"
                                 />
-                                <p v-else>Không có quyền nào.</p>
+                                <p v-else>Không có danh mục nào.</p>
                             </div>
                         </div>
                     </div>
@@ -33,35 +39,39 @@
 <script>
 import $ from 'jquery'
 import { initializeDataTable } from '../../../utils';
-import PermissionList from "@/components/admin/permissions/PermissionList.vue";
-import PermissionService from "@/services/admin/permission.service";
+import BrandList from "@/components/admin/brands/BrandList.vue";
+import BrandService from "@/services/admin/brand.service";
+import BrandModal from "@/components/admin/brands/BrandModal.vue";
 
 export default {
     components: {
-        PermissionList,
+        BrandList,
+        BrandModal
     },
-    name: 'permission',
+    name: 'brand',
     data() {
         return {
-            permissions: [],
+            brands: [],
+            brandID: null,
             selectedIds: [],
+            showModal: false
         };
     },
     computed: {
-        filteredPermissions() {
-            return this.permissions;
+        filteredBrands() {
+            return this.brands;
         },
-        filteredPermissionsCount() {
-            return this.filteredPermissions.length;
+        filteredBrandsCount() {
+            return this.filteredBrands.length;
         },
-    },
-    beforeUpdate() {
-        $('.example1').DataTable().destroy();
     },
     methods: {
-        async retrievePermissions() {
+        async retrieveBrands() {
             try {
-                this.permissions = await PermissionService.getAll();
+                this.brands = await BrandService.getAll();
+                if ($.fn.DataTable.isDataTable('.example1')) {
+                    $('.example1').DataTable().destroy();
+                }
                 this.$nextTick(() => {
                     initializeDataTable();
                 });
@@ -70,12 +80,10 @@ export default {
             }
         },
         refreshList() {
-            this.retrievePermissions();
+            this.retrieveBrands();
+            this.selectedIds = [];
         },
-        goToAddPermission() {
-            this.$router.push({ name: "permission.add" });
-        },
-        deletePermission() {
+        deleteBrand() {
             this.$swal.fire({
                 title: 'Bạn có chắc?',
                 text: "Bạn sẽ không thể hoàn tác lại điều này!",
@@ -87,7 +95,7 @@ export default {
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.value) {
-                    PermissionService.delete(this.selectedIds).then((res) => {
+                    BrandService.delete(this.selectedIds).then((res) => {
                         if (res.success) {
                             this.refreshList();
                         }
@@ -95,6 +103,16 @@ export default {
                     this.$swal.fire('Đã xóa thành công!', '', 'success')
                 }
             })
+        },
+        closeModal() {
+            this.showModal = false;
+            this.brandID = null;
+        },
+        updateShowModal(value) {
+            this.showModal = value;
+        },
+        updateBrand(value) {
+            this.brandID = value;
         },
     },
     mounted() {

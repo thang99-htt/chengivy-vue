@@ -47,7 +47,7 @@
                                             v-for="(image, index) in review.images_review"
                                             :key="image.id"
                                             class="d-block me-3" width="100" 
-                                            :src="getImage(image.image)" alt=""
+                                            :src="image.image" alt=""
                                         >
                                     </div>
                                 </div>
@@ -60,7 +60,6 @@
     </div>    
 </template>
 <script>
-    import { getImage } from '../../../utils';
     
     export default {
         props: {
@@ -84,7 +83,7 @@
             this.sumRate = this.totalRate;
         },
         methods: {
-            getImage,
+            
         },
     };
 </script>

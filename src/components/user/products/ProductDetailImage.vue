@@ -4,20 +4,19 @@
             <div class="d-flex flex-column">
                 <div v-for="img in isColorSelected.items" :key="img" class="left-image"
                     @mouseover="changPicture(img.image)">
-                    <img class="demo" :src=getImage(img.image) alt=""
+                    <img class="demo" :src="img.image" alt=""
                         :class="{ active: img.image === activeImage ? true : false }" width="100">
                 </div>
             </div>
             <div class="container" @mousemove="handleMouseMove" @mouseleave="resetZoom">
                 <div class="mySlides">
-                    <img :src="getImage(activeImage)" :style="zoomStyle" class="img-main">
+                    <img :src="activeImage" :style="zoomStyle" class="img-main">
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
-import { getImage } from '../../../utils';
 export default {
     props: {
         product: { type: Object, required: true },
@@ -41,7 +40,6 @@ export default {
         },
     },
     methods: {
-        getImage,
         changPicture(image) {
             this.activeImage = image;
         },

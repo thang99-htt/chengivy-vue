@@ -1,10 +1,9 @@
 import { createWebHistory, createRouter } from "vue-router";
-import axios from 'axios';
-import StaffService from "@/services/admin/staff.service";
+import store from '../vuex';
 
 const routes = [
     {
-        path:"/admin",
+        path: "/admin",
         component: () => import("../components/admin/layouts/Layout.vue"),
         meta: {
             authenticatedAdmin: true
@@ -19,17 +18,6 @@ const routes = [
                 },
             },
             {
-                path: "permissions/:id",
-                name: "permission.edit",
-                component: () => import("@/views/admin/permissions/PermissionEdit.vue"),
-                props: true,
-            },
-            {
-                path: "permissions/add",
-                name: "permission.add",
-                component: () => import("@/views/admin/permissions/PermissionAdd.vue"),
-            },   
-            {
                 path: "staffs",
                 component: () => import("../views/admin/staffs/StaffDefault.vue"),
                 children: [
@@ -39,216 +27,94 @@ const routes = [
                         component: () => import("../views/admin/staffs/Staff.vue"),
                         meta: {
                             description: 'Nhân viên',
-                            permissionId: 3
+                            permissionID: 23
                         },
                     },
-                    {
-                        path: "staff-add",
-                        name: "staff.add",
-                        component: () => import("@/views/admin/staffs/StaffAdd.vue"),
-                        meta: {
-                            description: 'Thêm Nhân viên',
-                            permissionId: 3
-                        },
-                    },  
                     {
                         path: "roles",
                         name: "role",
-                        component: () => import("../views/admin/roles/Role.vue"),
+                        component: () => import("../views/admin/staffs/Role.vue"),
                         meta: {
                             description: 'Vai trò',
-                            permissionId: 1
+                            permissionID: 23
                         },
                     },
-                    {
-                        path: "roles/add",
-                        name: "role.add",
-                        component: () => import("@/views/admin/roles/RoleAdd.vue"),
-                        meta: {
-                            description: 'Thêm Vai trò',
-                            permissionId: 1
-                        },
-                    },  
-                    {
-                        path: "permissions",
-                        name: "permission",
-                        component: () => import("../views/admin/permissions/Permission.vue"),
-                        meta: {
-                            description: 'Quyền',
-                            permissionId: 2
-                        },
-                    },
-
                 ],
             },
             {
-                path: "staffs/:id",
-                name: "staff.edit",
-                component: () => import("@/views/admin/staffs/StaffEdit.vue"),
-                props: true,
-                meta: {
-                    description: 'Cập nhật Nhân viên',
-                    permissionId: 3
-                },
-            },
-            
-            {
-                path: "suppliers",
-                name: "supplier",
-                component: () => import("../views/admin/suppliers/Supplier.vue"),
-                meta: {
-                    description: 'Nhà cung cấp',
-                    permissionId: 6
-                },
-            },
-            {
-                path: "suppliers/:id",
-                name: "supplier.edit",
-                component: () => import("@/views/admin/suppliers/SupplierEdit.vue"),
-                props: true,
-                meta: {
-                    description: 'Cập nhật Nhà cung cấp',
-                    permissionId: 6
-                }
-            },
-            {
-                path: "suppliers/add",
-                name: "supplier.add",
-                component: () => import("@/views/admin/suppliers/SupplierAdd.vue"),
-                meta: {
-                    description: 'Thêm Nhà cung cấp',
-                    permissionId: 6
-                }
-            },   
-            {
-                path: "payment-vouchers",
-                name: "payment-voucher",
-                component: () => import("../views/admin/payment-vouchers/PaymentVoucher.vue"),
-                meta: {
-                    description: 'Phiếu chi',
-                    permissionId: 5
-                },
-            },
-            {
-                path: "payment-vouchers/:id",
-                name: "payment-voucher.edit",
-                component: () => import("@/views/admin/payment-vouchers/PaymentVoucherEdit.vue"),
-                props: true,
-                meta: {
-                    description: 'Cập nhật Phiếu chi',
-                    permissionId: 5
-                }
-            },
-            {
-                path: "payment-vouchers/add",
-                name: "payment-voucher.add",
-                component: () => import("@/views/admin/payment-vouchers/PaymentVoucherAdd.vue"),
-                meta: {
-                    description: 'Thêm Phiếu chi',
-                    permissionId: 5
-                }
-            }, 
-            {
-                path: "import-coupons",
-                name: "import-coupon",
-                component: () => import("../views/admin/coupons/Import.vue"),
-                meta: {
-                    description: 'Phiếu nhập',
-                    permissionId: 4
-                },
-            },
-            {
-                path: "import-coupons/add",
-                name: "import-coupon.add",
-                component: () => import("../views/admin/coupons/ImportAdd.vue"),
-                meta: {
-                    description: 'Thêm Phiếu nhập',
-                    permissionId: 4
-                },
-            },
-            {
-                path: "import-coupons/view/:id",
-                name: "import-coupon.view",
-                component: () => import("@/views/admin/coupons/ImportView.vue"),
-                props: true,
-                meta: {
-                    description: 'Xem Phiếu nhập',
-                    permissionId: 4
-                }
-            },
-            {
-                path: "categories",
-                name: "category",
-                component: () => import("../views/admin/categories/Category.vue"),
-                meta: {
-                    description: 'Danh mục',
-                    permissionId: 14
-                }
-            },
-            {
-                path: "categories/:id",
-                name: "category.edit",
-                component: () => import("@/views/admin/categories/CategoryEdit.vue"),
-                props: true,
-                meta: {
-                    description: 'Cập nhật Danh mục',
-                    permissionId: 13
-                }
-            },
-            {
-                path: "categories/add",
-                name: "category.add",
-                component: () => import("@/views/admin/categories/CategoryAdd.vue"),
-                meta: {
-                    description: 'Thêm Danh mục',
-                    permissionId: 12
-                }
-            },   
-            {
                 path: "products",
-                name: "product",
-                component: () => import("../views/admin/products/Product.vue"),
-                meta: {
-                    description: 'Sản phẩm',
-                    permissionId: 6
-                }
+                component: () => import("../views/admin/products/ProductDefault.vue"),
+                children: [
+                    {
+                        path: "list",
+                        name: "product",
+                        component: () => import("../views/admin/products/Product.vue"),
+                        meta: {
+                            description: 'Sản phẩm',
+                            permissionID: 40
+                        }
+                    },
+                    {
+                        path: "category",
+                        name: "category",
+                        component: () => import("../views/admin/products/Category.vue"),
+                        meta: {
+                            description: 'Danh mục',
+                            permissionID: 32
+                        }
+                    },
+                    {
+                        path: "brand",
+                        name: "brand",
+                        component: () => import("../views/admin/products/Brand.vue"),
+                        meta: {
+                            description: 'Danh mục',
+                            permissionID: 32
+                        }
+                    },
+                ]
             },
             {
-                path: "products/view/:id",
-                name: "product.view",
-                component: () => import("@/views/admin/products/ProductView.vue"),
-                props: true,
-                meta: {
-                    description: 'Xem Sản phẩm',
-                    permissionId: 10
-                }
+                path: "import",
+                component: () => import("../views/admin/imports/ImportDefault.vue"),
+                children: [
+                    {
+                        path: "supplier",
+                        name: "supplier",
+                        component: () => import("../views/admin/imports/Supplier.vue"),
+                        meta: {
+                            description: 'Nhà cung cấp',
+                            permissionID: 44
+                        },
+                    },
+                    {
+                        path: "stock-received-docket",
+                        name: "stock-received-docket",
+                        component: () => import("../views/admin/imports/StockReceivedDocket.vue"),
+                        meta: {
+                            description: 'Phiếu nhập',
+                            permissionID: 44
+                        },
+                    },
+                    {
+                        path: "payment-voucher",
+                        name: "payment-voucher",
+                        component: () => import("../views/admin/imports/PaymentVoucher.vue"),
+                        meta: {
+                            description: 'Phiếu chi',
+                            permissionID: 44
+                        },
+                    },
+                ]
+
             },
-            {
-                path: "products/:id",
-                name: "product.edit",
-                component: () => import("@/views/admin/products/ProductEdit.vue"),
-                props: true,
-                meta: {
-                    description: 'Cập nhật Sản phẩm',
-                    permissionId: 9
-                }
-            },
-            {
-                path: "products/add",
-                name: "product.add",
-                component: () => import("@/views/admin/products/ProductAdd.vue"),
-                meta: {
-                    description: 'Thêm Sản phẩm',
-                    permissionId: 8
-                }
-            }, 
             {
                 path: "orders",
                 name: "order",
                 component: () => import("../views/admin/orders/Order.vue"),
                 meta: {
                     description: 'Đơn hàng',
-                    permissionId: 22
+                    permissionID: 55
                 }
             },
             {
@@ -258,7 +124,7 @@ const routes = [
                 props: true,
                 meta: {
                     description: 'Xem chi tiết Đơn hàng',
-                    permissionId: 22
+                    permissionID: 22
                 }
             },
             {
@@ -267,7 +133,7 @@ const routes = [
                 component: () => import("../views/admin/invoices/Invoice.vue"),
                 meta: {
                     description: 'Hóa đơn',
-                    permissionId: 22
+                    permissionID: 22
                 }
             },
             {
@@ -276,7 +142,17 @@ const routes = [
                 component: () => import("../views/admin/reviews/Review.vue"),
                 meta: {
                     description: 'Đánh giá',
-                    permissionId: 24
+                    permissionID: 59
+                }
+            },
+            {
+                path: "products/view/:id",
+                name: "product.view",
+                component: () => import("@/views/admin/products/ProductView.vue"),
+                props: true,
+                meta: {
+                    description: 'Xem Sản phẩm',
+                    permissionID: 10
                 }
             },
         ]
@@ -290,7 +166,7 @@ const routes = [
         }
     },
     {
-        path:"/",
+        path: "/",
         component: () => import("../components/user/layouts/Layout.vue"),
         meta: {
             authenticated: false
@@ -304,12 +180,12 @@ const routes = [
             {
                 path: "/",
                 name: "home",
-                component: () => import("../views/user/Home.vue"),                
+                component: () => import("../views/user/Home.vue"),
             },
             {
                 path: "search",
                 name: "search",
-                component: () => import("../views/user/products/Product.vue"),                
+                component: () => import("../views/user/products/Product.vue"),
             },
             {
                 path: "products/all",
@@ -339,11 +215,11 @@ const routes = [
                 name: "register",
                 component: () => import("../views/user/auth/Register.vue"),
             },
-            
+
         ]
     },
     {
-        path:"/",
+        path: "/",
         component: () => import("../components/user/layouts/Layout.vue"),
         meta: {
             authenticated: true
@@ -391,15 +267,9 @@ const routes = [
                 name: "checkout",
                 component: () => import("@/views/user/checkouts/Checkout.vue"),
             },
-            {
-                path: "modal",
-                name: "modal",
-                component: () => import("@/components/Modal.vue"),
-                props: true,
-            },
         ]
     },
-        
+
 ];
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -407,52 +277,33 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+    const getAdmin = store.getters.getAdmin;
     const adminAuthenticated = localStorage.getItem('tokenAdmin') ? true : false;
     const userAuthenticated = localStorage.getItem('tokenUser') ? true : false;
-  
-    if (to.meta.authenticated && !userAuthenticated) {
-      next({ name: 'login'});
-    } else if (to.meta.authenticatedAdmin && !adminAuthenticated) {
-      next({ name: 'login.admin'});
-    } else {
-      // Kiểm tra permission nếu có
-      if (to.meta.permissionId) {
-        const tokenAdmin = localStorage.getItem('tokenAdmin');
-        if (tokenAdmin) {
-          try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/user`, {
-              headers: {
-                Authorization: `Bearer ${tokenAdmin}`
-              }
-            });
-            const staffId = response.data.id;
-            const response1 = await StaffService.get(staffId);
-            // const permissions = response1.rolespermissions;
-            // const hasPermission = permissions.some(permission => permission.id === to.meta.permissionId);
-            
-            // Tam dong
-            // const hasPermission = response1.roles.some(role => {
-            //     return role.permissions.some(permission => permission.id === to.meta.permissionId);
-            // });
-            // if (!hasPermission) {
-            //   next({ name: 'dashboard' });
-            //   return;
-            // }
 
-            // Nếu có permission thì tiếp tục điều hướng đến route đích
-            next();
-          } catch (error) {
-            console.error(error);
-            next({ name: 'login.admin' });
-          }
+    if (to.meta.authenticated && !userAuthenticated) {
+        next({ name: 'login' });
+    } else if (to.meta.authenticatedAdmin && !adminAuthenticated) {
+        next({ name: 'login.admin' });
+    } else {
+        // Kiểm tra permission nếu có
+        if (to.meta.permissionID) {
+            if (getAdmin) {
+                const hasPermission = getAdmin.permissionIDs.includes(to.meta.permissionID);
+                if (!hasPermission) {
+                    next({ name: 'dashboard' });
+                    return;
+                }
+                // Nếu có permission thì tiếp tục điều hướng đến route đích
+                next();
+            } else {
+                next({ name: 'login.admin' });
+            }
         } else {
-          next({ name: 'login.admin' });
+            // Nếu không có permission thì tiếp tục điều hướng đến route đích
+            next();
         }
-      } else {
-        // Nếu không có permission thì tiếp tục điều hướng đến route đích
-        next();
-      }
     }
-  });
-  
-  export default router;
+});
+
+export default router;

@@ -577,7 +577,9 @@ table.dataTable thead .sorting_desc:after {
 }
 
 .modal-dialog-scrollable .modal-body input[type="text"],
-.modal-dialog-scrollable .modal-body input[type="password"] {
+.modal-dialog-scrollable .modal-body input[type="password"],
+.modal-dialog-scrollable .modal-body input[type="number"],
+.modal-dialog-scrollable .modal-body input[type="textarea"] {
   padding: 0 12px;
   height: 30px;
 }
@@ -587,7 +589,7 @@ table.dataTable thead .sorting_desc:after {
 }
 
 .modal-dialog-scrollable .modal-body .form-group:last-child {
-  margin-top: 15px;
+  /* margin-top: 15px; */
 }
 
 .modal.address .modal-dialog-scrollable .modal-content {
@@ -653,7 +655,7 @@ table.dataTable thead .sorting_desc:after {
 }
 
 .grid1 .single-product {
-  height: 470px;
+  height: 474px;
 }
 
 .grid1 .single-product .product-image img {
@@ -1871,40 +1873,59 @@ language-select .language-select-menu_item {
 
 .aselect {
   width: 100%;
+  position: relative;
 }
 
 .aselect .selector {
   border: 1px solid gainsboro;
   background: #fff;
   position: relative;
-  z-index: 1;
-  position: relative;
 }
-
-/* .aselect .selector .visible::after {
-  position: absolute;
-  right: 8px;
-  bottom: -22px;
-  content: "\f0d8";
-  font-family: "FontAwesome";
-  color: #fff;
-  font-size: 24px;
-  text-shadow: 0px -5px 6px rgba(184, 184, 184, .5);
-  z-index: 10;
-} */
 
 .aselect .selector .arrow {
   position: absolute;
-  right: 10px;
+  right: 12px;
   top: 40%;
   width: 0;
   height: 0;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-top: 10px solid #888;
+  border-top: 8px solid #888;
   transform: rotateZ(0deg) translateY(0px);
   transition-duration: 0.3s;
   transition-timing-function: cubic-bezier(.59, 1.39, .37, 1.01);
+}
+
+.aselect .selector .arrow1 {
+  position: absolute;
+  right: 35px;
+  top: 40%;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 8px solid #888;
+  transform: rotateZ(0deg) translateY(0px);
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(.59, 1.39, .37, 1.01);
+}
+
+.aselect .plus {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(.59, 1.39, .37, 1.01);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.aselect .plus:hover {
+  cursor: pointer;
+  background-color: #ccc;
 }
 
 .aselect .selector .expanded {
@@ -1913,7 +1934,8 @@ language-select .language-select-menu_item {
 
 .aselect .selector .label {
   display: block;
-  padding: 12px;
+  height: 30px;
+  padding: 8px 12px;
   font-size: 14px;
   color: #666;
   text-align: left !important;
@@ -1923,14 +1945,14 @@ language-select .language-select-menu_item {
 
 .aselect .selector .selector-container {
   width: 100%;
-  height: 300px;
+  min-height: 260px;
   list-style-type: none;
   padding: 0;
   margin: 0;
   font-size: 16px;
   border: 1px solid gainsboro;
   position: absolute;
-  z-index: 1;
+  z-index: 10;
   background: #fff;
   margin-top: 6px;
 }
@@ -1969,7 +1991,7 @@ language-select .language-select-menu_item {
 }
 
 .aselect .selector li:hover {
-  color: white;
+  color: #fff;
   background: #3872b2;
 }
 
@@ -2302,6 +2324,7 @@ hr {
   justify-content: start;
   box-shadow: 0 0 10px #00000012;
   border: 1px solid #dee2e6;
+  background: #dae9f3;
 }
 
 .content .option-filter a {
@@ -2312,9 +2335,17 @@ hr {
   width: 180px;
   padding: 16px 20px;
   text-align: center;
+  color: #515151;
+  font-weight: 600;
+  margin-right: 6px;
+}
+.content .option-filter a:hover {
+  background-color: #fff;
+  color: #09f;
 }
 .content .option-filter a.active {
-  color: #3872b2;
+  background-color: #fff;
+  color: #09f;
 }
 
 .content .option-filter a.active::before {
@@ -2326,4 +2357,14 @@ hr {
   right: 0;
   bottom: 0;
   background-color: #3872b2;
+}
+
+.products .modal-dialog {
+  width: 1200px !important;
+  max-width: 1200px !important;
+}
+
+.offcanvas-header,
+.offcanvas-body {
+  padding: 10px 25px 25px;
 }

@@ -20,7 +20,7 @@
                             >
                                 <Field name="payment" type="radio" :value="payment.id" v-model="orderLocal.payment_method_id"/>
                                 <label class="form-check-label ms-2" for="exampleRadios1">
-                                    <img :src="getImagePayment(payment.image)" width="25" alt="">
+                                    <img :src="payment.image" width="25" alt="">
                                     {{ payment.description }}
                                 </label>
                             </div>
@@ -48,7 +48,7 @@
                             <div class="product-items">                                
                                 <div class="shopping-item" v-if="!productBuyNow">
                                     <div class="text-dark text-bold">
-                                        <span>{{ cartLocal.count_item }} sản phẩm</span>
+                                        <span>{{ cartAvailable.length }} sản phẩm</span>
                                     </div>
                                     <hr>
                                     <ul class="shopping-list">
@@ -58,7 +58,7 @@
                                         >  
                                             <div class="product-img-head">
                                                 <a class="cart-img" href="product-details.html">
-                                                    <img v-if="cart.image" :src="getImage(cart.image)" alt="#" />
+                                                    <img v-if="cart.image" :src="cart.image" alt="#" />
                                                 </a>
                                             </div>
                                             <div class="">
@@ -115,7 +115,7 @@
                                         <li>  
                                             <div class="product-img-head">
                                                 <a class="cart-img" href="product-details.html">
-                                                    <img v-if="productBuyNow.image" :src="getImage(productBuyNow.image)" alt="#" />
+                                                    <img v-if="productBuyNow.image" :src="productBuyNow.image" alt="#" />
                                                 </a>
                                             </div>
                                             <div class="">
@@ -169,7 +169,7 @@
     import PaymentMethodService from "@/services/admin/payment.service";
     import ProductService from "@/services/user/product.service";
     import { Form, Field, ErrorMessage } from "vee-validate";
-    import { formatPrice, getImage } from '@/utils';
+    import { formatPrice } from '@/utils';
     import {mapGetters} from 'vuex';
 
     export default {
@@ -211,10 +211,6 @@
             },
             refreshList() {
                 this.retrievePaymentMethod();
-            },
-            getImage,
-            getImagePayment(image){
-                return 'http://127.0.0.1:8000/storage/uploads/checkout/'+image;
             },
             submitOrder() {
                 this.$emit("submit:order", this.orderLocal);

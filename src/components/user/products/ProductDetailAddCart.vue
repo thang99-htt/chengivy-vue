@@ -12,7 +12,7 @@
                 </div>
                 <div class="form-group">
                     <div class="multi-size-selector multi-size-selector--4-columns filters-panel-group-box__value-selector">
-                        <div class="form__column" v-for="size in getUniqueSizes(Object.values(product.inventories)[0].items)" :key="size"
+                        <div class="form__column" v-for="size in getUniqueSizes(product.inventories[0].items)" :key="size"
                             @click="sizeProducts(size.size_id)">
                             <div class="form-input multi-size-selector__size" :class="{
                                 'multi-size-selector__size--is-checked': size.size_id == inventoryLocal.size_id,
@@ -201,7 +201,7 @@ export default {
             this.getOutStock = [];
             const desiredColorId = this.isColorSelected.color_id; // Use the value of isColorSelected
 
-            const filteredInventories = this.filterByColor(Object.values(this.product.inventories)[0].items, desiredColorId);
+            const filteredInventories = this.filterByColor(this.product.inventories[0].items, desiredColorId);
 
             filteredInventories.forEach(item => {
                 if (item.total_final == 0) {

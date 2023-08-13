@@ -14,17 +14,18 @@
                     </div>
                     <div class="arrow" :class="{ expanded : visible }"></div>
                     <div :class="{ hidden : !visible, visible }">
-                        <ul>
-                            <li value="0" @click="selectOption(0)">{{ valueSelect }}</li>
-                            <li 
-                                :class="{ current : category === value }" 
-                                v-for="(category, index) in categories" 
-                                :key="category.id" :value="category.id" 
-                                @click="selectOption(category)"
-                            >
-                                {{ category.name }}
-                            </li>
-                        </ul>
+                        <div class="selector-container">
+                            <ul>
+                                <li 
+                                    :class="{ current : category.name === valueSelect }" 
+                                    v-for="(category, index) in categories" 
+                                    :key="category.id" :value="category.id" 
+                                    @click.stop="selectOption(category)"
+                                >
+                                    {{ category.name }}
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -43,7 +44,7 @@
                     v-model="categoryLocal.image" id="my-file" />
             </div>
             <div>
-                <img v-if="image" :src="getImage(image)" alt="Hình ảnh" class="img-edit img-responsive center-block">
+                <img v-if="this.category.image" :src="getImage(this.category.image)" alt="Hình ảnh" class="img-edit img-responsive center-block">
                 <img v-else :src="categoryLocal.image" alt="Hình ảnh" class="img-edit img-responsive center-block">
             </div>
             <ErrorMessage name="image" class="error-feedback" />
@@ -99,10 +100,14 @@ export default {
             categoryLocal: this.category,
             categoryFormSchema,
             categories: [],
-            image: this.category.image,
             valueSelect: 'NULL',
             visible: false
         };
+    },
+    watch: {
+        'category'(newValue) {
+            this.categoryLocal = newValue;
+        },
     },
     methods: {
         onFileChange(event) {
@@ -131,11 +136,12 @@ export default {
             this.categoryLocal.url = "";
         },
 		selectOption(category) {
-            if(category == 0) this.categoryLocal.parent_id = 0;
+            if(category.name == 'NULL') this.categoryLocal.parent_id = 0;
 			else {
                 this.valueSelect = category.name;
                 this.categoryLocal.parent_id = category.id;
             }
+            this.visible = false;
 		}
     },
 };

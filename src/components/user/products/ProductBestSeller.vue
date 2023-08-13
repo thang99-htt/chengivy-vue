@@ -1,8 +1,8 @@
 <script>
-import ProductService from "@/services/user/product.service";
+import ProductService from "@/services/admin/product.service";
 import 'datatables.net'
 import 'datatables.net-bs'
-import { formatPrice, getImage } from '@/utils';
+import { formatPrice } from '@/utils';
 
 export default {
     name: 'ProductBestSeller',
@@ -20,7 +20,6 @@ export default {
         };
     },
     methods: {
-        getImage,
         async retrieveProducts() {
             try {
                 this.products = await ProductService.getType();
@@ -55,7 +54,7 @@ export default {
                             name: 'product.detail',
                             params: { id: product.id },
                         }">
-                            <img :src="getImage(product.image)" alt="#" />
+                            <img :src="product.image" alt="#" />
                         </router-link>
                         <div class="product-item__favorite" @click="toggleFavorite(product)">
                             <span class="product-item__favorite-item">

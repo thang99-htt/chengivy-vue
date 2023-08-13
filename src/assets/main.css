@@ -7233,9 +7233,10 @@ blockquote span {
   }
 }
 .trending-product .slider-trending .single-slider .content {
-  width: 1000px;
+  width: 100%;
   height: 100%;
   position: relative;
+  padding-left: 150px;
 }
 @media only screen and (min-width: 916px) and (max-width: 1200px) {
   .trending-product .slider-trending .single-slider .content {
@@ -7395,7 +7396,7 @@ blockquote span {
 }
 .trending-product .image-detail {
   position: absolute;
-  right: 0;
+  right: 15%;
   top: 40px;
   width: 120px;
   height: auto;

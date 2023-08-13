@@ -18,7 +18,7 @@
                     <ul class="user_profile_dd dropdown">
                         <li>
                             <a class="dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img class="img-responsive rounded-circle" src="/images/admin/photos/6215.jpg" alt="#" />
+                                <img class="img-responsive rounded-circle" :src="getAdmin.avatar" alt="#" />
                                 <span class="name_user" v-if="getAdmin">{{ getAdmin.name }}</span>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">

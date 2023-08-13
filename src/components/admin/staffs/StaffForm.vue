@@ -140,7 +140,7 @@
             </div> 
         </div>
         <div class="form-group">
-            <label for="role_id">
+            <label for="role_id">Vai trò
                 <span class="error-feedback">*</span>
             </label>     
             <div
@@ -170,7 +170,6 @@
     import { Form, Field, ErrorMessage } from "vee-validate";
     import AddressService from "@/services/user/address.service";
     import RoleService from "@/services/admin/role.service";
-    import StaffModal from "@/components/admin/staffs/StaffModal.vue";
 
     export default {
         components: {
@@ -181,7 +180,6 @@
         emits: ["submit:staff", "delete:staff"],
         props: {
             staff: { type: Object, required: true },
-            cities: { type: Array, default: [] },
             reset: { type: Function, required: true },
         },
         watch: {

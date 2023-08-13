@@ -82,7 +82,7 @@
                                             <a href="javascript:void(0)" class="remove" title="Remove this item"><i
                                                     class="fa fa-close"></i></a>
                                             <div class="cart-img-head">
-                                                <img v-if="cart.image" :src="getImage(cart.image)"
+                                                <img v-if="cart.image" :src="cart.image"
                                                     alt="#" />
                                             </div>
                                             <div class="content">
@@ -340,7 +340,7 @@
                                         <i class="fa fa-close"></i>
                                     </a>
                                     <div class="cart-img-head">
-                                        <img v-if="cart.image" :src="getImage(cart.image)" alt="#" />
+                                        <img v-if="cart.image" :src="cart.image" alt="#" />
                                     </div>
                                     <div class="content">
                                         <h4>
@@ -601,7 +601,7 @@ import FavoriteService from "@/services/user/favorite.service";
 import axios from 'axios';
 import { mapGetters } from 'vuex';
 import $ from 'jquery'
-import { formatPrice, getImage } from '@/utils';
+import { formatPrice } from '@/utils';
 
 export default {
     name: 'Header',
@@ -692,7 +692,6 @@ export default {
         productByUrl(url) {
             console.log(url);
         },
-        getImage,
         async logout() {
             try {
                 axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;

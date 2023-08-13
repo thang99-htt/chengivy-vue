@@ -4,7 +4,7 @@
             <div class="purchase-item" v-for="(product, index) in orderLocal" :key="product.id">
                 <div class="purchase-info">
                     <div class="d-flex">
-                        <img class="d-block me-3" width="100" :src="getImage(product.image)" alt="">
+                        <img class="d-block me-3" width="100" :src="product.image" alt="">
                         <div>
                             <router-link :to="{
                                 name: 'product.detail',
@@ -54,7 +54,7 @@
     </div>
 </template>
 <script>
-import { formatPrice, getImage } from '@/utils';
+import { formatPrice } from '@/utils';
 
 export default {
     props: {
@@ -69,7 +69,6 @@ export default {
     },
     methods: {
         formatPrice,
-        getImage,
     }
 };
 </script>

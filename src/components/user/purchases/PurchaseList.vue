@@ -30,7 +30,7 @@
                     >
                         <div class="purchase-info">
                             <div class="d-flex">
-                                <img class="d-block me-3" width="100" :src="getImage(product.image)" alt="">
+                                <img class="d-block me-3" width="100" :src="product.image" alt="">
                                 <div>
                                     <router-link 
                                         :to="{
@@ -138,7 +138,7 @@
     import ReviewService from "@/services/user/review.service";
     import ReviewForm from "@/components/user/products/ReviewForm.vue";
     import {mapGetters} from 'vuex';
-    import { formatPrice, getImage } from '@/utils';
+    import { formatPrice } from '@/utils';
 
     export default {
         name: 'PurchaseList',
@@ -172,7 +172,6 @@
             },
         },
         methods: {
-            getImage,
             formatPrice,
             cancleOrder(order) {
                 try {

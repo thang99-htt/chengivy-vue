@@ -1,8 +1,8 @@
 <script>
-import ProductService from "@/services/user/product.service";
+import ProductService from "@/services/admin/product.service";
 import 'datatables.net'
 import 'datatables.net-bs'
-import { formatPrice, getImage } from '@/utils';
+import { formatPrice } from '@/utils';
 
 export default {
     name: 'ProductNew',
@@ -21,7 +21,6 @@ export default {
         };
     },
     methods: {
-        getImage,
         async retrieveProducts() {
             try {
                 this.products = await ProductService.getType();
@@ -58,7 +57,7 @@ export default {
             <div class="carousel-inner">
                 <div v-for="(product, index) in products.newProducts" :key="product" class="single-slider carousel-item"
                     :class="{ 'active': index === 0 }"
-                    :style="{ 'background-image': 'url(' + getImage(product.image) + ')' }">
+                    :style="{ 'background-image': 'url(' + product.image + ')' }">
                     <div class="content">
                         <div class="product-info">
                             <span class="category">{{ product.brand.name }}</span>
@@ -95,8 +94,8 @@ export default {
                             </router-link>
                         </div>
                         <div class="image-detail">
-                            <div class="image-item" v-for="(image, index) in  Object.values(product.images)[0].items" :key="image">
-                                <img :src=getImage(image.image) class="d-block" alt="...">
+                            <div class="image-item" v-for="(image, index) in  (product.images)[0].items" :key="image">
+                                <img :src="image.image" class="d-block" alt="...">
                             </div>
                         </div>
                     </div>

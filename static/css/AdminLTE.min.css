@@ -81,7 +81,7 @@ body {
 .right-side {
   min-height: 100%;
   z-index: 800;
-  padding: 16px 20px;
+  padding: 16px 20px 16px 40px ;
   background: radial-gradient(circle at center, #ffe6ef 0%, #ebf9ff 100%);
 }
 .main-footer {
@@ -136,7 +136,7 @@ body.hold-transition .main-header .logo {
   -o-transition: none;
   transition: none;
 }
-.content {
+.wrapper .content {
   min-height: 500px;
   margin-right: auto;
   margin-left: auto;

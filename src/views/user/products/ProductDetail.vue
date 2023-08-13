@@ -44,7 +44,7 @@
     import ProductDetailAddCart from "@/components/user/products/ProductDetailAddCart.vue";
     import ProductDetailReview from "@/components/user/products/ProductDetailReview.vue";
 
-    import ProductService from "@/services/user/product.service";
+    import ProductService from "@/services/admin/product.service";
     import CartService from "@/services/user/cart.service";
     import ReviewService from "@/services/user/review.service";
     
@@ -127,6 +127,17 @@
                 
             },
             async addToCart(data) {
+                const Toast = this.$swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                    }
+                })
                 try {
                     if(this.getUser) {
                         await CartService.create(this.getUser.id, data).then(async (response) => {

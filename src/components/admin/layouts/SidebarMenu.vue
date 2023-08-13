@@ -8,14 +8,22 @@
         <span class="page">Dashboard</span>
       </router-link>
     </li>
-    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(23)" :class="{ active: $route.path.includes('/admin/staffs') }">
+    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(23)"
+      :class="{ active: $route.path.includes('/admin/staffs') }">
       <a href="/admin/staffs/staff-list">
         <i class="fa fa-user color1"></i>
         <span class="treeview-title">Nhân viên</span>
       </a>
-     </li>
-    <li class="treeview pageLink"  v-if="getAdmin.permissionIDs.includes(44)">
-      <a href="/admin/suppliers">
+    </li>
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(40)"
+     :class="{ active: $route.path.includes('/admin/products') }">
+      <router-link to="/admin/products/list">
+        <i class="fa fa-box color4"></i>
+        <span class="page">Sản phẩm</span>
+      </router-link>
+    </li>
+    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(44)">
+      <a href="/admin/import/stock-received-docket">
         <i class="fa fa-book color2"></i>
         <span class="treeview-title">Nhập hàng</span>
       </a>
@@ -25,26 +33,24 @@
         <i class="fa fa-sitemap color3"></i>
         <span class="page">Danh mục</span>
       </router-link>
-    </li>
-    <li class="pageLink" :class="{ active: $route.path.includes('/admin/products') }">
-      <router-link to="/admin/products">
-        <i class="fa fa-box color4"></i>
-        <span class="page">Sản phẩm</span>
-      </router-link>
     </li> -->
-    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(55)" :class="{ active: $route.path.includes('/admin/orders') }">
+
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(55)"
+      :class="{ active: $route.path.includes('/admin/orders') }">
       <router-link to="/admin/orders">
         <i class="fa fa-shopping-cart color5"></i>
         <span class="page">Đơn hàng</span>
       </router-link>
     </li>
-    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(59)" :class="{ active: $route.path.includes('/admin/reviews') }">
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(59)"
+      :class="{ active: $route.path.includes('/admin/reviews') }">
       <router-link to="/admin/reviews">
         <i class="fa fa-star color6"></i>
         <span class="page">Đánh giá</span>
       </router-link>
     </li>
-    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(58)" :class="{ active: $route.path.includes('/admin/invoices') }">
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(58)"
+      :class="{ active: $route.path.includes('/admin/invoices') }">
       <router-link to="/admin/invoices">
         <i class="fa fa-ticket color7"></i>
         <span class="page">Hóa đơn</span>
@@ -127,77 +133,81 @@
   </ul>
 </template>
 <script>
-    import $ from 'jquery'
-    import {mapGetters} from 'vuex';
-    import StaffService from "@/services/admin/staff.service";
+import { mapGetters } from 'vuex';
 
-    export default {
-        name: 'TopBar',
-        computed: {
-            ...mapGetters(['getAdmin'])
-        },
-        methods: {
-          checkRangeOfPermissionIDs(permissionIDs, startID, endID) {
-            return (
-              permissionIDs.length >= (endID - startID + 1) &&
-              Array.from({ length: endID - startID + 1 }, (_, index) => startID + index)
-                .every(id => permissionIDs.includes(id))
-            );
-          }
-        }
-    };
+export default {
+  name: 'TopBar',
+  computed: {
+    ...mapGetters(['getAdmin'])
+  },
+  methods: {
+    checkRangeOfPermissionIDs(permissionIDs, startID, endID) {
+      return (
+        permissionIDs.length >= (endID - startID + 1) &&
+        Array.from({ length: endID - startID + 1 }, (_, index) => startID + index)
+          .every(id => permissionIDs.includes(id))
+      );
+    }
+  }
+};
 </script>
 <style scoped>
-  /* override default */
-  .sidebar-menu > li > a {
-    padding: 10px 15px 12px 15px;
-    margin-bottom: 4px;
+/* override default */
+.sidebar-menu>li>a {
+  padding: 10px 15px 12px 15px;
+  margin-bottom: 4px;
+}
+
+.sidebar-menu li.active>a>.fa-angle-left,
+.sidebar-menu li.active>a>.pull-right-container>.fa-angle-left {
+  animation-name: rotate;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+.treeview-title {
+  z-index: 1;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
   }
 
-  .sidebar-menu li.active > a > .fa-angle-left,
-  .sidebar-menu li.active > a > .pull-right-container > .fa-angle-left {
-    animation-name: rotate;
-    animation-duration: 0.2s;
-    animation-fill-mode: forwards;
+  100% {
+    transform: rotate(-90deg);
   }
-
-  .treeview-title {
-    z-index: 1;
-  }
-
-  @keyframes rotate {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(-90deg);
-    }
-  }
+}
 
 
-  .color1 {
-    color: #6300cc;
-  }
-  .color2 {
-    color: #baa400;
-  }
-  .color3 {
-    color: #48b300;
-  }
-  .color4 {
-    color: #0498e8;
-  }
-  .color5 {
-    color: #d600bd;
-  }
-  .color6 {
-    color: #f701a9;
-  }
-  .color7 {
-    color: #00c3d5;
-  }
-  .color8 {
-    color: #7a1b67;
-  }
-</style>
+.color1 {
+  color: #6300cc;
+}
+
+.color2 {
+  color: #baa400;
+}
+
+.color3 {
+  color: #48b300;
+}
+
+.color4 {
+  color: #0498e8;
+}
+
+.color5 {
+  color: #d600bd;
+}
+
+.color6 {
+  color: #f701a9;
+}
+
+.color7 {
+  color: #00c3d5;
+}
+
+.color8 {
+  color: #7a1b67;
+}</style>

@@ -26,7 +26,7 @@
             </ul>
         </div>
         <div class="info-color">
-            <span v-for="(color, index) in Object.values(product.images)" :key="color"
+            <span v-for="(color, index) in (product.images)" :key="color"
                 class="filters-panel-group-item__item-box circle" 
                 :class="{'active': color.color === isColorSelected.color}"
                 :style="`background-color: ${color.color}`"
@@ -54,17 +54,17 @@ export default {
         formatPrice,
         changeColor(color) {
             const colorId = color.color_id;
-            const selectedColor = Object.values(this.product.images).find(item => item.color_id === colorId);
+            const selectedColor = this.product.images.find(item => item.color_id === colorId);
             this.$emit('update:isColorSelected', selectedColor);
             this.inventoryLocal.color_id = color.color_id;
 
-            this.inventoryLocal.size_id = Object.values(this.product.inventories)[0].items.find(item => {
+            this.inventoryLocal.size_id = (this.product.inventories)[0].items.find(item => {
                 return item.color_id === colorId && item.total_final !== 0;
             }).size_id;
 
 
             this.cart.color_id = colorId;
-            this.cart.size_id = Object.values(Object.values(this.product.inventories)[0].items).find(item => {
+            this.cart.size_id = ((this.product.inventories)[0].items).find(item => {
                 return item.color_id === colorId && item.total_final !== 0;
             }).size_id;
         },

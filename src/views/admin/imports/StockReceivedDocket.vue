@@ -1,6 +1,6 @@
 <template>
-    <StaffModal v-if="showModal" :showModal="showModal" 
-        @closeModal="closeModal" :staffID="staffID"/>
+    <!-- <StockReceivedDocketModal v-if="showModal" :showModal="showModal" 
+        @closeModal="closeModal" :stockReceivedDocketID="stockReceivedDocketID"/> -->
     <section class="content">
         <div class="box">
             <div class="box-body">
@@ -9,23 +9,23 @@
                         <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
                         <input type="button" name="btnAdd" value="Thêm mới" @click="showModal = !showModal">
                         <input type="button" name="btnAdd" value="Thêm từ file">
-                        <input type="button" name="btnDelete" value="Xóa" @click="deleteStaff()">
+                        <input type="button" name="btnDelete" value="Xóa" @click="deleteStockReceivedDocket()">
                         <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
                         <input type="button" id="exportExcelBtn" name="btnExcel" value="Xuất Excel">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-12 table-responsive">
-                        <StaffList 
-                            v-if="filteredStaffsCount > 0" 
-                            :staffs="filteredStaffs" 
+                        <StockReceivedDocketList 
+                            v-if="filteredStockReceivedDocketsCount > 0" 
+                            :stockReceivedDockets="filteredStockReceivedDockets" 
                             :selectedIds="selectedIds" 
                             :showModal="showModal"
                             @update-modal="updateShowModal"
-                            :staffID="staffID"
-                            @update-staffID="updateStaff"
+                            :stockReceivedDocketID="stockReceivedDocketID"
+                            @update-stockReceivedDocketID="updateStockReceivedDocket"
                         />
-                        <p v-else>Không có nhân viên nào.</p>
+                        <p v-else>Không có phiếu nhập nào.</p>
                     </div>
                 </div>
             </div>
@@ -35,36 +35,36 @@
 <script>
 import $ from 'jquery'
 import { initializeDataTable } from '../../../utils';
-import StaffList from "@/components/admin/staffs/StaffList.vue";
-import StaffModal from "@/components/admin/staffs/StaffModal.vue";
-import StaffService from "@/services/admin/staff.service";
+import StockReceivedDocketList from "@/components/admin/imports/StockReceivedDocketList.vue";
+// import StockReceivedDocketModal from "@/components/admin/imports/StockReceivedDocketModal.vue";
+import StockReceivedDocketService from "@/services/admin/stock-received-docket.service";
 
 export default {
     components: {
-        StaffList,
-        StaffModal
+        StockReceivedDocketList,
+        // StockReceivedDocketModal
     },
-    name: 'staff',
+    name: 'stockReceivedDocket',
     data() {
         return {
-            staffs: [],
-            staffID: null,
+            stockReceivedDockets: [],
+            stockReceivedDocketID: null,
             selectedIds: [],
             showModal: false
         };
     },
     computed: {
-        filteredStaffs() {
-            return this.staffs;
+        filteredStockReceivedDockets() {
+            return this.stockReceivedDockets;
         },
-        filteredStaffsCount() {
-            return this.filteredStaffs.length;
+        filteredStockReceivedDocketsCount() {
+            return this.filteredStockReceivedDockets.length;
         },
     },
     methods: {
-        async retrieveStaffs() {
+        async retrieveStockReceivedDockets() {
             try {
-                this.staffs = await StaffService.getAll();
+                this.stockReceivedDockets = await StockReceivedDocketService.getAll();
                 if ($.fn.DataTable.isDataTable('.example1')) {
                     $('.example1').DataTable().destroy();
                 }
@@ -76,10 +76,10 @@ export default {
             }
         },
         refreshList() {
-            this.retrieveStaffs();
+            this.retrieveStockReceivedDockets();
             this.selectedIds = [];
         },
-        deleteStaff() {
+        deleteStockReceivedDocket() {
             this.$swal.fire({
                 title: 'Bạn có chắc?',
                 text: "Bạn sẽ không thể hoàn tác lại điều này!",
@@ -91,7 +91,7 @@ export default {
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.value) {
-                    StaffService.delete(this.selectedIds).then((res) => {
+                    StockReceivedDocketService.delete(this.selectedIds).then((res) => {
                         if (res.success) {
                             this.refreshList();
                         }
@@ -102,13 +102,13 @@ export default {
         },
         closeModal() {
             this.showModal = false;
-            this.staffID = null;
+            this.stockReceivedDocketID = null;
         },
         updateShowModal(value) {
             this.showModal = value;
         },
-        updateStaff(value) {
-            this.staffID = value;
+        updateStockReceivedDocket(value) {
+            this.stockReceivedDocketID = value;
         },
     },
     mounted() {

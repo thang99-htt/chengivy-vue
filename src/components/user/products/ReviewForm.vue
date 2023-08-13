@@ -9,7 +9,7 @@
             @click="setCurrentProductIndex(index)"
         >
             <div class="d-flex">
-                <img class="d-block me-3" width="70" :src="getImage(product.product_image)" alt="">
+                <img class="d-block me-3" width="70" :src="product.product_image" alt="">
                 <div>
                     <router-link 
                         :to="{
@@ -63,7 +63,7 @@
     import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
     import {mapGetters} from 'vuex';
-    import { formatPrice, getImage } from '@/utils';
+    import { formatPrice } from '@/utils';
 
     export default {
         components: {
@@ -154,7 +154,6 @@
                 this.rates.push(rating);
 
             },
-            getImage,
             formatPrice,
             setCurrentProductIndex(index) {
                 this.currentProductIndex = index;

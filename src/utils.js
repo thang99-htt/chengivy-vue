@@ -6,14 +6,6 @@ export function formatPrice(price) {
   return price.toLocaleString("vi-VN") + " đ";
 }
 
-export function getImageCat(image) {
-  return 'http://127.0.0.1:8000/storage/uploads/categories/' + image;
-}
-
-export function getImage(image) {
-  return 'http://127.0.0.1:8000/storage/uploads/products/' + image;
-}
-
 export function initializeDataTable() {
   $(".example1").DataTable({
     "language": {
@@ -31,6 +23,7 @@ export function initializeDataTable() {
         "previous": "Trước"
       },
     },
+    "order": [],
     pagination: true,
     lengthMenu: [10, 20, 50, 100],
     pageLength: 10,

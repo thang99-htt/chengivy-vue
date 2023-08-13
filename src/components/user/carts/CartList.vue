@@ -21,7 +21,7 @@
                                             name: 'product.detail',
                                             params: { id: cart.product_id },
                                         }" class="text-dark">
-                                            <img width="100" v-if="cart.image" :src="getImage(cart.image)" alt="" />
+                                            <img width="100" v-if="cart.image" :src="cart.image" alt="" />
                                         </router-link>
                                     </div>
                                     <div class="product-info">
@@ -127,7 +127,7 @@
                             </td>
                         </tr>
 
-                        <tr v-for="(cart, index) in cartunavailable" :key="cart"  class="opacity-75">
+                        <tr v-for="(cart, index) in cartUnavailable" :key="cart"  class="opacity-75">
                             <td>
                                 <div class="d-flex">
                                     <div class="me-4">
@@ -135,7 +135,7 @@
                                             name: 'product.detail',
                                             params: { id: cart.product_id },
                                         }" class="text-dark">
-                                            <img width="100" v-if="cart.image" :src="getImage(cart.image)" alt="" class="opacity-50"/>
+                                            <img width="100" v-if="cart.image" :src="cart.image" alt="" class="opacity-50"/>
                                         </router-link>
                                     </div>
                                     <div class="product-info">
@@ -208,9 +208,9 @@
 
 <script>
 import CartService from "@/services/user/cart.service";
-import ProductService from "@/services/user/product.service";
+import ProductService from "@/services/admin/product.service";
 import { mapGetters } from 'vuex';
-import { formatPrice, getImage, showAlert } from '@/utils';
+import { formatPrice, showAlert } from '@/utils';
 
 export default {
     name: 'CartList',
@@ -234,12 +234,11 @@ export default {
             },
             getOutStock: [],
             cartAvailable: [],
-            cartunavailable: []
+            cartUnavailable: []
         }
     },
     methods: {
         formatPrice,
-        getImage,
         async setCartItem(cart, quantity) {
             this.cart.user_id = this.getUser.id;
             this.cart.product_id = cart.product_id;
@@ -279,7 +278,7 @@ export default {
         getUniqueColorsAndSizes(product) {
             const uniqueSizes = [];
             const sizesSet = new Set();
-            for (const size of Object.values(product.inventories)[0].items) {
+            for (const size of (product.inventories)[0].items) {
                 if (!sizesSet.has(size.size_name)) {
                     sizesSet.add(size.size_name);
                     uniqueSizes.push(size);
@@ -288,7 +287,7 @@ export default {
             this.sizes = uniqueSizes;
 
             const uniqueColors = [];
-            for (const color of  Object.values(product.images)) {
+            for (const color of  (product.images)) {
                 uniqueColors.push(color);
             }
             this.colors = uniqueColors;
@@ -359,7 +358,6 @@ export default {
                 if(!this.cart.color_id_old) {
                     this.cart.color_id_old = cart.color_id;
                 }
-                console.log(this.cart)
                 
                 CartService.updateColorAndSize(this.cart).then(async (response) => {
                     this.cart.color_id = "";
@@ -389,7 +387,7 @@ export default {
         cartAvailable() {
             return this.carts.getCartItems.filter(cart => cart.inventory.total_final > 0);
         },
-        cartunavailable() {
+        cartUnavailable() {
             return this.carts.getCartItems.filter(cart => cart.inventory.total_final == 0);
         }
     }

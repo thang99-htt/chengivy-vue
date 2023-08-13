@@ -10,7 +10,7 @@
 </template>
 <script>
     import ProductList from "@/components/user/products/ProductList.vue";
-    import ProductService from "@/services/user/product.service";
+    import ProductService from "@/services/admin/product.service";
     export default {
         components: {
             ProductList,

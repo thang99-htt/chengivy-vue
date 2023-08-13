@@ -78,6 +78,7 @@ export default {
                         title: 'Nhân viên được cập nhật thành công.'
                     });
                     this.$parent.refreshList();
+                    this.closeModal();
                 } catch (error) {
                     console.log(error);
                 }
@@ -91,6 +92,7 @@ export default {
                     });
                     this.reset();
                     this.$parent.refreshList();
+                    this.closeModal();
                 } catch (error) {
                     console.log(error);
                 }

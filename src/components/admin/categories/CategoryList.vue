@@ -28,7 +28,7 @@
                 </td>
                 <td>{{ category.name }}</td>
                 <td>
-                    <img v-if="category.image" :src="getImageCat(category.image)" alt="Image"
+                    <img v-if="category.image" :src="category.image" alt="Image"
                         class="img-responsive center-block">
 
                 </td>
@@ -40,13 +40,8 @@
                     </button>
                 </td>
                 <td class="text-center">
-                    <button type="button" class="btn">
-                        <router-link :to="{
-                            name: 'category.edit',
-                            params: { id: category.id },
-                        }">
-                            <img src="/images/icon/iconedit.png" alt="">
-                        </router-link>
+                    <button type="button" class="btn"  @click="showModalEdit(category.id)">                        
+                        <img src="/images/icon/iconedit.png" alt="">
                     </button>
                 </td>
                 <td class="text-center">
@@ -65,13 +60,14 @@
 
 <script>
 import CategoryService from "@/services/admin/category.service";
-import { getImageCat } from '../../../utils';
 
 export default {
     name: 'CategoryList',
     props: {
         categories: { type: Array, default: [] },
         selectedIds: { type: Array, default: [] },
+        categoryID: { type: Number, required: true },
+        showModal: { type: Boolean, required: true },
     },
     computed: {
         categoriesList() {
@@ -84,7 +80,6 @@ export default {
         };
     },
     methods: {
-        getImageCat,
         statusUpdate(category) {
             try {
                 CategoryService.updateStatus(category.id, category.status).then(() => {
@@ -117,6 +112,10 @@ export default {
                     this.selectedIds.push(category.id);
                 });
             }
+        },
+        showModalEdit(categoryID) {
+            this.$emit('update-modal', true);
+            this.$emit('update-categoryID', categoryID);
         }
     },
 

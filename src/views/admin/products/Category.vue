@@ -1,4 +1,6 @@
 <template>
+    <CategoryModal v-if="showModal" :showModal="showModal" 
+        @closeModal="closeModal" :categoryID="categoryID"/>
     <section class="content">
         <div class="row center-block">
             <div class="col-md-12">
@@ -7,7 +9,7 @@
                         <div class="group-btn">
                             <div class="d-flex align-items-center justify-content-end mb-3">
                                 <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
-                                <input type="button" name="btnAdd" value="Thêm mới" @click="goToAddCategory">
+                                <input type="button" name="btnAdd" value="Thêm mới" @click="showModal = !showModal">
                                 <input type="button" name="btnAdd" value="Thêm từ file">
                                 <input type="button" name="btnDelete" value="Xóa" @click="deleteCategory()">
                                 <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
@@ -20,6 +22,10 @@
                                     v-if="filteredCategoriesCount > 0" 
                                     :categories="filteredCategories"
                                     :selectedIds="selectedIds" 
+                                    :showModal="showModal"
+                                    @update-modal="updateShowModal"
+                                    :categoryID="categoryID"
+                                    @update-categoryID="updateCategory"
                                 />
                                 <p v-else>Không có danh mục nào.</p>
                             </div>
@@ -35,16 +41,20 @@ import $ from 'jquery'
 import { initializeDataTable } from '../../../utils';
 import CategoryList from "@/components/admin/categories/CategoryList.vue";
 import CategoryService from "@/services/admin/category.service";
+import CategoryModal from "@/components/admin/categories/CategoryModal.vue";
 
 export default {
     components: {
         CategoryList,
+        CategoryModal
     },
     name: 'category',
     data() {
         return {
             categories: [],
+            categoryID: null,
             selectedIds: [],
+            showModal: false
         };
     },
     computed: {
@@ -55,13 +65,13 @@ export default {
             return this.filteredCategories.length;
         },
     },
-    beforeUpdate() {
-        $('.example1').DataTable().destroy();
-    },
     methods: {
         async retrieveCategories() {
             try {
                 this.categories = await CategoryService.getAll();
+                if ($.fn.DataTable.isDataTable('.example1')) {
+                    $('.example1').DataTable().destroy();
+                }
                 this.$nextTick(() => {
                     initializeDataTable();
                 });
@@ -71,6 +81,7 @@ export default {
         },
         refreshList() {
             this.retrieveCategories();
+            this.selectedIds = [];
         },
         goToAddCategory() {
             this.$router.push({ name: "category.add" });
@@ -95,6 +106,16 @@ export default {
                     this.$swal.fire('Đã xóa thành công!', '', 'success')
                 }
             })
+        },
+        closeModal() {
+            this.showModal = false;
+            this.categoryID = null;
+        },
+        updateShowModal(value) {
+            this.showModal = value;
+        },
+        updateCategory(value) {
+            this.categoryID = value;
         },
     },
     mounted() {

@@ -11,24 +11,7 @@
                 :class="{ active: $route.path.includes('/staffs/roles') }"    
             >   Quản lý phân quyền
             </router-link>
-            <!-- <router-link 
-                :to="{ name: 'permission' }"
-                :class="{ active: $route.path.includes('/staffs/permissions') }"    
-            >   Quyền
-            </router-link> -->
         </div>
         <router-view></router-view>
     </section>
 </template>
-<script>
-export default {
-    data() {
-        return {
-
-        };
-    },
-    methods: {
-        
-    },
-};
-</script>

@@ -267,12 +267,11 @@ export default {
                                         {{ category.name }}
                                     </router-link>
                                     <div class="images"
-                                        :style="{ backgroundImage: 'url(http://127.0.0.1:8000/storage/uploads/categories/' + category.image + ')' }">
+                                        :style="{ backgroundImage: 'url(' + category.image + ')' }">
                                     </div>
                                 </li>
                             </div>
                         </ul>
-
                     </div>
                 </div>
             </div>

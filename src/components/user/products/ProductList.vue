@@ -316,7 +316,7 @@
                                     name: 'product.detail',
                                     params: { id: product.id },
                                 }">
-                                    <img :src="getImage(product.image)" alt="#" />
+                                    <img :src="product.image" alt="#" />
                                 </router-link>
                                 <div class="product-item__favorite" @click="toggleFavorite(product)">
                                     <span class="product-item__favorite-item"
@@ -351,7 +351,7 @@
                                         </span>
                                     </div>
                                     <div class="color">
-                                        <span v-for="(color, index) in getUniqueColors(Object.values(product.images))" :key="color">
+                                        <span v-for="(color, index) in getUniqueColors((product.images))" :key="color">
                                             <span
                                             class="filters-panel-group-item__item-box circle"
                                             :style="`background-color: ${color.color}`"
@@ -416,8 +416,9 @@ import CartService from "@/services/user/cart.service";
 import FavoriteService from "@/services/user/favorite.service";
 import CategoryService from "@/services/user/category.service";
 import ProductService from "@/services/admin/product.service";
+import BrandService from "@/services/admin/brand.service";
 import { mapGetters } from 'vuex';
-import { formatPrice, getImage } from '@/utils';
+import { formatPrice } from '@/utils';
 
 export default {
     components: {
@@ -440,8 +441,6 @@ export default {
             selectedColorValues: [],
             cart: {
                 'product_id': '',
-                'size_id': "",
-                'color_id': "",
                 'quantity': 1,
             },
             favorite: {
@@ -467,10 +466,10 @@ export default {
             colors: [],
             sizes: [],
             categories: [],
-            minPrice: 200000,
-            maxPrice: 50000000,
+            minPrice: 0,
+            maxPrice: 40000000,
             minKnob: 0,
-            maxKnob: 350,
+            maxKnob: 340,
             category: this.$route.query.category,
             favoriteProductIds: []
         };
@@ -478,7 +477,7 @@ export default {
     async created() {
         this.categories = await CategoryService.getCategory();
         this.sizes = await ProductService.getSizeAll();
-        this.brands = await ProductService.getBrandAll();
+        this.brands = await BrandService.getAll();
         this.colors = await ProductService.getColorAll();
         this.isFavorite();
     },
@@ -505,7 +504,7 @@ export default {
 
             if (this.selectedCategoryValues.length != 0) {
                 filtered = filtered.filter(item =>
-                    Object.values(this.selectedCategoryValues).some(value =>
+                    (this.selectedCategoryValues).some(value =>
                         item.category.toLowerCase().includes(value.toLowerCase()) ||
                         (item.category_parent && item.category_parent.toLowerCase().includes(value.toLowerCase()))
                     )
@@ -515,26 +514,29 @@ export default {
             // Lọc thương hiệu sản phẩm
             if (this.selectedBrandValues.length != 0) {
                 filtered = filtered.filter(item =>
-                    Object.values(this.selectedBrandValues).some(value =>
+                    (this.selectedBrandValues).some(value =>
                         item.brand.toLowerCase().includes(value.toLowerCase())
                     )
                 );
             }
 
             if (this.selectedSizeValues.length != 0) {
-                filtered = filtered.filter(item =>
-                    item.inventories.some(index =>
-                        Object.values(this.selectedSizeValues).some(value =>
-                            index.size_name.toLowerCase().includes(value.toLowerCase())
+                filtered = filtered.filter(item => {
+                    return (item.inventories).some(index =>
+                        (this.selectedSizeValues).some(value =>
+                            index.items.some(item => 
+                                item.size_name.toLowerCase().includes(value.toLowerCase())
+                            )
                         )
                     )
+                }
                 );
             }
 
             if (this.selectedColorValues.length != 0) {
                 filtered = filtered.filter(item =>
-                    item.images.some(index =>
-                        Object.values(this.selectedColorValues).some(value =>
+                    (item.images).some(index =>
+                        (this.selectedColorValues).some(value =>
                             index.color_name.toLowerCase().includes(value.toLowerCase())
                         )
                     )
@@ -606,7 +608,6 @@ export default {
     },
     methods: {
         formatPrice,
-        getImage,
         sortProducts(sort) {
             this.sortId = sort.id;
         },
@@ -730,11 +731,19 @@ export default {
         },
         async addToCart(product) {
             this.cart.product_id = product.id;
-
-            this.cart.color_id = Object.values(product.images)[0].color_id;
-            this.cart.size_id = Object.values(product.inventories)[0].items.find(item => {
-                return item.color_id === this.cart.color_id && item.total_final !== 0;
-            }).size_id;
+            
+            const getProduct = await ProductService.getDetail(product.id);
+            const inventories = (getProduct.inventories)[0];
+            const color = (getProduct.images)[0].color_id;
+            let firstValidInventory = null;
+            inventories.items.forEach((inventory) => {
+                if (inventory.total_final > 0 && inventory.color_id == color && !firstValidInventory) {
+                    firstValidInventory = inventory;
+                }
+            });
+            
+            this.cart.color_id = firstValidInventory.color_id;
+            this.cart.size_id = firstValidInventory.size_id;
 
             const Toast = this.$swal.mixin({
                 toast: true,
@@ -750,19 +759,11 @@ export default {
             try {
                 if (this.getUser) {
                     await CartService.create(this.getUser.id, this.cart).then(async (response) => {
-                        if (response.success == 'success') {
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Sản phẩm đã được thêm vào giỏ hàng.'
-                            });
-                            this.$store.commit('addToCart', await CartService.getCart(this.getUser.id, this.cart.id));
-
-                        } else if (response.success == 'warning') {
-                            Toast.fire({
-                                icon: 'warning',
-                                title: 'Số lượng của sản phẩm này đã được bán hết.'
-                            });
-                        }
+                        Toast.fire({
+                            icon: response.success,
+                            title: response.message
+                        });
+                        this.$store.commit('addToCart', await CartService.getCart(this.getUser.id, this.cart.id));
                     });
                 } else {
                     Toast.fire({
@@ -848,9 +849,9 @@ export default {
         },
         updatePrices() {
             const sliderWidth = this.$refs.slider.offsetWidth;
-            const priceRange = 50000000 - 200000;
-            this.minPrice = Math.round((this.minKnob / sliderWidth) * priceRange) + 200000;
-            this.maxPrice = Math.round((this.maxKnob / sliderWidth) * priceRange) + 200000;
+            const priceRange = 40000000 - 0;
+            this.minPrice = Math.round((this.minKnob / sliderWidth) * priceRange) + 0;
+            this.maxPrice = Math.round((this.maxKnob / sliderWidth) * priceRange) + 0;
         },
         clearFiltered() {
             this.selectedBrandIds = [];
@@ -859,11 +860,11 @@ export default {
             this.selectedSizeValues = [];
             this.selectedColorIds = [];
             this.selectedColorValues = [];
-            this.minPrice = 200000;
-            this.maxPrice = 50000000;
+            this.minPrice = 0;
+            this.maxPrice = 40000000;
             this.sortId = 1;
             this.minKnob = 0;
-            this.maxKnob = 350;
+            this.maxKnob = 340;
 
             // Xóa giá trị truy vấn 'category'
             this.$router.replace({ query: { ...this.$route.query, category: undefined } });

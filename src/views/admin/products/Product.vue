@@ -1,4 +1,7 @@
 <template>
+    <ProductModal v-if="showModal" :showModal="showModal" 
+        @closeModal="closeModal" :productID="productID"/>
+
     <section class="content">
         <div class="row center-block">
             <div class="col-md-12">
@@ -7,7 +10,7 @@
                         <div class="group-btn">
                             <div class="d-flex align-items-center justify-content-end mb-3">
                                 <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
-                                <input type="button" name="btnAdd" value="Thêm mới" @click="goToAddProduct">
+                                <input type="button" name="btnAdd" value="Thêm mới" @click="showModal = !showModal">
                                 <input type="button" name="btnAdd" value="Thêm từ file">
                                 <input type="button" name="btnDelete" value="Xóa" @click="deleteProduct()">
                                 <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
@@ -16,7 +19,15 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12 table-responsive">
-                                <ProductList v-if="filteredProductsCount > 0" :products="filteredProducts" :selectedIds="selectedIds" />
+                                <ProductOverview 
+                                    v-if="filteredProductsCount > 0" 
+                                    :products="filteredProducts" 
+                                    :selectedIds="selectedIds" 
+                                    :showModal="showModal"
+                                    @update-modal="updateShowModal"
+                                    :productID="productID"
+                                    @update-productID="updateProduct"
+                                />
                                 <p v-else>Không có sản phẩm nào.</p>
                             </div>
                         </div>
@@ -29,18 +40,22 @@
 <script>
 import $ from 'jquery'
 import { initializeDataTable } from '../../../utils';
-import ProductList from "@/components/admin/products/ProductList.vue";
+import ProductOverview from "@/components/admin/products/ProductOverview.vue";
 import ProductService from "@/services/admin/product.service";
+import ProductModal from "@/components/admin/products/ProductModal.vue";
 
 export default {
     components: {
-        ProductList,
+        ProductOverview,
+        ProductModal
     },
     name: 'product',
     data() {
         return {
             products: [],
+            productID: null,
             selectedIds: [],
+            showModal: false
         };
     },
     computed: {
@@ -51,13 +66,13 @@ export default {
             return this.filteredProducts.length;
         },
     },
-    beforeUpdate() {
-        $('.example1').DataTable().destroy();
-    },
     methods: {
         async retrieveProducts() {
             try {
                 this.products = await ProductService.getAll();
+                if ($.fn.DataTable.isDataTable('.example1')) {
+                    $('.example1').DataTable().destroy();
+                }
                 this.$nextTick(() => {
                     initializeDataTable();
                 });
@@ -67,9 +82,7 @@ export default {
         },
         refreshList() {
             this.retrieveProducts();
-        },
-        goToAddProduct() {
-            this.$router.push({ name: "product.add" });
+            this.selectedIds = [];
         },
         deleteProduct() {
             this.$swal.fire({
@@ -91,6 +104,16 @@ export default {
                     this.$swal.fire('Đã xóa thành công!', '', 'success')
                 }
             })
+        },
+        closeModal() {
+            this.showModal = false;
+            this.productID = null;
+        },
+        updateShowModal(value) {
+            this.showModal = value;
+        },
+        updateProduct(value) {
+            this.productID = value;
         },
     },
     mounted() {

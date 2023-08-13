@@ -8,7 +8,7 @@
         </span>
         <div class="user-panel">
           <div class="pull-left image">
-            <img class="img-responsive" src="/images/admin/photos/6215.jpg" alt="#" />
+            <img class="img-responsive" :src="getAdmin.avatar" alt="#" />
           </div>
           <div class="pull-left info">
             <div class="user_info">
