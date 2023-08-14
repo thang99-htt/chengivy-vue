@@ -18,8 +18,5 @@ class StockReceivedDocketService {
     async delete(id) {
         return (await this.api.delete(`/${id}`)).data;
     }
-    async getAll() {
-        return (await this.api.get("/")).data;
-    }
 }
 export default new StockReceivedDocketService();

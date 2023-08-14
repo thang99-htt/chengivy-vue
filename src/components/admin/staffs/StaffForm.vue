@@ -214,9 +214,6 @@
             return {
                 staffLocal: this.staff,
                 staffFormSchema,
-                activeCity: "",
-                activeDistrict: "",
-                activeWard: "",
                 cities: [],
                 districts: [],
                 wards: [],

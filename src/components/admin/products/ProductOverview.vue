@@ -21,7 +21,7 @@
                     <span class="ms-3">{{ product.name }}</span>
                 </td>
                 <td>
-                    <span v-if="product.discount_percent">{{ formatPrice(product.price_final) }}</span>
+                    <span v-if="product.discount_percent" class="text-danger">{{ formatPrice(product.price_final) }}</span>
                     <span v-else>{{ formatPrice(product.price) }}</span>
                 </td>
                 <td>{{ product.total_export }}</td>

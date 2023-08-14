@@ -77,7 +77,6 @@ export default {
                         icon: 'success',
                         title: 'Nhân viên được cập nhật thành công.'
                     });
-                    this.$parent.refreshList();
                     this.closeModal();
                 } catch (error) {
                     console.log(error);
@@ -91,7 +90,6 @@ export default {
                         title: 'Nhân viên được thêm thành công.'
                     });
                     this.reset();
-                    this.$parent.refreshList();
                     this.closeModal();
                 } catch (error) {
                     console.log(error);
@@ -109,7 +107,7 @@ export default {
             return password;
         },
         closeModal() {
-            // this.resetForm();
+            this.$parent.refreshList();
             this.$emit('closeModal');
         },
         reset () {

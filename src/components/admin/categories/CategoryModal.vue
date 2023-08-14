@@ -66,7 +66,6 @@ export default {
                         icon: 'success',
                         title: 'Danh mục được cập nhật thành công.'
                     })
-                    this.$parent.refreshList();
                     this.closeModal();
                 } catch (error) {
                     console.log(error);
@@ -78,7 +77,7 @@ export default {
                         icon: 'success',
                         title: 'Danh mục được thêm thành công.'
                     })
-                    this.$parent.refreshList();
+                    this.reset();
                     this.closeModal();
                 } catch (error) {
                     console.log(error);
@@ -86,7 +85,7 @@ export default {
             }
         },
         closeModal() {
-            this.reset();
+            this.$parent.refreshList();
             this.$emit('closeModal');
         },
         reset () {

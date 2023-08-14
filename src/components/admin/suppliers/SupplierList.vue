@@ -2,32 +2,31 @@
     <table class="example1 table table-bordered table-striped dataTable">
         <thead>
             <tr role="row">
-                <th width="4%">#</th>
-                <th width="20%">Tên</th>
-                <th width="24%">Địa chỉ</th>
-                <th width="20%">Điện thoại</th>
-                <th width="20%">Email</th>
-                <th width="7%">Tùy chọn</th>
-                <th width="5%">Chọn</th>
+                <th width="6%">ID</th>
+                <th width="20%">Tên nhà cung cấp</th>
+                <th width="22%">Địa chỉ</th>
+                <th width="6%">Số điện thoại</th>
+                <th width="10%">Email</th>
+                <th width="10%">Số tài khoản</th>
+                <th width="6%">Mã số thuế</th>
+                <th width="8%">Ngày hợp tác</th>
+                <th width="8%">Sửa</th>
+                <th width="4%">Chọn</th>
             </tr>
         </thead>
         <tbody>
             <tr role="row" v-for="(supplier, index) in suppliersList" :key="supplier">
-                <td class="sorting_1">
-                    {{ index + 1 }}
-                </td>
+                <td>{{ supplier.id }}</td>
                 <td>{{ supplier.name }}</td>
                 <td>{{ supplier.address }}</td>
                 <td>{{ supplier.phone }}</td>
                 <td>{{ supplier.email }}</td>
+                <td>{{ supplier.bank_account }}</td>
+                <td>{{ supplier.tax_code }}</td>
+                <td>{{ supplier.date_cooperate }}</td>
                 <td class="text-center">
-                    <button type="button" class="btn">
-                        <router-link :to="{
-                            name: 'supplier.edit',
-                            params: { id: supplier.id },
-                        }">
-                            <img src="/images/icon/iconedit.png" alt="">
-                        </router-link>
+                    <button type="button" class="btn" @click="showModalEdit(supplier.id)">
+                        <img src="/images/icon/iconedit.png" alt="">
                     </button>
                 </td>
                 <td class="text-center">
@@ -37,7 +36,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="6" class="text-center text-bold">Chọn tất cả</th>
+                <th colspan="9" class="text-center text-bold">Chọn tất cả</th>
                 <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
             </tr>
         </tfoot>
@@ -48,13 +47,20 @@
 export default {
     name: 'SupplierList',
     props: {
-        suppliers: { type: Array, default: [] },
-        selectedIds: { type: Array, default: [] },
+        suppliers: { type: Array, required: true },
+        supplierID: { type: Number, required: true },
+        selectedIds: { type: Array, required: true },
+        showModal: { type: Boolean, required: true },
     },
     computed: {
         suppliersList() {
             return this.suppliers;
         },
+    },
+    data() {
+        return {
+            status: 0,
+        };
     },
     methods: {
         idSelected(id) {
@@ -80,8 +86,23 @@ export default {
                     this.selectedIds.push(supplier.id);
                 });
             }
+        },
+        showModalEdit(supplierID) {
+            this.$emit('update-modal', true);
+            this.$emit('update-supplierID', supplierID);
         }
     },
 
 };
 </script>
+
+<style>
+.btn-supplier {
+    color: #000;
+    background-color: #f2a900;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 4px 10px;
+    margin-bottom: 6px;
+}
+</style>
