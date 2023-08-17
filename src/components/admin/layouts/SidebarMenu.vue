@@ -22,7 +22,8 @@
         <span class="page">Sản phẩm</span>
       </router-link>
     </li>
-    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(44)">
+    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(44)"
+      :class="{ active: $route.path.includes('/admin/import') }">
       <a href="/admin/import/stock-received-docket">
         <i class="fa fa-book color2"></i>
         <span class="treeview-title">Nhập hàng</span>

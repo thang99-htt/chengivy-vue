@@ -1,5 +1,5 @@
 <template>
-    <div class="modal d-block products">
+    <div class="modal d-block widden">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -106,7 +106,6 @@ export default {
             }
         },
         closeModal() {
-            // this.resetForm();
             this.$emit('closeModal');
         },
         reset() {

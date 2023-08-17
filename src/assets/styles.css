@@ -2359,12 +2359,119 @@ hr {
   background-color: #3872b2;
 }
 
-.products .modal-dialog {
+.widden .modal-dialog {
   width: 1200px !important;
   max-width: 1200px !important;
+}
+
+.narrow .modal-dialog {
+  width: 600px !important;
+  max-width: 600px !important;
 }
 
 .offcanvas-header,
 .offcanvas-body {
   padding: 10px 25px 25px;
+}
+
+.import-product .search-input {
+  width: 400px;
+  position: relative;
+  float: right;
+}
+.import-product .search-input input {
+  width: 100%;
+  height: 36px;
+  border: none;
+  border: 1px solid #b8b8b8;
+  background-color: #fff;
+  color: #000;
+  padding: 4px 30px !important;
+  -webkit-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.import-product .search-input a:first-child {
+  position: absolute;
+  content: "";
+  top: 10px;
+  left: 10px;
+  background-color: transparent;
+  border: none;
+}
+
+.import-product .search-input a:last-child {
+  position: absolute;
+  content: "";
+  top: 8px;
+  right: 8px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.import-product .search-input a .bi-search {
+  color: #414141;
+  font-size: 16px;
+}
+
+.import-product .search-input a .bi-plus {
+  color: #414141;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.import-product .import-product__search {
+  position: relative;
+  width: 400px;
+  float: right;
+}
+
+.import-product .sub-menu-search {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 100%;
+  background-color: #fff;
+  z-index: 9;
+  -webkit-box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: scroll;
+  overflow-x: hidden !important;
+  border-top: 1px solid #eee;
+  display: none;
+}
+
+.import-product .sub-menu-search .navbar-nav {
+  width: 100%;
+  max-width: 400px;
+}
+
+.import-product .sub-menu-search .navbar-nav .nav-item {
+  font-size: 14px;
+  font-weight: normal;
+  padding: 8px 14px;
+  display: block;
+  cursor: pointer;
+}
+
+table input[type=text] {
+  border: none;
+  width: 100%;
+}
+
+table input::-webkit-outer-spin-button,
+table input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.form-group {
+  position: relative;
+}
+.remove-option {
+    cursor: pointer;
 }

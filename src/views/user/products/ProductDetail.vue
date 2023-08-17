@@ -95,16 +95,16 @@
                 try {
                     this.product = await ProductService.getDetail(id);
                     
-                    this.isColorSelected = Object.values(this.product.images)[0];
+                    this.isColorSelected = (this.product.images)[0];
                     this.inventoryLocal.color_id = this.isColorSelected.color_id;
 
-                    this.inventoryLocal.size_id = Object.values(this.product.inventories)[0].items.find(item => {
+                    this.inventoryLocal.size_id = (this.product.inventories)[0].items.find(item => {
                         return item.color_id === this.isColorSelected.color_id && item.total_final !== 0;
                     }).size_id;
 
                     // Cart
                     this.cart.color_id = this.isColorSelected.color_id;
-                    this.cart.size_id = Object.values(this.product.inventories)[0].items.find(item => {
+                    this.cart.size_id = (this.product.inventories)[0].items.find(item => {
                         return item.color_id === this.isColorSelected.color_id && item.total_final !== 0;
                     }).size_id;
 
@@ -115,7 +115,7 @@
             },
             findMatchingInventory() {
                 this.inventory = null;
-                for (const item of Object.values(this.product.inventories)[0].items) {
+                for (const item of (this.product.inventories)[0].items) {
                     if (
                         item.product_id == this.inventoryLocal.product_id &&
                         item.size_id == this.inventoryLocal.size_id &&

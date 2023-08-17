@@ -47,7 +47,7 @@
         methods: {
             async getProductAll() {
                 try {
-                    this.products = await ProductService.getListingAll();
+                    this.products = await ProductService.getAll();
                 } catch (error) {
                     console.log(error);
                     // Chuyển sang trang NotFound đồng thời giữ cho URL không đổi

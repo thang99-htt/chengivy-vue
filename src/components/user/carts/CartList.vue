@@ -117,7 +117,7 @@
                             <td class="position-relative cart-option">
                                 <p>{{ formatPrice(cart.total_price) }}</p>
                                 <div class="position-absolute bottom-0 end-0">
-                                    <button type="button" class="btn" @click="deleteCart(cart)">
+                                    <button type="button" class="btn" @click="addToFavorite(cart)">
                                         <i class="bi bi-heart"></i>
                                     </button>
                                     <button type="button" class="btn" @click="deleteCart(cart)">
@@ -127,7 +127,7 @@
                             </td>
                         </tr>
 
-                        <tr v-for="(cart, index) in cartUnavailable" :key="cart"  class="opacity-75">
+                        <tr v-for="(cart, index) in cartUnavailable" :key="cart"  class="opacity-75 position-relative">
                             <td>
                                 <div class="d-flex">
                                     <div class="me-4">
@@ -159,10 +159,10 @@
                                 </div>
                             </td>
                             <td class="text-center">
-                                <span class="position-absolute bottom-0 me-5">{{ formatPrice(cart.product.price_final) }}</span>
+                                <span class="position-absolute bottom-50 me-5">{{ formatPrice(cart.product.price_final) }}</span>
                             </td>
                             <td class="text-center">
-                                <span class="position-absolute bottom-0 me-5 text-danger">Hết hàng</span>
+                                <span class="position-absolute bottom-50 me-5 text-danger">Hết hàng</span>
                             </td>
                             <td class="position-relative cart-option">
                                 <div class="position-absolute bottom-0 end-0">
@@ -208,6 +208,7 @@
 
 <script>
 import CartService from "@/services/user/cart.service";
+import FavoriteService from "@/services/user/favorite.service";
 import ProductService from "@/services/admin/product.service";
 import { mapGetters } from 'vuex';
 import { formatPrice, showAlert } from '@/utils';
@@ -234,7 +235,10 @@ export default {
             },
             getOutStock: [],
             cartAvailable: [],
-            cartUnavailable: []
+            cartUnavailable: [],
+            favorite: {
+                'product_id': ''
+            },
         }
     },
     methods: {
@@ -381,6 +385,40 @@ export default {
                 this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
             })
         },
+        async addToFavorite(cart) {
+            this.favorite.product_id = cart.product_id;
+
+            //Delete cart
+            this.cart.user_id = this.getUser.id;
+            this.cart.product_id = cart.product_id;
+            this.cart.color_id = cart.color_id;
+            this.cart.size_id = cart.size_id;
+
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            await FavoriteService.create(this.getUser.id, this.favorite).then(async (response) => {
+                Toast.fire({
+                    icon: response.success,
+                    title: response.message
+                });
+                this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id, this.favorite.id));
+            });
+
+            CartService.delete(this.cart.user_id, this.cart.product_id, 
+                this.cart.color_id, this.cart.size_id).then(async () => {
+                this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
+            })
+            
+        }
     },
     computed: {
         ...mapGetters(['getUser', 'carts']),

@@ -166,7 +166,7 @@
 </template>
 
 <script>
-    import PaymentMethodService from "@/services/admin/payment.service";
+    import PaymentMethodService from "@/services/admin/payment-method.service";
     import ProductService from "@/services/user/product.service";
     import { Form, Field, ErrorMessage } from "vee-validate";
     import { formatPrice } from '@/utils';

@@ -20,7 +20,7 @@
         <tbody>
             <tr role="row" v-for="(stockReceivedDocket, index) in stockReceivedDocketsList" :key="stockReceivedDocket">
                 <td>{{ stockReceivedDocket.id }}</td>
-                <td>{{ stockReceivedDocket.staff }}</td>
+                <td>{{ stockReceivedDocket.staff.name }}</td>
                 <td>{{ stockReceivedDocket.supplier.name }}</td>
                 <td>{{ stockReceivedDocket.payment_voucher.id }}</td>
                 <td>{{ stockReceivedDocket.form }}</td>
@@ -29,7 +29,7 @@
                 <td>{{ stockReceivedDocket.value_added }}</td>
                 <td>{{ stockReceivedDocket.total_price }}</td>
                 <td>{{ stockReceivedDocket.image }}</td>
-                <td>{{ stockReceivedDocket.note }}</td>
+                <td>{{ stockReceivedDocket.description }}</td>
                 <td class="text-center">
                     <button type="button" class="btn" @click="showModalEdit(stockReceivedDocket.id)">
                         <img src="/images/icon/iconedit.png" alt="">

@@ -28,7 +28,8 @@
                     </div>
                 </div>
                 <div class="purchase-price">
-                    <p>{{ formatPrice(product.price) }}</p>
+                    <p v-if="product.price_discount > 0">{{ formatPrice(product.price_discount) }}</p>
+                    <p v-else>{{ formatPrice(product.price) }}</p>
                 </div>
             </div>
         </div>
@@ -36,7 +37,7 @@
         <div class="purchase-btn">
             <div class="purchase-price__item">
                 <p>Tổng đơn đặt hàng: </p>
-                <p>{{ formatPrice(order.total_value) }}</p>
+                <p>{{ formatPrice(order.total_price) }}</p>
             </div>
             <div class="purchase-price__item">
                 <p>Phí vận chuyển: </p>
@@ -48,7 +49,7 @@
             </div>
             <div class="purchase-price__item">
                 <p class="fw-bold">Thành tiền: </p>
-                <p class="total-price">{{ formatPrice(order.total_price) }}</p>
+                <p class="total-price">{{ formatPrice(order.total_value) }}</p>
             </div>
         </div>
     </div>

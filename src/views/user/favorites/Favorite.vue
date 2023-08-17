@@ -20,11 +20,11 @@
                             <div class="product-image">
                                 <router-link :to="{
                                     name: 'product.detail',
-                                    params: { id: item.id },
+                                    params: { id: item.product_id },
                                 }">
-                                    <img :src="getImage(item.product.image)" alt="#" />
+                                    <img :src="(item.products.image)" alt="#" />
                                 </router-link>
-                                <span v-if="item.product.discount_percent > 0" class="sale-tag">
+                                <span v-if="item.products.discount_percent > 0" class="sale-tag">
                                     SALE
                                 </span>
                                 <div class="button">
@@ -34,19 +34,19 @@
                             </div>
                             <router-link :to="{
                                 name: 'product.detail',
-                                params: { id: item.id },
+                                params: { id: item.product_id },
                             }">
                                 <div class="product-info">
                                     <h4 class="title">
-                                        <a href="#">{{ item.product.name }}</a>
+                                        <a href="#">{{ item.products.name }}</a>
                                     </h4>
                                     <div class="price">
                                         <span>
-                                            {{ formatPrice(item.product.final_price) }}
+                                            {{ formatPrice(item.products.price_final) }}
                                         </span>
                                         <span class="text-decoration-line-through float-end text-secondary"
-                                            v-if="item.product.discount_percent > 0">
-                                            {{ formatPrice(item.product.price) }}
+                                            v-if="item.products.discount_percent > 0">
+                                            {{ formatPrice(item.products.price) }}
                                         </span>
                                     </div>
                                 </div>
@@ -57,7 +57,7 @@
                                 <input type="checkbox" class="m-0 me-2" @change="idSelected(item.product)" :checked="selectedIds.includes(item.product.id)">
                                 Chọn sản phẩm
                             </span>
-                            <span @click="deleteFavorite(item.id)">Xóa</span>
+                            <span @click="deleteFavorite(item.product_id)">Xóa</span>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
-import { formatPrice, getImage, showAlert } from '@/utils';
+import { formatPrice, showAlert } from '@/utils';
 import FavoriteService from "@/services/user/favorite.service";
 import CartService from "@/services/user/cart.service";
 
@@ -75,16 +75,14 @@ export default {
     data() {
         return {
             selectedIds: [],
-            selectedItems: []
         };
     },
     methods: {
-        getImage,
         formatPrice,
         async addToCart() {
             try {
                 if(this.getUser) {
-                    await FavoriteService.addToCart(this.getUser.id, this.selectedItems).then(async (response) => {
+                    await FavoriteService.addToCart(this.getUser.id, this.selectedIds).then(async (response) => {
                         showAlert(response);
                         this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                         this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id));
@@ -100,9 +98,9 @@ export default {
                 console.log(error);
             }
         },
-        async deleteFavorite(id) {
+        async deleteFavorite(product_id) {
             try {
-                await FavoriteService.delete(id).then(async (response) => {
+                await FavoriteService.delete(this.getUser.id, product_id).then(async (response) => {
                     showAlert(response);
                     this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id));
                 })
@@ -115,26 +113,21 @@ export default {
             const index = this.selectedIds.indexOf(product.id);
             if (index === -1) {
                 this.selectedIds.push(product.id);
-                this.selectedItems.push(product);
             } else {
                 this.selectedIds.splice(index, 1);
-                this.selectedItems.splice(index, 1);
             }
         },
         idAllSelected() {
             if(this.selectedIds.length == this.favorites.favoriteCount) {
                 this.selectedIds.splice(0, this.selectedIds.length); // Bỏ hết các phần tử trong selectedIds
-                this.selectedItems.splice(0, this.selectedItems.length);
             } else if(this.selectedIds.length) {
                 this.favorites.getFavoriteItems.splice(0, this.selectedIds.length);
                 this.favorites.getFavoriteItems.forEach(item => {
                     this.selectedIds.push(item.product.id);
-                    this.selectedItems.push(item.product);
                 });
             } else {
                 this.favorites.getFavoriteItems.forEach(item => {
                     this.selectedIds.push(item.product.id);
-                    this.selectedItems.push(item.product);
                 });
             }
         }

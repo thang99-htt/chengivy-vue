@@ -221,6 +221,6 @@ export default {
 }
 
 .cart .info-size .multi-size-selector--4-columns .form__column {
-    width: calc(10%);
+    width: calc(14%);
 }
 </style>

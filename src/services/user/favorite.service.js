@@ -15,11 +15,8 @@ class FavoriteService {
     async updateQuantity(id, quantity, data) {
         return (await this.api.put(`/${id}/${quantity}`, data)).data;
     }
-    async deleteByUser(user, product) {
-        return (await this.api.delete(`/delete-by-user/${user}/${product}`)).data;
-    }
-    async delete(id) {
-        return (await this.api.delete(`/${id}`)).data;
+    async delete(user, product) {
+        return (await this.api.delete(`/${user}/${product}`)).data;
     }
 }
 export default new FavoriteService();

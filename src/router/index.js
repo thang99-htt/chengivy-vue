@@ -55,6 +55,15 @@ const routes = [
                         }
                     },
                     {
+                        path: "inventory",
+                        name: "inventory",
+                        component: () => import("../components/admin/products/ProductInventory.vue"),
+                        meta: {
+                            description: 'Tồn kho',
+                            permissionID: 40
+                        }
+                    },
+                    {
                         path: "category",
                         name: "category",
                         component: () => import("../views/admin/products/Category.vue"),
@@ -88,6 +97,15 @@ const routes = [
                         },
                     },
                     {
+                        path: "payment-voucher",
+                        name: "payment-voucher",
+                        component: () => import("../views/admin/imports/PaymentVoucher.vue"),
+                        meta: {
+                            description: 'Phiếu chi',
+                            permissionID: 44
+                        },
+                    },
+                    {
                         path: "stock-received-docket",
                         name: "stock-received-docket",
                         component: () => import("../views/admin/imports/StockReceivedDocket.vue"),
@@ -97,11 +115,11 @@ const routes = [
                         },
                     },
                     {
-                        path: "payment-voucher",
-                        name: "payment-voucher",
-                        component: () => import("../views/admin/imports/PaymentVoucher.vue"),
+                        path: "stock-received-docket/add",
+                        name: "stock-received-docket.add",
+                        component: () => import("../views/admin/imports/StockReceivedDocketAdd.vue"),
                         meta: {
-                            description: 'Phiếu chi',
+                            description: 'Thêm phiếu nhập',
                             permissionID: 44
                         },
                     },

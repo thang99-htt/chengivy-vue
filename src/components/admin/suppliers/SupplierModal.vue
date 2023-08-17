@@ -72,6 +72,7 @@ export default {
                             title: res.message
                         });
                     });
+                    this.$parent.refreshList();
                     this.closeModal();
                 } catch (error) {
                     console.log(error);
@@ -85,6 +86,7 @@ export default {
                         });
                     });
                     this.reset();
+                    this.$parent.refreshList();
                     this.closeModal();
                 } catch (error) {
                     console.log(error);
@@ -92,7 +94,6 @@ export default {
             }
         },
         closeModal() {
-            this.$parent.refreshList();
             this.$emit('closeModal');
         },
         reset () {
@@ -102,7 +103,7 @@ export default {
             this.supplier.email = "";
             this.supplier.bank_account = "";
             this.supplier.tax_code = "";
-            this.supplier.date_cooperate = "";
+            this.supplier.date_cooperate = new Date().toISOString().substr(0, 10);
         },
     },
     mounted() {

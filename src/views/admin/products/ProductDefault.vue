@@ -7,7 +7,8 @@
             >   Tổng quan
             </router-link>
             <router-link 
-                :to="{ name: 'product' }"
+                :to="{ name: 'inventory' }"
+                :class="{ active: $route.path.includes('/products/inventory') }"   
             >   Tồn kho
             </router-link>
             <router-link 

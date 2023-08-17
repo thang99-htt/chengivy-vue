@@ -1,6 +1,7 @@
 <template>
     <BrandModal v-if="modalBrand" :showModal="showModal" @closeModal="closeModal"/>
     <CategoryModal v-if="modalCategory" :showModal="showModal" @closeModal="closeModal"/>
+    
     <Form
         @submit="submitProduct"
         :validation-schema="productFormSchema"
@@ -143,7 +144,7 @@
                         <span v-for="(color, index) in colors" :key="color"
                             class="filters-panel-group-item__item-box circle" 
                             :style="`background-color: ${color.color}`"
-                            :class="{'active': Object.values(productLocal.images).some(item => item.color_id == color.id)}"
+                            :class="{'active': productLocal.images.some(item => item.color_id == color.id)}"
                             @click="changeColor(color)"
                         >
                         </span>
@@ -194,7 +195,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a class="remove-color" @click="removeColor(item.color_id)">Xóa</a>
+                                    <a class="remove-option" @click="removeColor(item.color_id)">Xóa</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -262,7 +263,7 @@
                 .max(1000, "Mô tả có nhiều nhất 1000 ký tự."),
                 price: yup
                 .string()
-                .max(7, "Giá bán nhiều nhất 7 chữ số.")
+                .max(9, "Giá bán nhiều nhất 9 chữ số.")
                 .required("Vui lòng nhập giá bán."),
             });
             return {
@@ -425,7 +426,4 @@
         font-size: 15px;
     }
     
-    .remove-color {
-        cursor: pointer;
-    }
 </style>

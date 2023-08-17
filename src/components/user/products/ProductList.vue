@@ -687,30 +687,20 @@ export default {
                     if (!this.favoriteProductIds.includes(product.id)) {
                         // Thêm vào yêu thích sản phẩm
                         await FavoriteService.create(this.getUser.id, this.favorite).then(async (response) => {
-                            if (response == true) {
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Sản phẩm đã được thêm vào danh sách yêu thích.'
-                                });
-                                this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id, this.favorite.id));
-
-                            } else if (response == false) {
-                                Toast.fire({
-                                    icon: 'warning',
-                                    title: 'Sản phẩm đã được yêu thích.'
-                                });
-                            }
+                            Toast.fire({
+                                icon: response.success,
+                                title: response.message
+                            });
+                            this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id, this.favorite.id));
                         });
                     } else {
                         // Bỏ yêu thích sản phẩm
                         await FavoriteService.delete(this.getUser.id, product.id).then(async (response) => {
                             Toast.fire({
-                                icon: 'success',
-                                title: 'Sản phẩm đã được xoá khỏi danh sách yêu thích.'
+                                icon: response.success,
+                                title: response.message
                             });
                             this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id));
-
-                            // this.$store.commit('removeFavorite', await FavoriteService.delete(this.getUser.id, product.id));
                         });
                     }
 

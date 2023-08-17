@@ -66,7 +66,7 @@
             <div class="purchase-btn">
                 <div class="purchase-price__item">
                     <p class="fw-bold">Thành tiền: </p>
-                    <p class="total-price">{{ formatPrice(purchase.total_price) }}</p>
+                    <p class="total-price">{{ formatPrice(purchase.total_value) }}</p>
                 </div>
                 <div class="purchase-btn__item">
                     <button
