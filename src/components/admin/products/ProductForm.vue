@@ -4,7 +4,6 @@
     
     <Form
         @submit="submitProduct"
-        :validation-schema="productFormSchema"
     >
         <div class="row">
             <div class="col-6">
@@ -36,11 +35,12 @@
                     <label for="price">Giá Bán
                         <span class="error-feedback">*</span>
                     </label>
-                    <Field
+                    <input
                         name="price"
-                        type="number"
+                        type="text"
                         class="form-control"
-                        v-model="productLocal.price"
+                        v-model="formattedPrice"
+                        @keypress="validateKeyPress"
                     />
                     <ErrorMessage name="price" class="error-feedback" />
                 </div>
@@ -56,11 +56,12 @@
                 </div>
                 <div class="form-group">
                     <label for="price_final">Giá sau khi giảm</label>
-                    <Field
+                    <input
                         name="price_final"
-                        type="number"
+                        type="text"
                         class="form-control"
-                        v-model="productLocal.price_final"
+                        v-model="formattedPriceDiscount"
+                        @keypress="validateKeyPress"
                     />
                     <ErrorMessage name="price_final" class="error-feedback" />
                 </div>
@@ -250,25 +251,8 @@
             }
         },
         data() {
-            const productFormSchema = yup.object().shape({
-                name: yup
-                .string()
-                .required("Vui lòng nhập tên sản phẩm.")
-                .min(2, "Tên phải ít nhất 2 ký tự.")
-                .max(50, "Tên có nhiều nhất 50 ký tự."),
-                description: yup
-                .string()
-                .required("Vui lòng nhập mô tả sản phẩm.")
-                .min(2, "Mô tả phải ít nhất 2 ký tự.")
-                .max(1000, "Mô tả có nhiều nhất 1000 ký tự."),
-                price: yup
-                .string()
-                .max(9, "Giá bán nhiều nhất 9 chữ số.")
-                .required("Vui lòng nhập giá bán."),
-            });
             return {
                 productLocal: this.product,
-                productFormSchema,
                 categories: [],
                 brands: [],
                 visible: false,
@@ -327,24 +311,7 @@
                         toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                     }
                 })
-                if(!this.productLocal.category_id) {
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Danh mục chưa được chọn.'
-                    });
-                } else if(!this.productLocal.brand_id) {
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Thương hiệu chưa được chọn.'
-                    });
-                } else if(this.productLocal.images.length == 0) {
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Hình ảnh chưa được thêm.'
-                    });
-                } else {
-                    this.$emit("submit:product", this.productLocal);
-                }
+                this.$emit("submit:product", this.productLocal);
             },
             deleteProduct() {
                 this.$emit("delete:product", this.productLocal.id);
@@ -403,11 +370,38 @@
                 if (index !== -1) {
                     this.productLocal.images.splice(index, 1);
                 } 
-            }
+            },
+            validateKeyPress(event) {
+                // Allow only numeric characters and backspace
+                const charCode = (event.which) ? event.which : event.keyCode;
+                if (charCode !== 8 && charCode !== 0 && (charCode < 48 || charCode > 57)) {
+                    event.preventDefault();
+                }
+            },
         },
         computed: {
             datetime () {
                 return new Date()
+            },
+            formattedPrice: {
+                get() {
+                    // Format the number using commas as thousands separators
+                    return this.productLocal.price.toLocaleString();
+                },
+                set(newValue) {
+                    // Remove commas from the input and update the raw numeric value
+                    this.productLocal.price = parseFloat(newValue.replace(/,/g, ""));
+                },
+            },
+            formattedPriceDiscount: {
+                get() {
+                    // Format the number using commas as thousands separators
+                    return this.productLocal.price_final.toLocaleString();
+                },
+                set(newValue) {
+                    // Remove commas from the input and update the raw numeric value
+                    this.productLocal.price_final = parseFloat(newValue.replace(/,/g, ""));
+                },
             }
         },
     };

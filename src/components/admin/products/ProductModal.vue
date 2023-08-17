@@ -101,6 +101,26 @@ export default {
                     this.$parent.refreshList();
                     this.closeModal();
                 } catch (error) {
+                    let errorMessage = 'Có lỗi xảy ra.';
+
+                    if (error.response && error.response.data) {
+                        const errorData = error.response.data;
+
+                        for (const fieldName in errorData) {
+                            if (errorData.hasOwnProperty(fieldName)) {
+                                const fieldErrors = errorData[fieldName];
+                                if (Array.isArray(fieldErrors) && fieldErrors.length > 0) {
+                                    errorMessage = fieldErrors[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    Toast.fire({
+                        icon: 'warning',
+                        title: errorMessage
+                    });
+                    
                     console.log(error);
                 }
             }
