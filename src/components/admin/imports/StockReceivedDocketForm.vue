@@ -1,231 +1,285 @@
 <template>
-    <PaymentVoucherModal  v-if="modalPayment" :showModal="showModal" @closeModal="closeModal" />
+    <PaymentVoucherModal v-if="modalPayment" :showModal="showModal" @closeModal="closeModal" />
     <SupplierModal v-if="modalSupplier" :showModal="showModal" @closeModal="closeModal" />
     <ClassifyModal v-if="modalClassify" :stockReceivedDocketLocal="stockReceivedDocketLocal"
         :currentProduct="currentProduct" :showModal="showModal" @closeModal="closeModal" />
     <ProductModal v-if="modalProduct" :showModal="showModal" @closeModal="closeModal" />
 
     <Form @submit="submitStockReceivedDocket">
-        <div class="form-group-3">
-            <div class="form-group">
-                <label for="date">Ngày nhập
-                    <span class="error-feedback">*</span>
-                    <span v-if="stockReceivedDocketLocal.id" class="ms-3">{{ stockReceivedDocketLocal.date }}</span>
-                </label>
-                <input name="date" type="date" class="datepicker d-block" v-model="stockReceivedDocketLocal.date">
-                <ErrorMessage name="date" class="error-feedback" />
-            </div>
-            <div class="form-group">
-                <label for="city">Nhà cung cấp
-                    <span class="error-feedback">*</span>
-                </label>
-                <div class="aselect" :data-value="value" :data-list="suppliers">
-                    <div class="plus" @click="openModalSupplier">
-                        <i class="fa fa-plus" data-bs-toggle="tooltip" data-bs-placement="top" title="Thêm danh mục"></i>
-                    </div>
-                    <div class="selector" @click="visible1 = !visible1">
-                        <div class="label">
-                            <span>{{ selectedSupplier }}</span>
-                        </div>
-                        <div class="arrow1" :class="{ expanded: visible1 }"></div>
-                        <div :class="{ hidden: !visible1, visible1 }">
-                            <div class="selector-container">
-                                <ul>
-                                    <li :class="{ current: supplier.name === selectedSupplier }"
-                                        v-for="(supplier, index) in suppliers" :key="supplier.id" :value="supplier.id"
-                                        @click.stop="selectOptionSupplier(supplier)">
-                                        {{ supplier.name }}
+        <div class="row">
+            <div class="col-8">
+                <div class="form-group">
+                    <div class="import-product">
+                        <div class="import-product__search">
+                            <div class="search-input" @click="viewSearch">
+                                <a class="search-btn"><i class="bi bi-search"></i></a>
+                                <input type="text" v-model="keyword" placeholder="Tìm kiếm sản phẩm"
+                                    @keypress="handleKeyPress" />
+                                <a class="search-btn"><i class="bi bi-plus" @click="openModalProduct"></i></a>
+                            </div>
+                            <div class="sub-menu-search">
+                                <ul id="nav" class="navbar-nav ms-aut">
+                                    <li class="nav-item" v-for="product in filteredProducts" :key="product"
+                                        @click="chooseProduct(product)">
+                                        <div class="d-flex">
+                                            <img :src="product.image" width="60" height="60">
+                                            <div class="ms-3 d-flex flex-column">
+                                                <span>{{ product.name }}</span>
+                                                <span>Giá bán:
+                                                    <span :class="{ 'text-danger': product.discount_percent > 0 }">
+                                                        {{ formatPrice(product.price_final) }}
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
                         </div>
+                        <table class="example1 table table-bordered dataTable">
+                            <thead>
+                                <tr role="row">
+                                    <th width="4%">#</th>
+                                    <th width="10%">ID</th>
+                                    <th width="25%">Tên sản phẩm</th>
+                                    <th width="10%">Giá bán</th>
+                                    <th width="10%">Giá nhập</th>
+                                    <th width="10%">Số lượng</th>
+                                    <th width="15%">Thành tiền</th>
+                                    <th width="10%">Phân loại</th>
+                                    <th width="6%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(product, index) in stockReceivedDocketLocal.items" :key="product">
+                                    <td>{{ index + 1 }}</td>
+                                    <td>{{ product.product_id }}</td>
+                                    <td>{{ product.product_name }}</td>
+                                    <td>
+                                        <input type="text" :value="formattedPrice(product.price)"
+                                            @input="updatePrice(index, $event)" @keypress="validateKeyPress">
+                                    </td>
+                                    <td>
+                                        <input type="text" :value="formattedPrice(product.price_purchase)"
+                                            @input="updatePricePurchase(index, $event)" @keypress="validateKeyPress">
+                                    </td>
+                                    <td>
+                                        <input type="text" :value="formattedPrice(product.quantity)"
+                                            @input="updateQuantity(index, $event)" @keypress="validateKeyPress">
+                                    </td>
+                                    <td>
+                                        <input type="text" :value=computedTotalItem(index) @keypress="validateKeyPress" />
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn border-0" @click="showModalClassify(product)">
+                                            <img src="/images/icon/icondetail.png" alt="">
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <a class="remove-option" @click="removeProduct(product)">Xóa</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr v-if="stockReceivedDocketLocal.items.length == 0">
+                                    <th colspan="9" class="text-center text-bold">Chưa có sản phẩm nào</th>
+                                </tr>
+                                <tr v-else>
+                                    <th colspan="5" class="text-center text-bold">Tổng</th>
+                                    <th>{{ calculatedTotalQuantity }}</th>
+                                    <th>{{ calculatedIntoMoney }}</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="city">Phiếu chi
-                    <span class="error-feedback">*</span>
-                </label>
-                <div class="aselect" :data-value="value" :data-list="payments">
-                    <div class="plus" @click="openModalPayment">
-                        <i class="fa fa-plus" data-bs-toggle="tooltip" data-bs-placement="top" title="Thêm thương hiệu"></i>
-                    </div>
-                    <div class="selector" @click="visible = !visible">
-                        <div class="label">
-                            <span>{{ selectedPayment }}</span>
+            <div class="col-4 import">
+                <div class="form-group">
+                    <div class="form-group__container">
+                        <div class="form-group__label">
+                            <label for="date">Ngày nhập
+                                <span class="error-feedback">*</span>
+                            </label>
                         </div>
-                        <div class="arrow1" :class="{ expanded: visible }"></div>
-                        <div :class="{ hidden: !visible, visible }">
-                            <div class="selector-container">
-                                <ul>
-                                    <li :class="{ current: payment.name === selectedPayment }"
-                                        v-for="(payment, index) in payments" :key="payment.id" :value="payment.id"
-                                        @click.stop="selectOptionPayment(payment)">
-                                        {{ payment.id }}, {{ payment.date }}, {{ formatPrice(payment.total_price) }}, {{
-                                            payment.supplier.name }}
-                                    </li>
-                                </ul>
+                        <div class="form-group__input">
+                            <input name="date" type="date" class="datepicker d-block"
+                                v-model="stockReceivedDocketLocal.date">
+                            <ErrorMessage name="date" class="error-feedback" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group__container">
+                        <div class="form-group__label">
+                            <label for="form">Hình thức
+                                <span class="error-feedback">*</span>
+                            </label>
+                        </div>
+                        <div class="form-group__input">
+                            <div class="d-flex align-items-center">
+                                <input v-model="stockReceivedDocketLocal.form" name="form" type="radio"
+                                    value="Nhập hàng mới" class="m-2 ms-0" />
+                                <label for="form" class="product-form">Nhập hàng mới</label>
+                                <input v-model="stockReceivedDocketLocal.form" name="form" type="radio"
+                                    value="Nhập lại vào kho" class="m-2" />
+                                <label for="form" class="product-form">Nhập lại vào kho</label>
                             </div>
+                            <ErrorMessage name="form" class="error-feedback" />
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="form-group-3">
-            <div class="form-group">
-                <label for="total_price">Tổng tiền 
-                    <span class="error-feedback">*</span>
-                </label>
-                <input
-                    type="text"
-                    class="form-control"
-                    v-model="formattedTotalPrice"
-                    @keypress="validateKeyPress"
-                />
-                <ErrorMessage name="total_price" class="error-feedback" />
-            </div>
-            <div class="form-group">
-                <label for="value_added">Thuế GTGT
-                    <span class="error-feedback">*</span>
-                </label>
-                <input
-                    type="text"
-                    class="form-control"
-                    v-model="formattedValueAdded"
-                    @keypress="validateKeyPress"
-                />
-                <ErrorMessage name="value_added" class="error-feedback" />
-            </div>
-            <div class="form-group">
-                <label for="total_value">Tổng giá trị
-                    <span class="error-feedback">*</span>
-                </label>
-                <input
-                    type="text"
-                    class="form-control"
-                    v-model="formattedTotalValue"
-                    @keypress="validateKeyPress"
-                />
-                <ErrorMessage name="total_value" class="error-feedback" />
-            </div>
-        </div>
-        <div class="form-group-3">
-            <div class="form-group">
-                <label for="city">Hình thức
-                    <span class="error-feedback">*</span>
-                </label>
-                <div class="d-flex align-items-center">
-                    <input v-model="stockReceivedDocketLocal.form" name="form" type="radio" value="Nhập hàng mới" class="m-2 ms-0" />
-                    <label for="form1" class="me-5 mb-0 fw-normal">Nhập hàng mới</label>
-                    <input v-model="stockReceivedDocketLocal.form" name="form" type="radio" value="Nhập lại vào kho" class="m-2" />
-                    <label for="form2" class="mb-0 fw-normal">Nhập lại vào kho</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="image">Chứng từ gốc
-                    <span class="error-feedback">*</span>
-                </label>
-                <Field name="image" type="file" class="form-control frm-file" accept="image/*" @change="onFileChange"
-                    v-model="stockReceivedDocketLocal.image" />
-                <img v-if="image" :src="image" alt="Image" class="img-edit img-responsive center-block">
-                <ErrorMessage name="image" class="error-feedback" />
-            </div>
-            <div class="form-group">
-                <label for="description">Diễn giải
-                    <span class="error-feedback">*</span>
-                </label>
-                <Field name="description" type="text" class="form-control"
-                    v-model="stockReceivedDocketLocal.description" />
-                <ErrorMessage name="description" class="error-feedback" />
-            </div>
-        </div>
-        <div class="form-group mb-0">
-            <input type="submit" name="btnSave" value="Thực hiện">
-            <input type="button" name="btnDelete" value="Xóa" v-if="stockReceivedDocketLocal.id">
-            <input type="button" name="btnBack" value="Hủy" v-else @click="reset">
-        </div>
-        <div class="form-group">
-            <div class="import-product">
-                <div class="import-product__search">
-                    <div class="search-input" @click="viewSearch">
-                        <a class="search-btn"><i class="bi bi-search"></i></a>
-                        <input type="text" v-model="keyword" placeholder="Tìm kiếm sản phẩm" @keypress="handleKeyPress" />
-                        <a class="search-btn"><i class="bi bi-plus" @click="openModalProduct"></i></a>
-                    </div>
-                    <div class="sub-menu-search">
-                        <ul id="nav" class="navbar-nav ms-aut">
-                            <li class="nav-item" v-for="product in filteredProducts" :key="product"
-                                @click="chooseProduct(product)">
-                                <div class="d-flex">
-                                    <img :src="product.image" width="60" height="60">
-                                    <div class="ms-3 d-flex flex-column">
-                                        <span>{{ product.name }}</span>
-                                        <span>Giá bán:
-                                            <span :class="{ 'text-danger': product.discount_percent > 0 }">
-                                                {{ formatPrice(product.price_final) }}
-                                            </span>
-                                        </span>
+                <div class="form-group">
+                    <div class="form-group__container">
+                        <div class="form-group__label">
+                            <label for="supplier_id">Nhà cung cấp
+                                <span class="error-feedback">*</span>
+                            </label>
+                        </div>
+                        <div class="form-group__input">
+                            <div class="aselect" :data-value="value" :data-list="suppliers">
+                                <div class="plus" @click="openModalSupplier">
+                                    <i class="fa fa-plus" data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="Thêm danh mục"></i>
+                                </div>
+                                <div class="selector" @click="visible1 = !visible1">
+                                    <div class="label">
+                                        <span>{{ selectedSupplier }}</span>
+                                    </div>
+                                    <div class="arrow1" :class="{ expanded: visible1 }"></div>
+                                    <div :class="{ hidden: !visible1, visible1 }">
+                                        <div class="selector-container">
+                                            <ul>
+                                                <li :class="{ current: supplier.name === selectedSupplier }"
+                                                    v-for="(supplier, index) in suppliers" :key="supplier.id"
+                                                    :value="supplier.id" @click.stop="selectOptionSupplier(supplier)">
+                                                    {{ supplier.name }}
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <table class="example1 table table-bordered dataTable">
-                    <thead>
-                        <tr role="row">
-                            <th width="4%">#</th>
-                            <th width="10%">ID</th>
-                            <th width="25%">Tên sản phẩm</th>
-                            <th width="10%">Giá bán</th>
-                            <th width="10%">Giá nhập</th>
-                            <th width="10%">Số lượng</th>
-                            <th width="15%">Thành tiền</th>
-                            <th width="10%">Phân loại</th>
-                            <th width="6%"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(product, index) in stockReceivedDocketLocal.items" :key="product">
-                            <td>{{ index + 1 }}</td>
-                            <td>{{ product.product_id }}</td>
-                            <td>{{ product.product_name }}</td>
-                            <td>
-                                <input type="text" 
-                                    :value="formattedPrice(product.price)" 
-                                    @input="updatePrice(index, $event)"
-                                    @keypress="validateKeyPress">
-                            </td>
-                            <td>
-                                <input type="text" 
-                                    :value="formattedPrice(product.price_purchase)" 
-                                    @input="updatePricePurchase(index, $event)"
-                                    @keypress="validateKeyPress">
-                            </td>
-                            <td>
-                                <input type="text" 
-                                    :value="formattedPrice(product.quantity)" 
-                                    @input="updateQuantity(index, $event)"
-                                    @keypress="validateKeyPress">
-                            </td>
-                            <td>
-                                <input type="text" 
-                                    :value=computedTotalItem(index)
-                                    @keypress="validateKeyPress" />
-                            </td>
-                            <td>
-                                <button type="button" class="btn border-0" @click="showModalClassify(product)">
-                                    <img src="/images/icon/icondetail.png" alt="">
-                                </button>
-                            </td>
-                            <td>
-                                <a class="remove-option" @click="removeProduct(product)">Xóa</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="form-group">
+                    <div class="form-group__container">
+                        <div class="form-group__label">
+                            <label for="form">Phiếu chi
+                                <span class="error-feedback">*</span>
+                            </label>
+                        </div>
+                        <div class="form-group__input">
+                            <div class="aselect" :data-value="value" :data-list="payments">
+                                <div class="plus" @click="openModalPayment">
+                                    <i class="fa fa-plus" data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="Thêm thương hiệu"></i>
+                                </div>
+                                <div class="selector" @click="visible = !visible">
+                                    <div class="label">
+                                        <span>{{ selectedPayment }}</span>
+                                    </div>
+                                    <div class="arrow1" :class="{ expanded: visible }"></div>
+                                    <div :class="{ hidden: !visible, visible }">
+                                        <div class="selector-container">
+                                            <ul>
+                                                <li :class="{ current: payment.name === selectedPayment }"
+                                                    v-for="(payment, index) in payments" :key="payment.id"
+                                                    :value="payment.id" @click.stop="selectOptionPayment(payment)">
+                                                    {{ payment.id }}, {{ payment.date }}, {{
+                                                        formatPrice(payment.total_price) }}, {{ payment.supplier.name }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group__container">
+                        <div class="form-group__label">
+                            <label for="form">Diễn giải
+                                <span class="error-feedback">*</span>
+                            </label>
+                        </div>
+                        <div class="form-group__input">
+                            <Field name="description" type="text" class="form-control"
+                                v-model="stockReceivedDocketLocal.description" />
+                            <ErrorMessage name="description" class="error-feedback" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group__container">
+                        <div class="form-group__label">
+                            <label for="form">Chứng từ gốc
+                                <span class="error-feedback">*</span>
+                            </label>
+                        </div>
+                        <div class="form-group__input">
+                            <Field name="image" type="file" class="form-control frm-file" accept="image/*"
+                                @change="onFileChange" v-model="stockReceivedDocketLocal.image" />
+                            <img v-if="stockReceivedDocketLocal.image" :src="stockReceivedDocketLocal.image" alt="Image"
+                                class="img-edit img-responsive center-block">
+                            <ErrorMessage name="image" class="error-feedback" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group__container">
+                        <div class="form-group__label">
+                            <label for="form">Tổng tiền
+                                <span class="error-feedback">*</span>
+                            </label>
+                        </div>
+                        <div class="form-group__input">
+                            <input type="text" class="form-control" v-model="formattedTotalPrice"
+                                @keypress="validateKeyPress" />
+                            <ErrorMessage name="total_price" class="error-feedback" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group__container">
+                        <div class="form-group__label">
+                            <label for="form">Thuế GTGT
+                                <span class="error-feedback">*</span>
+                            </label>
+                        </div>
+                        <div class="form-group__input">
+                            <input type="text" class="form-control" v-model="formattedValueAdded"
+                                @keypress="validateKeyPress" />
+                            <ErrorMessage name="value_added" class="error-feedback" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group__container">
+                        <div class="form-group__label">
+                            <label for="form">Tổng giá trị
+                                <span class="error-feedback">*</span>
+                            </label>
+                        </div>
+                        <div class="form-group__input">
+                            <input type="text" class="form-control" v-model="formattedTotalValue"
+                                @keypress="validateKeyPress" />
+                            <ErrorMessage name="total_value" class="error-feedback" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group float-end pe-3">
+                    <input type="submit" name="btnSave" value="Thực hiện">
+                    <input type="button" name="btnDelete" value="Xóa" v-if="stockReceivedDocketLocal.id">
+                    <input type="button" name="btnBack" value="Hủy" v-else @click="reset">
+                </div>
             </div>
         </div>
+
     </Form>
 </template>
 <script>
@@ -254,6 +308,11 @@ export default {
     props: {
         stockReceivedDocket: { type: Object, required: true }
     },
+    watch: {
+            'product'(newValue) {
+                this.productLocal = newValue;
+            },
+        },
     data() {
         return {
             stockReceivedDocketLocal: this.stockReceivedDocket,
@@ -289,7 +348,7 @@ export default {
         computedTotalItem() {
             return index => {
                 const item = this.stockReceivedDocketLocal.items[index];
-                return (item.total_item_price || 0).toLocaleString();
+                return ((item.price_purchase * item.quantity) || 0).toLocaleString();
             };
         },
         formattedTotalPrice: {
@@ -322,6 +381,20 @@ export default {
                 this.stockReceivedDocketLocal.total_value = parseFloat(newValue.replace(/,/g, ""));
             },
         },
+        calculatedTotalQuantity() {
+            let total = 0;
+            for (const item of this.stockReceivedDocketLocal.items) {
+                total += item.quantity;
+            }
+            return total.toLocaleString();
+        },
+        calculatedIntoMoney() {
+            let total = 0;
+            for (const item of this.stockReceivedDocketLocal.items) {
+                total += item.quantity*item.price_purchase;
+            }
+            return total.toLocaleString();
+        },
     },
     methods: {
         validateKeyPress(event) {
@@ -338,18 +411,17 @@ export default {
         updatePricePurchase(index, event) {
             const newValue = event.target.value.replace(/,/g, "");
             this.stockReceivedDocketLocal.items[index].price_purchase = parseFloat(newValue);
-            this.updateTotalPrice();
+            this.updateIntoMoney();
         },
         updateQuantity(index, event) {
             const newValue = event.target.value.replace(/,/g, "");
             this.stockReceivedDocketLocal.items[index].quantity = parseFloat(newValue);
-            this.updateTotalPrice();
+            this.updateIntoMoney();
         },
-        updateTotalPrice() {
+        updateIntoMoney() {
             let total = 0;
             for (const item of this.stockReceivedDocketLocal.items) {
-                item.total_item_price = (item.price_purchase * item.quantity);
-                total += item.total_item_price || 0;
+                total += (item.price_purchase * item.quantity) || 0;
             }
             this.stockReceivedDocketLocal.total_price = total;
         },
@@ -445,7 +517,7 @@ export default {
         },
         chooseProduct(product) {
             const index = this.stockReceivedDocketLocal.items.findIndex(
-                    item => item.product_id === product.id);
+                item => item.product_id === product.id);
             if (index === -1) {
                 this.stockReceivedDocketLocal.items.push({
                     product_id: product.id,
@@ -459,17 +531,39 @@ export default {
             }
         },
         removeProduct(product) {
-            const index =  this.stockReceivedDocketLocal.items.findIndex(
-                item => item.product_id === product.id);
-            if (index === -1) {
+            let inventoriesToDelete = []; // Lưu trữ các sản phẩm cần xóa
+
+            this.stockReceivedDocketLocal.inventories.forEach((inventory, index) => {
+                if (inventory.product_id === product.product_id) {
+                    inventoriesToDelete.push(index); // Lưu index của các mục cần xóa
+                }
+            });
+
+            // Xóa các mục theo danh sách index đã thu thập
+            inventoriesToDelete.reverse().forEach(index => {
+                this.stockReceivedDocketLocal.inventories.splice(index, 1);
+            });
+            console.log(inventoriesToDelete)
+            
+            const index = this.stockReceivedDocketLocal.items.findIndex(
+                item => item.product_id === product.product_id);
+            if (index !== -1) {
                 this.stockReceivedDocketLocal.items.splice(index, 1);
-            } 
+            }
+           
         }
     },
     mounted() {
         this.retrieveSuppliers();
         this.retrievePaymentVouchers();
         this.getProductAll();
+
+        if(this.stockReceivedDocket.supplier && this.stockReceivedDocket.payment_voucher) {
+            this.selectedSupplier = this.stockReceivedDocket.supplier.name;
+            this.selectedPayment = this.stockReceivedDocket.payment_voucher.id + ", " +
+            this.stockReceivedDocket.payment_voucher.date + ", " + this.stockReceivedDocket.payment_voucher.total_price
+            + ", " + this.stockReceivedDocket.supplier.name;
+        }
     },
 };
 </script>
@@ -479,12 +573,14 @@ export default {
     color: #000;
 }
 
-.form-group-3 {
-    display: flex;
-    justify-content: space-between;
+.product-form {
+    font-weight: normal;
+    font-size: 13px;
+    margin-bottom: 0;
 }
 
-.form-group-3 .form-group {
-    width: 30%;
+.import .aselect .selector .label {
+    overflow: hidden;
+    width: 170px;
 }
 </style>

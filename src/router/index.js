@@ -123,6 +123,17 @@ const routes = [
                             permissionID: 44
                         },
                     },
+                    
+                    {
+                        path: "stock-received-docket/:id",
+                        name: "stock-received-docket.edit",
+                        component: () => import("../views/admin/imports/StockReceivedDocketEdit.vue"),
+                        props: true,
+                        meta: {
+                            description: 'Chỉnh sửa phiếu nhập',
+                            permissionID: 44
+                        }
+                    },
                 ]
 
             },

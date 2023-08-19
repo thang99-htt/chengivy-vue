@@ -81,7 +81,7 @@
                         v-if="purchase.status.id == 9"
                         type="button"
                         class="btn btn-warning me-3"
-                        @click="openModel(purchase.order_details)"
+                        @click="openModal(purchase.items)"
                     >
                         Đánh giá
                     </button>  
@@ -110,20 +110,24 @@
                     </button>  
                 </div>
             </div>
-            <div v-if="myModel">
-                <div class="modal d-block">
-                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div v-if="myModal">
+                <div class="modal d-block review">
+                    <div class="modal-dialog modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="updateAddressModalLabel">Đánh Giá Sản Phẩm</h5>
-                                <button type="button" class="btn-close"  @click="closeModel"></button>
+                                <h4 class="modal-title fw-bold">Đánh Giá Sản Phẩm</h4>
+                                <button type="button" class="btn-close" @click="closeModal"></button>
                             </div>
                             <div class="modal-body">
-                                <ReviewForm 
-                                    :reviews="reviews"
-                                    :selectedPurchase="selectedPurchase"
-                                    @submit:reviews="addToReview"
-                                />
+                                <div class="box box-info">
+                                    <div class="box-body">
+                                        <ReviewForm 
+                                            :reviews="reviews"
+                                            :selectedPurchase="selectedPurchase"
+                                            @submit:reviews="addToReview"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -152,7 +156,7 @@
             return {
                 purchasesList: this.purchases,
                 isClicked: false,
-                myModel: false,
+                myModal: false,
                 selectedPurchase: null,
                 // review: {
                 //     'id': this.id,
@@ -234,12 +238,13 @@
                     console.log(error);
                 }   
             },
-            openModel(purchase) {
+            openModal(purchase) {
+                console.log(purchase)
                 this.selectedPurchase = purchase;
-                this.myModel = true;
+                this.myModal = true;
             },
-            closeModel() {
-                this.myModel = false;
+            closeModal() {
+                this.myModal = false;
                 this.selectedPurchase = null;
             },
             async addToReview(data) {
@@ -262,7 +267,7 @@
                             icon: 'success',
                             title: 'Đánh giá đã được thêm thành công.'
                         });
-                        this.myModel = false;
+                        this.myModal = false;
                     });
                 } catch (error) {
                     console.log(error.response);
@@ -275,3 +280,11 @@
         
     };
 </script>
+
+<style scoped>
+.review .modal-dialog-scrollable .modal-body {
+    max-height: 500px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+</style>

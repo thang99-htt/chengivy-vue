@@ -9,20 +9,20 @@
             @click="setCurrentProductIndex(index)"
         >
             <div class="d-flex">
-                <img class="d-block me-3" width="70" :src="product.product_image" alt="">
+                <img class="d-block me-3" width="70" :src="product.image" alt="">
                 <div>
                     <router-link 
                         :to="{
                             name: 'product.detail',
-                            params: { id: product.product_id },
+                            params: { id: product.id },
                         }" 
                         class="text-dark"
                     >
                         {{ product.product_name }}
                     </router-link>
-                    <p>Size: {{ product.product_size }}</p>
-                    <p>x{{ product.product_quantity }}</p>
-                    <p>{{ formatPrice(product.product_price) }}</p>
+                    <p>Size: {{ product.size }}</p>
+                    <p>Màu sắc: {{ product.color }}</p>
+                    <p>{{ formatPrice(product.price) }} x {{ product.quantity }}</p>
                 </div>
             </div>
             <div class="form-group">
@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="form-group">
-            <button class="me-2 btn btn-success float-end">Hoàn thành</button>
+            <input type="submit" name="btnSave" value="Thực hiện" class="float-end">
         </div>
     </Form>
 </template>

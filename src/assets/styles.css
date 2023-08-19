@@ -450,7 +450,7 @@ label {
 }
 
 .profiles .profile-info h4 {
-  color: #484848;
+  color: #fff;
   font-weight: 500;
 }
 
@@ -2425,8 +2425,10 @@ hr {
 
 .import-product .import-product__search {
   position: relative;
-  width: 400px;
-  float: right;
+  width: 390px;
+  float: left;
+  margin-bottom: 6px;
+  margin-left: 10px;
 }
 
 .import-product .sub-menu-search {
@@ -2438,7 +2440,7 @@ hr {
   z-index: 9;
   -webkit-box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.1);
-  max-height: 200px;
+  max-height: 300px;
   overflow-y: scroll;
   overflow-x: hidden !important;
   border-top: 1px solid #eee;

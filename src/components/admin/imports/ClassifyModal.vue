@@ -4,7 +4,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title fw-bold">Phân loại sản phẩm</h4>
-                    <button type="button" class="btn-close" @click="closeModal"></button>
+                    <button type="button" class="btn-close" @click="closeModalClassify"></button>
                 </div>
                 <div class="modal-body">
                     <div class="box box-info">
@@ -77,10 +77,10 @@
                                             <table class="example1 table table-bordered dataTable">
                                                 <thead>
                                                     <tr role="row">
-                                                        <th width="4%">#</th>
+                                                        <th width="6%">#</th>
                                                         <th width="30%">Màu sắc</th>
-                                                        <th width="30%">Kích cỡ</th>
-                                                        <th width="30%">Số lượng</th>
+                                                        <th width="29%">Kích cỡ</th>
+                                                        <th width="29%">Số lượng</th>
                                                         <th width="6%"></th>
                                                     </tr>
                                                 </thead>
@@ -103,7 +103,7 @@
                                                 <tfoot>
                                                     <tr>
                                                         <th colspan="3" class="text-center text-bold">Tổng số lượng</th>
-                                                        <th class="px-4">{{ calculatedTotalQuantity }}</th>
+                                                        <th class="px-4">{{ calculatedTotalQuantity.toLocaleString() }}</th>
                                                         <th></th>
                                                     </tr>
                                                 </tfoot>
@@ -179,7 +179,7 @@ export default {
                 this.selectedSizes.push(size); // Add selected size to the array
             }
         },
-        closeModal() {
+        closeModalClassify() {
             const Toast = this.$swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -191,7 +191,7 @@ export default {
                     toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                 }
             })
-            if (this.calculatedTotalQuantity !== this.currentProduct.quantity) {
+            if (this.calculatedTotalQuantity !== this.currentProduct.quantity && this.calculatedTotalQuantity !== 0) {
                 Toast.fire({
                     icon: 'warning',
                     title: "Tổng số lượng không tương thích!"
@@ -202,12 +202,17 @@ export default {
                 this.productID = null;
             }
         },
+        closeModal() {
+            this.showModal = false;
+        },
         addInventory() {
             if (this.selectedColor && this.selectedSizes.length > 0) {
                 this.selectedSizes.forEach(size => {
                     // Check if the entry already exists
                     const existingEntry = this.stockReceivedDocketLocal.inventories.find(entry =>
-                        entry.color_id === this.selectedColor.color_id && entry.size_id === size.id
+                        entry.product_id == this.currentProduct.product_id &&
+                        entry.color_id === this.selectedColor.color_id && 
+                        entry.size_id === size.id
                     );
 
                     // Add the entry only if it doesn't already exist
@@ -284,5 +289,9 @@ export default {
         right: 0;
         padding: 6px 20px;
         text-align: center;
+    }
+    .box-body .dataTable thead {
+        background-color: #dae9f3;
+        color: #000;
     }
 </style>

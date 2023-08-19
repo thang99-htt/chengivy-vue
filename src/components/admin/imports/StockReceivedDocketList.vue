@@ -4,13 +4,13 @@
             <tr role="row">
                 <th width="2%">ID</th>
                 <th width="8%">Nhân viên</th>
-                <th width="4%">Nhà cung cấp</th>
-                <th width="8%">Phiếu chi</th>
+                <th width="8%">Nhà cung cấp</th>
+                <th width="4%">Phiếu chi</th>
                 <th width="6%">Hình thức</th>
                 <th width="7%">Ngày nhập</th>
                 <th width="8%">Tổng giá trị</th>
-                <th width="8%">GTGT</th>
-                <th width="8%">Thành tiền</th>
+                <th width="7%">GTGT</th>
+                <th width="9%">Thành tiền</th>
                 <th width="6%">Chứng từ</th>
                 <th width="7%">Diễn giải</th>
                 <th width="4%">Tùy chọn</th>
@@ -25,14 +25,24 @@
                 <td>{{ stockReceivedDocket.payment_voucher.id }}</td>
                 <td>{{ stockReceivedDocket.form }}</td>
                 <td>{{ stockReceivedDocket.date }}</td>
-                <td>{{ stockReceivedDocket.total_value }}</td>
-                <td>{{ stockReceivedDocket.value_added }}</td>
-                <td>{{ stockReceivedDocket.total_price }}</td>
-                <td>{{ stockReceivedDocket.image }}</td>
+                <td>{{ formatPrice(stockReceivedDocket.total_value) }}</td>
+                <td>{{ formatPrice(stockReceivedDocket.value_added) }}</td>
+                <td>{{ formatPrice(stockReceivedDocket.total_price) }}</td>
+                <td>
+                    <img v-if="stockReceivedDocket.image" :src="stockReceivedDocket.image" alt="Image"
+                        class="img-responsive center-block">
+                </td>
                 <td>{{ stockReceivedDocket.description }}</td>
                 <td class="text-center">
                     <button type="button" class="btn" @click="showModalEdit(stockReceivedDocket.id)">
-                        <img src="/images/icon/iconedit.png" alt="">
+                        <router-link
+                            :to="{
+                                name: 'stock-received-docket.edit',
+                                params: { id: stockReceivedDocket.id },
+                            }" 
+                        >
+                            <img src="/images/icon/iconedit.png" alt="">
+                        </router-link>
                     </button>
                 </td>
                 <td class="text-center">
@@ -51,6 +61,7 @@
 
 <script>
 import StockReceivedDocketService from "@/services/admin/stock-received-docket.service";
+import { formatPrice } from '@/utils';
 
 export default {
     name: 'StockReceivedDocketList',
@@ -71,6 +82,7 @@ export default {
         };
     },
     methods: {
+        formatPrice,
         statusUpdate(stockReceivedDocket) {
             try {
                 StockReceivedDocketService.updateStatus(stockReceivedDocket.id, stockReceivedDocket.status).then(() => {

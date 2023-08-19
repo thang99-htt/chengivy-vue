@@ -6,7 +6,6 @@
             <div class="box-header">
               <h3 class="box-title">Danh sách đánh giá sản phẩm</h3>
             </div>
-            <!-- /.box-header -->
             <div class="box-body">
                 <div class="row">
                     <div class="mb-5 col-4">              
