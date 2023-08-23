@@ -1,281 +1,189 @@
-
 <template>
-    <table
-        aria-describedby="example1_info" role="grid" 
-        id="" class=" example1 table table-bordered table-striped dataTable"
-    >
-      <thead>
-        <tr role="row">
-            <th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting_asc">#</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Mã đơn hàng</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Nhân viên</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Ngày đặt</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Khách hàng</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Số điện thoại</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Tổng giá trị</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Phương thức thanh toán</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Thanh toán</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting">Trạng thái</th>
-            <th aria-label="Browser: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="example1" tabindex="0" class="sorting" style="width: 150px;">Tùy chọn</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr role="row"
-            v-for="(order, index) in ordersList"
-            :key="order"
-        >
-            <td class="sorting_1" >
-                {{ index + 1 }}
-            </td>
-            <td>{{ order.id }}</td>
-            <td>{{ order.staff }}</td>
-            <td>{{ order.order_date }}</td>
-            <td>{{ order.user_name  }}</td>
-            <td>{{ order.user_phone  }}</td>
-            <td>{{ formatPrice(order.total_price) }} đ</td>
-            <td>{{ order.payment.name }}</td>
-            <td>
-                <span
-                    :class="[order.paid == 1 ? 'text-success' : 'text-danger']"
-                >
-                {{order.paid == 1 ? 'Đã thanh toán' : 'Chưa thanh toán'}}
-                </span>                    
-            </td>
-            <td>
-                <button
-                    v-if="order.status.id == 1" class="btn-order-status order-status1"
-                    @click="statusUpdate(order)"
-                >
-                    {{ order.status.name }}
-                </button>
-                <button
-                    v-if="order.status.id == 2" class="btn-order-status order-status2"
-                    @click="statusUpdate(order)"
-                >
-                    {{ order.status.name }}
-                </button> 
-                <button
-                    v-if="order.status.id == 3" class="btn-order-status order-status3"
-                    @click="statusUpdate(order)"
-                >
-                    {{ order.status.name }}
-                </button> 
-                <button
-                    v-if="order.status.id == 4" class="btn-order-status order-status4"
-                    @click="statusUpdate(order)"
-                >
-                    {{ order.status.name }}
-                </button> 
-                <button
-                    v-if="order.status.id == 5" class="btn-order-status order-status5"
-                    @click="statusUpdate(order)"
-                >
-                    {{ order.status.name }}
-                </button> 
-                <button
-                    v-if="order.status.id == 6" class="btn-order-status order-status6"
-                    @click="statusUpdate(order)"
-                >
-                    {{ order.status.name }}
-                </button> 
-                <button
-                    v-if="order.status.id == 7" class="btn-order-status order-status7"
-                    @click="waitReceiptOrder()"
-                >
-                    {{ order.status.name }}
-                </button> 
-                <button
-                    v-if="order.status.id == 8" class="btn-order-status order-status8"
-                    @click="statusUpdate(order)"
-                >
-                    {{ order.status.name }}
-                </button> 
-                <button
-                    v-if="order.status.id == 9" class="btn-order-status order-status9"
-                    @click="statusUpdate(order)"
-                >
-                    {{ order.status.name }}
-                </button>  
-                <button
-                    v-if="order.status.id == 10" class="btn-order-status order-status10"
-                    @click="statusUpdate(order)"
-                >
-                    {{ order.status.name }}
-                </button>
-            </td>
-            <td>
-                <button
-                    type="button"
-                    class="me-2 btn btn-primary"
-                >
-                    <router-link
-                          :to="{
-                              name: 'order.detail',
-                              params: { id: order.id },
-                          }" 
+    <table class="example1 table table-bordered table-striped dataTable">
+        <thead>
+            <tr role="row">
+                <th width="4%">ID</th>
+                <th width="10%">Khách hàng</th>
+                <th width="12%">Ngày đặt</th>
+                <th width="10%">Tổng giá trị</th>
+                <th width="21%">Địa chỉ</th>
+                <th width="10%">Trạng thái</th>
+                <th width="8%">Nhân viên</th>
+                <th width="7%">Tùy chọn</th>
+                <th width="5%">Chọn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr role="row" v-for="(order, index) in ordersList" :key="order">
+                <td class="sorting_1">
+                    {{ order.id }}
+                </td>
+                <td>{{ order.name_receiver }}</td>
+                <td>{{ order.ordered_at }}</td>
+                <td>{{ formatPrice(order.total_value) }}</td>
+                <td>{{ order.user_address_detail }}, {{ order.user_address }}</td>
+                <td>
+                    <button
+                        v-if="order.status.id == 1" class="btn-order-status order-status1"
+                        @click="statusUpdate(order)"
                     >
-                        <i class="fa fa-eye"></i>
-                    </router-link>
-                </button>
-                <button
-                    v-if="order.id"
-                    type="button"
-                    class="me-2 btn btn-danger"
-                    @click="deleteOrder(order.id)"
-                >
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-      </tbody>
+                        {{ order.status.name }}
+                    </button>
+                    <button
+                        v-if="order.status.id == 2" class="btn-order-status order-status2"
+                        @click="statusUpdate(order)"
+                    >
+                        {{ order.status.name }}
+                    </button> 
+                    <button
+                        v-if="order.status.id == 3" class="btn-order-status order-status3"
+                        @click="statusUpdate(order)"
+                    >
+                        {{ order.status.name }}
+                    </button> 
+                    <button
+                        v-if="order.status.id == 4" class="btn-order-status order-status4"
+                        @click="statusUpdate(order)"
+                    >
+                        {{ order.status.name }}
+                    </button> 
+                    <button
+                        v-if="order.status.id == 5" class="btn-order-status order-status5"
+                        @click="statusUpdate(order)"
+                    >
+                        {{ order.status.name }}
+                    </button> 
+                    <button
+                        v-if="order.status.id == 6" class="btn-order-status order-status6"
+                        @click="statusUpdate(order)"
+                    >
+                        {{ order.status.name }}
+                    </button> 
+                    <button
+                        v-if="order.status.id == 7" class="btn-order-status order-status7"
+                        @click="waitReceiptOrder()"
+                    >
+                        {{ order.status.name }}
+                    </button> 
+                    <button
+                        v-if="order.status.id == 8" class="btn-order-status order-status8"
+                        @click="statusUpdate(order)"
+                    >
+                        {{ order.status.name }}
+                    </button> 
+                    <button
+                        v-if="order.status.id == 9" class="btn-order-status order-status9"
+                        @click="statusUpdate(order)"
+                    >
+                        {{ order.status.name }}
+                    </button>  
+                    <button
+                        v-if="order.status.id == 10" class="btn-order-status order-status10"
+                        @click="statusUpdate(order)"
+                    >
+                        {{ order.status.name }}
+                    </button>
+                </td>
+                <td>{{ order.staff.name }}</td>
+                <td class="text-center">
+                    <button type="button" class="btn"  @click="showModalEdit(order.id)">                        
+                        <img src="/images/icon/iconedit.png" alt="">
+                    </button>
+                    <button type="button" class="btn">                        
+                        <router-link
+                            :to="{
+                                name: 'order.view',
+                                params: { id: order.id },
+                            }" 
+                        >
+                            <img src="/images/icon/icondetail.png" alt="">
+                        </router-link>
+                    </button>
+                </td>
+                <td class="text-center">
+                    <input type="checkbox" @change="idSelected(order.id)" :checked="selectedIds.includes(order.id)">
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="8" class="text-center text-bold">Chọn tất cả</th>
+                <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
+            </tr>
+        </tfoot>
     </table>
 </template>
 
 <script>
-    import $ from 'jquery'
-    import OrderService from "@/services/admin/order.service";
-    import 'datatables.net'
-    import 'datatables.net-bs'
-    import {mapGetters} from 'vuex';
-    import { formatPrice, initializeDataTable } from '@/utils';
+import OrderService from "@/services/admin/order.service";
+import { formatPrice } from "../../../utils";
+import {mapGetters} from 'vuex';
 
-    export default {
-        name: 'OrderList',
-        props: {
-            orders: { type: Array, default: [] },
+export default {
+    name: 'OrderList',
+    props: {
+        orders: { type: Array, default: [] },
+        selectedIds: { type: Array, default: [] },
+        orderID: { type: Number, required: true },
+        showModal: { type: Boolean, required: true },
+    },
+    computed: {
+        ordersList() {
+            return this.orders;
         },
-        mounted() {
-            this.$nextTick(() => {
-                initializeDataTable();
-            });
+        ...mapGetters(['getAdmin'])
+    },
+    data() {
+        return {
+            
+        };
+    },
+    methods: {
+        formatPrice,
+        statusUpdate(order) {
+            try {
+                OrderService.updateStatus(this.getAdmin.id, order.id, order.status.id).then(() => {
+                    this.$parent.refreshList();
+                })
+            } catch (error) {
+                console.log(error);
+            }
         },
-        data() {
-            return {
-                ordersList: this.orders,
-                status: 0,
-            };
+        idSelected(id) {
+            const index = this.selectedIds.indexOf(id);
+            if (index === -1) {
+                // Nếu id chưa tồn tại trong mảng, thêm nó vào
+                this.selectedIds.push(id);
+            } else {
+                // Ngược lại, loại bỏ id khỏi mảng
+                this.selectedIds.splice(index, 1);
+            }
         },
-        beforeUpdate() {
-            $('.example1').DataTable().destroy();
+        idAllSelected() {
+            if(this.selectedIds.length == this.ordersList.length) {
+                this.selectedIds.splice(0, this.selectedIds.length); // Bỏ hết các phần tử trong selectedIds
+            } else if(this.selectedIds.length) {
+                this.selectedIds.splice(0, this.selectedIds.length);
+                this.orders.forEach(order => {
+                    this.selectedIds.push(order.id);
+                });
+            } else {
+                this.orders.forEach(order => {
+                    this.selectedIds.push(order.id);
+                });
+            }
         },
-        methods: {
-            async retrieveOrders() {
-                try {
-                    this.ordersList = await OrderService.getAll();
-                    this.$nextTick(() => {
-                        $(".example1").DataTable({
-                            "language": {
-                                "search": "Tìm kiếm:",
-                                "loadingRecords": "Đang tải...",
-                                "zeroRecords": "Không tìm thấy kết quả",
-                                "lengthMenu": "Hiển thị _MENU_ bản ghi",
-                                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
-                                "paginate": {
-                                    "first": "Trang đầu",
-                                    "last": "Trang cuối",
-                                    "next": "Trang sau",
-                                    "previous": "Trang trước"
-                                }
-                            }
-                        })
-                    })
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            refreshList() {
-                this.retrieveOrders();
-            },
-            statusUpdate(order) {
-                try {
-                    OrderService.updateStatus(this.getAdmin.id, order.id, order.status.id)
-                    .then( (response) => {
-                        this.refreshList();
-                    })                  
+    },
 
-                } catch (error) {
-                    console.log(error);
-                }   
-            },
-            waitReceiptOrder() {
-                const Toast = this.$swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
-                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
-                    }
-                })
-
-                Toast.fire({
-                    icon: 'warning',
-                    title: 'Chờ khách hàng xác nhận đã nhận.'
-                })
-            },
-            deleteOrder(id) {
-                this.$swal.fire({
-                    title: 'Bạn có chắc?',
-                    text: "Bạn sẽ không thể hoàn tác lại điều này!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.value) {
-                        OrderService.delete(id).then((res) => {
-                            if(res.success) {
-                                this.refreshList();
-                            }
-                        })
-                        this.$swal.fire('Đã xóa thành công!','','success')
-                    }
-                })
-            },
-            formatPrice,
-        },
-        computed: {
-            ...mapGetters(['getAdmin'])
-        }
-    };
+};
 </script>
 
 <style>
-    
-    @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
-    @import url('/static/css/bootstrap.min.css');
-
-    table.dataTable thead .sorting:after,
-    table.dataTable thead .sorting_asc:after,
-    table.dataTable thead .sorting_desc:after {
-        font-family: 'FontAwesome';
-    }
-    
-    table.dataTable thead .sorting:after {
-        content: '\f0dc';
-    }
-    
-    table.dataTable thead .sorting_asc:after {
-        content: '\f0dd';
-    }
-    
-    table.dataTable thead .sorting_desc:after {
-        content: '\f0de';
-    }
-
-    select.input-sm {
-        line-height: unset;
-    }
-
     .btn-order-status {
-        width: 125px;
+        width: 115px;
         height: 30px;
         padding: 0 !important;
-        font-size: 15px !important;
+        font-size: 13px !important;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -286,15 +194,15 @@
     }
 
     .order-status2 {
-        background-color: #e75a02;
+        background-color: #e96900;
     }
 
     .order-status3 {
-        background-color: #f5a400;
+        background-color: #4f2d9e;
     }
 
     .order-status4 {
-        background-color: #007e94;
+        background-color: #b8002b;
     }
 
     .order-status5 {
@@ -302,7 +210,7 @@
     }
 
     .order-status6 {
-        background-color: #00d4f0;
+        background-color: #f000a4;
     }
 
     .order-status7 {
@@ -310,11 +218,11 @@
     }
 
     .order-status8 {
-        background-color: #7cca00;
+        background-color: #5cc815;
     }
 
     .order-status9 {
-        background-color: #00b90c;
+        background-color: #00a30b;
     }
 
     .order-status10 {

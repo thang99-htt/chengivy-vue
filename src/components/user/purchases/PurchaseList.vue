@@ -110,44 +110,26 @@
                     </button>  
                 </div>
             </div>
-            <div v-if="myModal">
-                <div class="modal d-block review">
-                    <div class="modal-dialog modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title fw-bold">Đánh Giá Sản Phẩm</h4>
-                                <button type="button" class="btn-close" @click="closeModal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="box box-info">
-                                    <div class="box-body">
-                                        <ReviewForm 
-                                            :reviews="reviews"
-                                            :selectedPurchase="selectedPurchase"
-                                            @submit:reviews="addToReview"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
+
+    <ReviewModal v-if="showModal" :showModal="showModal" 
+        @closeModal="closeModal" :selectedPurchase="selectedPurchase"/>
 </template>
 
 <script>
     import OrderService from "@/services/user/order.service";
     import ReviewService from "@/services/user/review.service";
-    import ReviewForm from "@/components/user/products/ReviewForm.vue";
+    import ReviewForm from "@/components/user/reviews/ReviewForm.vue";
+    import ReviewModal from "@/components/user/reviews/ReviewModal.vue";
     import {mapGetters} from 'vuex';
     import { formatPrice } from '@/utils';
 
     export default {
         name: 'PurchaseList',
         components: {
-            ReviewForm
+            ReviewForm,
+            ReviewModal
         },
         props: {
             purchases: { type: Array, default: [] },
@@ -156,18 +138,8 @@
             return {
                 purchasesList: this.purchases,
                 isClicked: false,
-                myModal: false,
-                selectedPurchase: null,
-                // review: {
-                //     'id': this.id,
-                //     'user_id': "",
-                //     'content': "",
-                //     'rate': 0,
-                //     'images': []
-                // },
-                reviews: {
-                    review: []
-                }
+                showModal: false,
+                selectedPurchase: [],
             };
         },
         watch: {
@@ -239,39 +211,12 @@
                 }   
             },
             openModal(purchase) {
-                console.log(purchase)
                 this.selectedPurchase = purchase;
-                this.myModal = true;
+                this.showModal = true;
             },
             closeModal() {
-                this.myModal = false;
-                this.selectedPurchase = null;
-            },
-            async addToReview(data) {
-                // console.log(data)
-                const Toast = this.$swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
-                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
-                    }
-                })
-                try {
-                    await ReviewService.create(data).then(async (response) => {
-                        console.log(response);
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Đánh giá đã được thêm thành công.'
-                        });
-                        this.myModal = false;
-                    });
-                } catch (error) {
-                    console.log(error.response);
-                }
+                this.showModal = false;
+                this.selectedPurchase = [];
             },
         },
         computed: {

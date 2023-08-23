@@ -85,8 +85,8 @@
                     <div class="purchase-summary__info">
                         <h3>Địa chỉ nhận hàng</h3>
                         <div>
-                            <span class="acc-name">{{ order.user_name }}</span>
-                            <span>{{ order.user_phone }}</span>
+                            <span class="acc-name">{{ order.name_receiver }}</span>
+                            <span>{{ order.phone_receiver }}</span>
                         </div>
                         <div>
                             {{ order.user_address_detail }}

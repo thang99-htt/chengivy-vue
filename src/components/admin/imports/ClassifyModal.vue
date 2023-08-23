@@ -87,7 +87,16 @@
                                                 <tbody>
                                                     <tr v-for="(inventory, index) in filteredInventories" :key="inventory">
                                                         <td>{{ index+1 }}</td>
-                                                        <td>{{ inventory.color_name }}</td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <span
+                                                                    class="filters-panel-group-item__item-box circle mb-0" 
+                                                                    :style="`background-color: ${inventory.color}`"
+                                                                >
+                                                                </span>
+                                                                <span>{{ inventory.color_name }}</span>
+                                                            </div>
+                                                        </td>
                                                         <td>{{ inventory.size_name }}</td>
                                                         <td>
                                                             <input type="text" 
@@ -221,6 +230,7 @@ export default {
                             product_id: this.currentProduct.product_id,
                             color_id: this.selectedColor.color_id,
                             color_name: this.selectedColor.color_name,
+                            color: this.selectedColor.color,
                             size_id: size.id,
                             size_name: size.name,
                             quantity: 0,
@@ -234,14 +244,16 @@ export default {
             }
         },
         removeInventory(inventory) {
-            const index =  this.stockReceivedDocketLocal.inventories.findIndex(
-                item =>  {
-                    item.color_id === inventory.color_id,
+            const index = this.stockReceivedDocketLocal.inventories.findIndex(
+                item =>
+                    item.product_id === this.currentProduct.product_id &&
+                    item.color_id === inventory.color_id &&
                     item.size_id === inventory.size_id
-                });
-            if (index === -1) {
+            );
+
+            if (index !== -1) {
                 this.stockReceivedDocketLocal.inventories.splice(index, 1);
-            } 
+            }
         },
         validateKeyPress(event) {
             // Allow only numeric characters and backspace

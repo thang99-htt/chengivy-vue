@@ -6,7 +6,7 @@
     <ProductModal v-if="modalProduct" :showModal="showModal" @closeModal="closeModal" />
 
     <Form @submit="submitStockReceivedDocket">
-        <div class="row">
+        <div class="row import">
             <div class="col-8">
                 <div class="form-group">
                     <div class="import-product">
@@ -96,7 +96,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4 import">
+            <div class="col-4">
                 <div class="form-group">
                     <div class="form-group__container">
                         <div class="form-group__label">
@@ -224,8 +224,8 @@
                         <div class="form-group__input">
                             <Field name="image" type="file" class="form-control frm-file" accept="image/*"
                                 @change="onFileChange" v-model="stockReceivedDocketLocal.image" />
-                            <img v-if="stockReceivedDocketLocal.image" :src="stockReceivedDocketLocal.image" alt="Image"
-                                class="img-edit img-responsive center-block">
+                            <img v-if="stockReceivedDocketLocal.image" :src="stockReceivedDocketLocal.image" 
+                                alt="Image" width="50" height="50">
                             <ErrorMessage name="image" class="error-feedback" />
                         </div>
                     </div>
@@ -582,5 +582,22 @@ export default {
 .import .aselect .selector .label {
     overflow: hidden;
     width: 170px;
+}
+
+.import .form-group {
+    margin-bottom: 8px;
+}
+
+.import {
+    height: 480px;
+    overflow: hidden;
+}
+.import .import-product {
+    overflow-y: scroll;
+    height: 480px;
+    scrollbar-width: none; 
+}
+.import .import-product::-webkit-scrollbar {
+    width: 0;
 }
 </style>

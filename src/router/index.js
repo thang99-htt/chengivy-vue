@@ -54,15 +54,7 @@ const routes = [
                             permissionID: 40
                         }
                     },
-                    {
-                        path: "inventory",
-                        name: "inventory",
-                        component: () => import("../components/admin/products/ProductInventory.vue"),
-                        meta: {
-                            description: 'Tồn kho',
-                            permissionID: 40
-                        }
-                    },
+                    
                     {
                         path: "category",
                         name: "category",
@@ -123,7 +115,6 @@ const routes = [
                             permissionID: 44
                         },
                     },
-                    
                     {
                         path: "stock-received-docket/:id",
                         name: "stock-received-docket.edit",
@@ -134,8 +125,33 @@ const routes = [
                             permissionID: 44
                         }
                     },
+                    {
+                        path: "stock-received-docket/view/:id",
+                        name: "stock-received-docket.view",
+                        component: () => import("../components/admin/imports/StockReceivedDocketView.vue"),
+                        props: true,
+                        meta: {
+                            description: 'Chi tiết phiếu nhập',
+                            permissionID: 44
+                        }
+                    },
                 ]
 
+            },
+            {
+                path: "inventories",
+                component: () => import("../views/admin/inventories/InventoryDefault.vue"),
+                children: [
+                    {
+                        path: "overview",
+                        name: "inventories.overview",
+                        component: () => import("../components/admin/inventories/Inventory.vue"),
+                        meta: {
+                            description: 'Tồn kho',
+                            permissionID: 40
+                        }
+                    },
+                ]
             },
             {
                 path: "orders",
@@ -148,11 +164,11 @@ const routes = [
             },
             {
                 path: "orders/:id",
-                name: "order.detail",
+                name: "order.view",
                 component: () => import("@/views/admin/orders/OrderDetail.vue"),
                 props: true,
                 meta: {
-                    description: 'Xem chi tiết Đơn hàng',
+                    description: 'Chi tiết đơn hàng',
                     permissionID: 22
                 }
             },

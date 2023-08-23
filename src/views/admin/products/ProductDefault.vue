@@ -7,11 +7,6 @@
             >   Tổng quan
             </router-link>
             <router-link 
-                :to="{ name: 'inventory' }"
-                :class="{ active: $route.path.includes('/products/inventory') }"   
-            >   Tồn kho
-            </router-link>
-            <router-link 
                 :to="{ name: 'product' }"
             >   Giảm giá
             </router-link>
@@ -24,6 +19,11 @@
                 :to="{ name: 'brand' }"
                 :class="{ active: $route.path.includes('/products/brand') }"
             >   Thương hiệu
+            </router-link>
+            <router-link 
+                :to="{ name: 'brand' }"
+                :class="{ active: $route.path.includes('/products/brand') }"
+            >   Đã ẩn
             </router-link>
         </div>
         <router-view></router-view>

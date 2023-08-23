@@ -6,6 +6,9 @@ class ReviewService {
     async getAll() {
         return (await this.api.get("/")).data;
     }
+    async create(data) {
+        return (await this.api.post("/", data)).data;
+    }
     async updateStatus(id, status, data) {
         return (await this.api.put(`/${id}/${status}`, data)).data;
     }

@@ -1,41 +1,48 @@
 <template>
-    <table
-        aria-describedby="example1_info" role="grid" 
-        id="" class=" example1 table table-bordered table-striped dataTable"
-    >
+    <table class="table table-order-detail">
         <thead>
             <tr role="row">
-                <th>#</th>
+                <th>ID</th>
                 <th>Sản phẩm</th>
-                <th>Hình ảnh</th>
-                <th>Size</th>
-                <th>Giá (VNĐ)</th>
+                <th>Phân loại</th>
+                <th>Giá</th>
                 <th>Số lượng</th>
-                <th>Thành tiền (VNĐ)</th>
+                <th>Thành tiền</th>
             </tr>
         </thead>
         <tbody>
             <tr role="row"
-                v-for="(order, index) in orderLocal"
-                    :key="order" 
-                    :value="order.id"
+                v-for="(product, index) in productLocal"
+                    :key="product" 
+                    :value="product.id"
             >
                 <td>{{ index + 1 }}</td>
-                <td>{{ order.product_name }}</td>
                 <td>
-                    <img v-if="order.product_image" :src="getImage(order.product_image)"
-                    alt="Image" class="img-responsive center-block" width="100">
+                    <img v-if="product.image" :src="(product.image)"
+                        alt="Image" class="img-responsive d-inline" width="100">
+                    {{ product.name }}
                 </td>
-                <td>{{ order.product_size }}</td>
-                <td>{{ formatPrice(order.product_price) }}</td>
-                <td>{{ order.product_quantity }}</td>
-                <td>{{ formatPrice(order.product_into_money) }}</td>
+                <td>{{ product.color }}, {{ product.size }}</td>
+                <td>
+                    <span class="me-3 text-danger "
+                        v-if="product.price_discount > 0">
+                        {{ formatPrice(product.price_discount) }}
+                    </span>
+                    <span :class="{ 'text-decoration-line-through ': product.price_discount > 0 }">
+                        {{ formatPrice(product.price) }}
+                    </span>
+                </td>
+                <td>{{ product.quantity }}</td>
+                <td>
+                    <span v-if="product.price_discount > 0">{{ formatPrice(product.price_discount*product.quantity) }}</span>
+                    <span v-else>{{ formatPrice(product.price*product.quantity) }}</span>
+                </td>
             </tr>
         </tbody>
     </table>
 </template>
 <script>
-    import { formatPrice, getImage } from '@/utils';
+    import { formatPrice } from '@/utils';
 
     export default {        
         props: {
@@ -44,12 +51,17 @@
         
         data() {
             return {
-                orderLocal: this.order.order_details,
+                productLocal: this.order.items,
             };
         },
         methods: {
             formatPrice,
-            getImage,
         }
     };
 </script>
+
+<style>
+    .table-order-detail thead tr {
+        background-color: #f3f8ff;
+    }
+</style>

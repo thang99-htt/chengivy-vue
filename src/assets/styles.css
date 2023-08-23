@@ -249,27 +249,29 @@ label {
 
 
 .detail .detail-info .info-name h3 {
-  font-size: 32px;
-  font-weight: bold;
-  color: #000;
+  font-size: 24px;
+  font-weight: 500;
+  color: #232323;
   margin: 0;
 }
 
-.detail .detail-info .info-category,
-.detail .detail-info .info-price {
-  margin: 6px 0 0;
-}
-
-.detail .detail-info .info-category p,
 .detail .detail-info .info-price span {
   font-weight: 600;
   color: #000;
-  font-size: 18px;
+  font-size: 28px;
+}
+
+.detail .detail-info .info-category p {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 26px;
+  color: #000;
 }
 
 .detail .detail-info .info-price {
   display: flex;
   justify-content: space-between;
+  margin-top: 6px;
 }
 
 .detail .detail-info .info-des p {
@@ -550,26 +552,38 @@ table.dataTable thead .sorting_desc:after {
   font-family: 'FontAwesome';
 }
 
+.wrapper .modal {
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+
 .modal-dialog {
-  max-width: 600px !important;
-  width: 600px !important;
+  max-width: 800px !important;
+  width: 800px !important;
+  margin-top: 50px !important;
 }
 
 .modal-dialog-scrollable .modal-content {
   padding: 0 12px 12px;
-  background-color: #3872b2;
-  border-radius: 8px;
+  background-color: #fff;
+  border-radius: 5px;
 }
 
 .modal-header {
-  padding: 4px 0 !important;
+  padding: 12px 0 16px 16px !important;
 } 
 .modal-header h4 {
-  color: #fff;
+  color: #000 !important;
+  font-size: 22px;
+  font-weight: 600 !important;
 }
 
 .modal-dialog-scrollable .modal-body {
   background-color: #fff;
+  scrollbar-width: none;
+}
+
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar {
+  width: 0; 
 }
 
 .modal-dialog-scrollable .modal-body label {
@@ -594,6 +608,12 @@ table.dataTable thead .sorting_desc:after {
 
 .modal.address .modal-dialog-scrollable .modal-content {
  height: 600px;
+}
+
+
+.modal-dialog-scrollable {
+  height: 600px !important;
+  max-height: 600px !important;
 }
 
 /* Product List */
@@ -841,6 +861,11 @@ table.dataTable thead .sorting_desc:after {
 
 .multi-size-selector__size--is-checked {
   border: 1.5px solid #000;
+  background-color: #000;
+}
+
+.multi-size-selector__size--is-checked .form-input-checkbox__label {
+  color: #fff !important;
 }
 
 .multi-size-selector__size .form-input-checkbox__input-wrapper {
@@ -1596,7 +1621,7 @@ language-select .language-select-menu_item {
 .cart .info-size .size {
   font-weight: bold;
   color: #000;
-  padding-bottom: 6px;
+  padding-bottom: 0;
 }
 
 .cart .info-size .size-available {

@@ -23,6 +23,13 @@
       </router-link>
     </li>
     <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(44)"
+      :class="{ active: $route.path.includes('/admin/inventories') }">
+      <a href="/admin/inventories/overview">
+        <i class="fa fa-archive color3"></i>
+        <span class="treeview-title">Tồn kho</span>
+      </a>
+    </li>
+    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(44)"
       :class="{ active: $route.path.includes('/admin/import') }">
       <a href="/admin/import/stock-received-docket">
         <i class="fa fa-book color2"></i>

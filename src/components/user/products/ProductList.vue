@@ -456,11 +456,12 @@ export default {
             isExpandedCategory: false,
             isExpandedChild: false,
             sorts: [
-                { 'id': 1, 'value': 'Mặc định' },
-                { 'id': 2, 'value': 'Giá thấp đến cao' },
-                { 'id': 3, 'value': 'Giá cao đến thấp' },
-                { 'id': 4, 'value': 'Tên A đến Z' },
-                { 'id': 5, 'value': 'Tên Z đến A' }
+                { 'id': 1, 'value': 'Mới nhất' },
+                { 'id': 2, 'value': 'Cũ nhất' },
+                { 'id': 3, 'value': 'Tên A đến Z' },
+                { 'id': 4, 'value': 'Tên Z đến A' },
+                { 'id': 5, 'value': 'Giá thấp đến cao' },
+                { 'id': 6, 'value': 'Giá cao đến thấp' },
             ],
             brands: [],
             colors: [],
@@ -551,15 +552,16 @@ export default {
         },
         sortedProducts() {
             let sorted = [...this.filteredProducts];
-
             if (this.sortId === 2) {
-                sorted.sort((a, b) => a.price_final - b.price_final);
+                sorted.sort((a, b) => a.created_at.localeCompare(b.created_at));
             } else if (this.sortId === 3) {
-                sorted.sort((a, b) => b.price_final - a.price_final);
-            } else if (this.sortId === 4) {
                 sorted.sort((a, b) => a.name.localeCompare(b.name));
-            } else if (this.sortId === 5) {
+            } else if (this.sortId === 4) {
                 sorted.sort((a, b) => b.name.localeCompare(a.name));
+            } else if (this.sortId === 5) {
+                sorted.sort((a, b) => a.price_final - b.price_final);
+            } else if (this.sortId === 6) {
+                sorted.sort((a, b) => b.price_final - a.price_final);
             }
 
             return sorted;

@@ -1,10 +1,10 @@
 <template>
     <div class="detail-info">
+        <div class="info-category">
+            <p>{{ product.brand }}</p>
+        </div>
         <div class="info-name">
             <h3>{{ product.name }}</h3>
-        </div>
-        <div class="info-category">
-            <p>{{ product.brand }} - {{ product.category }}</p>
         </div>
         <div class="info-price">
             <div class="price">

@@ -18,7 +18,7 @@
                 <td>{{ brand.name }}</td>
                 <td>{{ brand.description }}</td>
                 <td>
-                    <img v-if="brand.image" :src="getImage(brand.image)" alt="Image"
+                    <img v-if="brand.image" :src="(brand.image)" alt="Image"
                         class="img-responsive center-block">
 
                 </td>
@@ -99,9 +99,6 @@ export default {
         showModalEdit(brandID) {
             this.$emit('update-modal', true);
             this.$emit('update-brandID', brandID);
-        },
-        getImage(image) {
-            return 'http://127.0.0.1:8000/storage/uploads/brands/' + image;
         },
     },
 

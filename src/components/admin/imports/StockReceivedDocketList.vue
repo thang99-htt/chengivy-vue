@@ -2,39 +2,32 @@
     <table class="example1 table table-bordered table-striped dataTable">
         <thead>
             <tr role="row">
-                <th width="2%">ID</th>
-                <th width="8%">Nhân viên</th>
-                <th width="8%">Nhà cung cấp</th>
-                <th width="4%">Phiếu chi</th>
-                <th width="6%">Hình thức</th>
-                <th width="7%">Ngày nhập</th>
-                <th width="8%">Tổng giá trị</th>
-                <th width="7%">GTGT</th>
-                <th width="9%">Thành tiền</th>
-                <th width="6%">Chứng từ</th>
-                <th width="7%">Diễn giải</th>
-                <th width="4%">Tùy chọn</th>
+                <th width="4%">ID</th>
+                <th width="12%">Ngày nhập</th>
+                <th width="10%">Hình thức</th>
+                <th width="14%">Nhà cung cấp</th>
+                <th width="16%">Phiếu chi</th>
+                <th width="12%">Tổng giá trị</th>
+                <th width="10%">Nhân viên</th>
+                <th width="8%">Tùy chọn</th>
                 <th width="4%">Chọn</th>
             </tr>
         </thead>
         <tbody>
             <tr role="row" v-for="(stockReceivedDocket, index) in stockReceivedDocketsList" :key="stockReceivedDocket">
                 <td>{{ stockReceivedDocket.id }}</td>
-                <td>{{ stockReceivedDocket.staff.name }}</td>
-                <td>{{ stockReceivedDocket.supplier.name }}</td>
-                <td>{{ stockReceivedDocket.payment_voucher.id }}</td>
-                <td>{{ stockReceivedDocket.form }}</td>
                 <td>{{ stockReceivedDocket.date }}</td>
-                <td>{{ formatPrice(stockReceivedDocket.total_value) }}</td>
-                <td>{{ formatPrice(stockReceivedDocket.value_added) }}</td>
-                <td>{{ formatPrice(stockReceivedDocket.total_price) }}</td>
+                <td>{{ stockReceivedDocket.form }}</td>
+                <td>{{ stockReceivedDocket.supplier.name }}</td>
                 <td>
-                    <img v-if="stockReceivedDocket.image" :src="stockReceivedDocket.image" alt="Image"
-                        class="img-responsive center-block">
+                    {{ stockReceivedDocket.payment_voucher.id }}, <br>
+                    {{ stockReceivedDocket.payment_voucher.date }}, <br>
+                    {{ formatPrice(stockReceivedDocket.payment_voucher.total_price) }}
                 </td>
-                <td>{{ stockReceivedDocket.description }}</td>
+                <td>{{ formatPrice(stockReceivedDocket.total_value) }}</td>
+                <td>{{ stockReceivedDocket.staff.name }}</td>
                 <td class="text-center">
-                    <button type="button" class="btn" @click="showModalEdit(stockReceivedDocket.id)">
+                    <button type="button" class="btn">
                         <router-link
                             :to="{
                                 name: 'stock-received-docket.edit',
@@ -42,6 +35,16 @@
                             }" 
                         >
                             <img src="/images/icon/iconedit.png" alt="">
+                        </router-link>
+                    </button>
+                    <button type="button" class="btn">
+                        <router-link
+                            :to="{
+                                name: 'stock-received-docket.view',
+                                params: { id: stockReceivedDocket.id },
+                            }" 
+                        >
+                            <img src="/images/icon/icondetail.png" alt="">
                         </router-link>
                     </button>
                 </td>
@@ -52,7 +55,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="12" class="text-center text-bold">Chọn tất cả</th>
+                <th colspan="8" class="text-center text-bold">Chọn tất cả</th>
                 <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
             </tr>
         </tfoot>
@@ -117,10 +120,6 @@ export default {
                 });
             }
         },
-        showModalEdit(stockReceivedDocketID) {
-            this.$emit('update-modal', true);
-            this.$emit('update-stockReceivedDocketID', stockReceivedDocketID);
-        }
     },
 
 };

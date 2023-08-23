@@ -77,6 +77,7 @@ export default {
             try {
                 await StockReceivedDocketService.create(data)
                     .then(res => {
+                        console.log(res);
                         Toast.fire({
                             icon: res.success,
                             title: res.message
