@@ -19,7 +19,7 @@
     </div>
 </template>
 <script>
-import ProductForm from "./ProductForm.vue";
+import ProductForm from "@/components/admin/products/ProductForm.vue";
 import ProductService from "@/services/admin/product.service";
 
 export default {

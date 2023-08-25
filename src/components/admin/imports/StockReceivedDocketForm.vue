@@ -13,8 +13,7 @@
                         <div class="import-product__search">
                             <div class="search-input" @click="viewSearch">
                                 <a class="search-btn"><i class="bi bi-search"></i></a>
-                                <input type="text" v-model="keyword" placeholder="Tìm kiếm sản phẩm"
-                                    @keypress="handleKeyPress" />
+                                <input type="text" v-model="keyword" placeholder="Tìm kiếm sản phẩm"/>
                                 <a class="search-btn"><i class="bi bi-plus" @click="openModalProduct"></i></a>
                             </div>
                             <div class="sub-menu-search">
@@ -507,14 +506,6 @@ export default {
                 console.log(error);
             }
         },
-        handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                this.redirectToSearchPage();
-            }
-        },
-        redirectToSearch(keyword) {
-            this.keyword = keyword;
-        },
         chooseProduct(product) {
             const index = this.stockReceivedDocketLocal.items.findIndex(
                 item => item.product_id === product.id);
@@ -543,7 +534,6 @@ export default {
             inventoriesToDelete.reverse().forEach(index => {
                 this.stockReceivedDocketLocal.inventories.splice(index, 1);
             });
-            console.log(inventoriesToDelete)
             
             const index = this.stockReceivedDocketLocal.items.findIndex(
                 item => item.product_id === product.product_id);

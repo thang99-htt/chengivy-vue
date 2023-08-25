@@ -11,38 +11,61 @@
     <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(23)"
       :class="{ active: $route.path.includes('/admin/staffs') }">
       <a href="/admin/staffs/staff-list">
-        <i class="fa fa-user color1"></i>
+        <i class="fa fa-users color1"></i>
         <span class="treeview-title">Nhân viên</span>
       </a>
+      <ul class="treeview-menu">
+        <li>
+          <a href="/admin/staffs/staff-list">
+            <i class="fa fa-info-circle"></i>Quản lý thông tin
+          </a>
+        </li>
+        <li>
+          <a href="/admin/staffs/roles">
+            <i class="fa fa-user"></i>Quản lý phân quyền
+          </a>
+        </li>
+      </ul>
     </li>
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(40)"
-     :class="{ active: $route.path.includes('/admin/products') }">
-      <router-link to="/admin/products/list">
+      :class="{ active: $route.path.includes('/admin/products') }">
+      <a href="/admin/products/overview">
         <i class="fa fa-box color4"></i>
-        <span class="page">Sản phẩm</span>
-      </router-link>
-    </li>
-    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(44)"
-      :class="{ active: $route.path.includes('/admin/inventories') }">
-      <a href="/admin/inventories/overview">
-        <i class="fa fa-archive color3"></i>
-        <span class="treeview-title">Tồn kho</span>
+        <span class="treeview-title">Sản phẩm</span>
       </a>
+      <ul class="treeview-menu">
+        <li>
+          <a href="/admin/products/overview">
+            <i class="fa fa-info-circle"></i>Tổng quan
+          </a>
+        </li>
+        <li>
+          <a href="/admin/products/inventory">
+            <i class="fa fa-archive"></i>Tồn kho
+          </a>
+        </li>
+        <li>
+          <a href="/admin/products/sale">
+            <i class="fa fa-long-arrow-down"></i>Giảm giá
+          </a>
+        </li>
+        <li>
+          <a href="/admin/products/inventory">
+            <i class="fa fa-ban"></i>Đã ẩn
+          </a>
+        </li>
+        <li>
+          <a href="/admin/products/category">
+            <i class="fa fa-sitemap"></i>Danh mục
+          </a>
+        </li>
+        <li>
+          <a href="/admin/products/brand">
+            <i class="fa fa-handshake"></i>Thương hiệu
+          </a>
+        </li>
+      </ul>
     </li>
-    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(44)"
-      :class="{ active: $route.path.includes('/admin/import') }">
-      <a href="/admin/import/stock-received-docket">
-        <i class="fa fa-book color2"></i>
-        <span class="treeview-title">Nhập hàng</span>
-      </a>
-    </li>
-    <!-- <li class="pageLink" :class="{ active: $route.path.includes('/admin/categories') }">
-      <router-link to="/admin/categories">
-        <i class="fa fa-sitemap color3"></i>
-        <span class="page">Danh mục</span>
-      </router-link>
-    </li> -->
-
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(55)"
       :class="{ active: $route.path.includes('/admin/orders') }">
       <router-link to="/admin/orders">
@@ -218,4 +241,5 @@ export default {
 
 .color8 {
   color: #7a1b67;
-}</style>
+}
+</style>

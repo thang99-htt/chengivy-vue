@@ -19,7 +19,6 @@ const routes = [
             },
             {
                 path: "staffs",
-                component: () => import("../views/admin/staffs/StaffDefault.vue"),
                 children: [
                     {
                         path: "staff-list",
@@ -43,10 +42,9 @@ const routes = [
             },
             {
                 path: "products",
-                component: () => import("../views/admin/products/ProductDefault.vue"),
                 children: [
                     {
-                        path: "list",
+                        path: "overview",
                         name: "product",
                         component: () => import("../views/admin/products/Product.vue"),
                         meta: {
@@ -54,7 +52,24 @@ const routes = [
                             permissionID: 40
                         }
                     },
-                    
+                    {
+                        path: "inventory",
+                        name: "inventory",
+                        component: () => import("../components/admin/products/ProductInventory.vue"),
+                        meta: {
+                            description: 'Tồn kho',
+                            permissionID: 40
+                        }
+                    },
+                    {
+                        path: "sale",
+                        name: "sale",
+                        component: () => import("../components/admin/products/ProductSale.vue"),
+                        meta: {
+                            description: 'Tồn kho',
+                            permissionID: 40
+                        }
+                    },
                     {
                         path: "category",
                         name: "category",
@@ -137,21 +152,6 @@ const routes = [
                     },
                 ]
 
-            },
-            {
-                path: "inventories",
-                component: () => import("../views/admin/inventories/InventoryDefault.vue"),
-                children: [
-                    {
-                        path: "overview",
-                        name: "inventories.overview",
-                        component: () => import("../components/admin/inventories/Inventory.vue"),
-                        meta: {
-                            description: 'Tồn kho',
-                            permissionID: 40
-                        }
-                    },
-                ]
             },
             {
                 path: "orders",

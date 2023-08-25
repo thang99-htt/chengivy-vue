@@ -2048,6 +2048,11 @@ input[name^="btnExcel"] {
   background: url(/images/icon/btnexcel.png) no-repeat 0 50%;
 }
 
+input[name^="btnEdit"] {
+  background: url(/images/icon/iconedit.png) no-repeat 0 50%;
+}
+
+input[name^="btnEdit"],
 input[name^="btnAdd"],
 input[name^="btnSave"],
 input[name^="btnDelete"],
@@ -2349,7 +2354,7 @@ hr {
   justify-content: start;
   box-shadow: 0 0 10px #00000012;
   border: 1px solid #dee2e6;
-  background: #dae9f3;
+  background: #fff5e5;
 }
 
 .content .option-filter a {
@@ -2366,11 +2371,11 @@ hr {
 }
 .content .option-filter a:hover {
   background-color: #fff;
-  color: #09f;
+  color: #f39200;
 }
 .content .option-filter a.active {
   background-color: #fff;
-  color: #09f;
+  color: #f39200;
 }
 
 .content .option-filter a.active::before {
@@ -2381,7 +2386,7 @@ hr {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #3872b2;
+  background-color: #ffaf38;
 }
 
 .widden .modal-dialog {
@@ -2404,7 +2409,13 @@ hr {
   position: relative;
   float: right;
 }
-.import-product .search-input input {
+.product-sale {
+  width: 400px;
+  position: relative;
+  float: left;
+}
+.import-product .search-input input,
+.product-sale .search-input input  {
   width: 100%;
   height: 36px;
   border: none;
@@ -2418,7 +2429,8 @@ hr {
   margin-bottom: 16px;
 }
 
-.import-product .search-input a:first-child {
+.import-product .search-input a:first-child,
+.product-sale .search-input a:first-child  {
   position: absolute;
   content: "";
   top: 10px;
@@ -2427,7 +2439,8 @@ hr {
   border: none;
 }
 
-.import-product .search-input a:last-child {
+.import-product .search-input a:last-child,
+.product-sale .search-input a:last-child  {
   position: absolute;
   content: "";
   top: 8px;
@@ -2437,12 +2450,14 @@ hr {
   cursor: pointer;
 }
 
-.import-product .search-input a .bi-search {
+.import-product .search-input a .bi-search,
+.product-sale .search-input a .bi-search  {
   color: #414141;
   font-size: 16px;
 }
 
-.import-product .search-input a .bi-plus {
+.import-product .search-input a .bi-plus,
+.product-sale .search-input a .bi-plus  {
   color: #414141;
   font-size: 20px;
   font-weight: 500;
@@ -2456,7 +2471,8 @@ hr {
   margin-left: 10px;
 }
 
-.import-product .sub-menu-search {
+.import-product .sub-menu-search,
+.product-sale .sub-menu-search {
   position: absolute;
   top: 40px;
   right: 0;
@@ -2472,12 +2488,14 @@ hr {
   display: none;
 }
 
-.import-product .sub-menu-search .navbar-nav {
+.import-product .sub-menu-search .navbar-nav,
+.product-sale .sub-menu-search .navbar-nav {
   width: 100%;
   max-width: 400px;
 }
 
-.import-product .sub-menu-search .navbar-nav .nav-item {
+.import-product .sub-menu-search .navbar-nav .nav-item,
+.product-sale .sub-menu-search .navbar-nav .nav-item {
   font-size: 14px;
   font-weight: normal;
   padding: 8px 14px;
@@ -2501,4 +2519,24 @@ table input::-webkit-inner-spin-button {
 }
 .remove-option {
     cursor: pointer;
+}
+
+.product-view_plus {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #ccc;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.product-view_plus i {
+  font-weight: 600;
+}
+
+.product-view_plus .expanded {
+  transform: rotateZ(90deg) translateY(2px);
 }

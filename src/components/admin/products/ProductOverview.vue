@@ -1,13 +1,14 @@
 <template>
-    <table class=" example1 table table-bordered table-striped dataTable">
+    <table class="example1 table dataTable">
         <thead>
             <tr role="row">
                 <th width="6%" data-orderable="false">ID</th>
-                <th width="24%">Sản phẩm</th>
-                <th width="8%">Giá Bán</th>
-                <th width="8%">Đã bán</th>
-                <th width="8%">Lượt thích</th>
-                <th width="8%">Trạng thái</th>
+                <th width="20%">Sản phẩm</th>
+                <th width="7%">Giá nhập</th>
+                <th width="7%">Giá bán</th>
+                <th width="7%">Đã bán</th>
+                <th width="7%">Lượt thích</th>
+                <th width="7%">Trạng thái</th>
                 <th width="7%">Tùy chọn</th>
                 <th width="5%">Chọn</th>
             </tr>
@@ -17,14 +18,15 @@
                 :class="{ 'disabled': product.deleted_at }">
                 <td>{{ product.id }}</td>
                 <td>
-                    <img v-if="product.image" :src="product.image" alt="" width="100" height="70">    
+                    <img v-if="product.image" :src="product.image" alt="" width="50" height="50">    
                     <span class="ms-3">{{ product.name }}</span>
                 </td>
+                <td>{{ formatPrice(product.price_purchase) }}</td>
                 <td>
                     <span v-if="product.discount_percent" class="text-danger">{{ formatPrice(product.price_final) }}</span>
                     <span v-else>{{ formatPrice(product.price) }}</span>
                 </td>
-                <td>{{ product.total_export }}</td>
+                <td>{{ (product.total_export ).toLocaleString() }}</td>
                 <td>{{ product.total_likes }}</td>
                 <td>
                     <button class="btn-sm" :class="[product.status == 1 ? 'btn-show' : 'btn-hide']"
@@ -59,7 +61,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="7" class="text-center text-bold">Chọn tất cả</th>
+                <th colspan="8" class="text-center text-bold">Chọn tất cả</th>
                 <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
             </tr>
         </tfoot>

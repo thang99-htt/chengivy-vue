@@ -28,6 +28,7 @@ export function initializeDataTable() {
     lengthMenu: [10, 20, 50, 100],
     pageLength: 10,
   });
+  
   // var table = $(".example1").DataTable({
   //   "language": {
   //     "search": "Tìm kiếm:",

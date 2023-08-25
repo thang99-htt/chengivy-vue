@@ -6,6 +6,12 @@ class ProductService {
     async getAll() {
         return (await this.api.get("/")).data;
     }
+    async getSales() {
+        return (await this.api.get("/sales")).data;
+    }
+    async getInventories() {
+        return (await this.api.get("/inventories")).data;
+    }
     async create(data) {
         return (await this.api.post("/", data)).data;
     }
@@ -23,6 +29,9 @@ class ProductService {
     }
     async updateStatus(id, status, data) {
         return (await this.api.put(`/${id}/${status}`, data)).data;
+    }
+    async updateProductsSale(data) {
+        return (await this.api.put("/update-product-sale", data)).data;
     }
     async delete(id) {
         return (await this.api.delete(`/${id}`)).data;

@@ -1,7 +1,7 @@
 <template>
     <table
         aria-describedby="example1_info" role="grid" 
-        id="" class="example1 table table-bordered table-striped dataTable"
+        id="" class="example1 table dataTable"
     >
       <thead>
         <tr role="row">

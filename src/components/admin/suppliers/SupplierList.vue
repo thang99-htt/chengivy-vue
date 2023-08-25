@@ -1,5 +1,5 @@
 <template>
-    <table class="example1 table table-bordered table-striped dataTable">
+    <table class="example1 table dataTable">
         <thead>
             <tr role="row">
                 <th width="6%">ID</th>
