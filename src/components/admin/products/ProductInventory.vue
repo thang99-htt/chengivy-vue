@@ -24,7 +24,7 @@
                                     <td class="text-center">
                                         <span v-if="!product.month_year" class="product-view_plus" @click="toggleAdditionalRow(product)">
                                             <i class="bi bi-chevron-right" :class="{ expanded: product.visible }"></i>
-                                        </span> <span v-if="!product.month_year">(2)</span>
+                                        </span> <span v-if="!product.month_year">({{ product.filtered_inventories.length }})</span>
                                     </td>
                                     <td>
                                         <img v-if="product.image" :src="product.image" alt="" width="50" height="50">
@@ -37,9 +37,12 @@
                                             <span class="ms-2">{{ product.size.name }}</span>
                                         </span>
                                     </td>
-                                    <td>{{ (product.total_import || product.total_initial) }}</td>
-                                    <td>{{ (product.total_export) }}</td>
-                                    <td class="text-green">{{ (product.total_final) }}</td>
+                                    <td>{{ (product.total_import).toLocaleString() }}</td>
+                                    <td>{{ (product.total_export).toLocaleString() }}</td>
+                                    <td>
+                                        <span v-if="product.total_final==0" class="text-danger">Hết hàng</span>
+                                        <span v-else class="text-green">{{ (product.total_final).toLocaleString() }}</span>
+                                    </td>
                                     <td>
                                         <div>
                                             <button type="button" class="btn">

@@ -5,7 +5,12 @@
                 <div v-if="stepCheck == 1" class="step-1 checkout-progress-fill-1"></div>
                 <div v-if="stepCheck == 2" class="step-1 checkout-progress-fill-2"></div>
                 <div class="progress-bar">
-                    <div class="step step-1 active" :class="{'step-fill-1': stepCheck === 1 || stepCheck === 2}">
+                    <div v-if="stepCheck === 1" @click="stepCheck = 0" class="step step-1 active cursor" :class="{'step-fill-1': stepCheck === 1 || stepCheck === 2}">
+                        <span>1</span>
+                        <div class="fa fa-check" :class="{'check-1': stepCheck === 1 || stepCheck === 2}"></div>
+                        <div class="step-label">Vận chuyển</div>
+                    </div>
+                    <div v-else class="step step-1 active" :class="{'step-fill-1': stepCheck === 1 || stepCheck === 2}">
                         <span>1</span>
                         <div class="fa fa-check" :class="{'check-1': stepCheck === 1 || stepCheck === 2}"></div>
                         <div class="step-label">Vận chuyển</div>
@@ -48,8 +53,8 @@
     import CheckoutPayment from "@/components/user/checkouts/CheckoutPayment.vue";
     import CheckoutComplete from "@/components/user/checkouts/CheckoutComplete.vue";
     import OrderService from "@/services/user/order.service";
+    import CartService from "@/services/user/cart.service";
     import {mapGetters} from 'vuex';
-    import { showAlert } from '@/utils';
 
     export default {
         components: {
@@ -63,9 +68,12 @@
                 order: {
                     'delivery_address': "",
                     'payment_method_id': 1,
-                    'voucher_id': 1,
+                    'voucher_id': 0,
                     'note': "",
-                    'paid': 0
+                    'paid': 0,
+                    'total_price': 0,
+                    'total_discount': 0,
+                    'total_value': 0
                 },
                 addressOrder: null
             }
@@ -83,19 +91,17 @@
             async createOrder(data) {
                 if(this.productBuyNow) {
                     try {
-                        await OrderService.addBuyNow(this.getUser.id, Object.assign({}, data, this.productBuyNow)).then((response) => {
-                            showAlert(response);
-                            this.$store.dispatch('removeProductBuyNow');
-                        });
+                        await OrderService.addBuyNow(this.getUser.id, Object.assign({}, data, this.productBuyNow));
+                        this.$store.dispatch('removeProductBuyNow');
                         this.stepCheck = 2;
+                        this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                     } catch (error) {
                         console.log(error.response);
                     }
                 } else {
                     try {
-                        await OrderService.create(this.getUser.id, data).then((response) => {
-                            showAlert(response);
-                        });
+                        await OrderService.create(this.getUser.id, data);
+                        this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                         this.stepCheck = 2;
                     } catch (error) {
                         console.log(error);
@@ -176,7 +182,7 @@
         color: transparent;
         position: absolute;
         left: -4px;
-        top: 7px;
+        top: 5px;
     }
     .checkout-progress .progress-bar .step.active span, .checkout-progress .progress-bar .step.active .step-label {
         font-weight: 600;
@@ -280,7 +286,10 @@
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         float: left;
         width: 100%;
-        margin-top: 50px;
+        margin-top: 20px;
         position: relative;
+    }
+    .cursor {
+        cursor: pointer;
     }
 </style>

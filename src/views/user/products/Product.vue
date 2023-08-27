@@ -5,7 +5,7 @@
             v-if="filteredProductsCount > 0"
             :products="filteredProducts"
         />  
-        <p class="mt-100 text-center" v-else>Không có sản phẩm nào.</p>
+        <!-- <p class="mt-100 text-center" v-else>Không có sản phẩm nào.</p> -->
     </section>
 </template>
 <script>

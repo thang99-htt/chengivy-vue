@@ -66,6 +66,35 @@
         </li>
       </ul>
     </li>
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(44)"
+      :class="{ active: $route.path.includes('/admin/import') }">
+      <a href="/admin/import/stock-received-docket">
+        <i class="fa fa-book color2"></i>
+        <span class="treeview-title">Nhập hàng</span>
+      </a>
+      <ul class="treeview-menu">
+        <li>
+          <a href="/admin/import/supplier">
+            <i class="fa fa-handshake"></i>Nhà cung cấp
+          </a>
+        </li>
+        <li>
+          <a href="/admin/import/payment-voucher">
+            <i class="fa fa-file"></i>Phiếu chi
+          </a>
+        </li>
+        <li>
+          <a href="/admin/import/stock-received-docket">
+            <i class="fa fa-paste"></i>Phiếu nhập
+          </a>
+        </li>
+        <li>
+          <a href="/admin/import/stock-received-docket">
+            <i class="fa fa-file-text"></i>Phiếu xuất
+          </a>
+        </li>
+      </ul>
+    </li>
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(55)"
       :class="{ active: $route.path.includes('/admin/orders') }">
       <router-link to="/admin/orders">

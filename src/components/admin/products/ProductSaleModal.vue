@@ -37,7 +37,7 @@
                                 <input type="button" name="btnSave" value="Thực hiện" @click="submitProduct">
                             </div>
                             <div class="product-sale__table">
-                                <table class=" example1 table table-bordered table-striped dataTable">
+                                <table class=" example1 table dataTable">
                                     <thead>
                                         <tr role="row">
                                             <th width="6%" data-orderable="false">ID</th>

@@ -6,11 +6,17 @@ class ReviewService {
     async getAll() {
         return (await this.api.get("/")).data;
     }
+    async get(id) {
+        return (await this.api.get(`/${id}`)).data;
+    }
     async create(data) {
         return (await this.api.post("/", data)).data;
     }
-    async updateStatus(id, status, data) {
-        return (await this.api.put(`/${id}/${status}`, data)).data;
+    async updateStatus(id, data) {
+        return (await this.api.put(`/user-${id}`, data)).data;
+    }
+    async update(id, data) {
+        return (await this.api.put(`/${id}`, data)).data;
     }
 }
 export default new ReviewService();

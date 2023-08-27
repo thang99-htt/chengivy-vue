@@ -74,7 +74,7 @@
                                     </div>
                                     <div class="col-7">
                                         <div class="form-group">
-                                            <table class="example1 table table-bordered dataTable">
+                                            <table class="example1 dataTable">
                                                 <thead>
                                                     <tr role="row">
                                                         <th width="6%">#</th>
@@ -302,8 +302,8 @@ export default {
         padding: 6px 20px;
         text-align: center;
     }
-    .box-body .dataTable thead {
-        background-color: #dae9f3;
-        color: #000;
+    table {
+        width: 100%;
+        min-height: 60px;
     }
 </style>

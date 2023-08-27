@@ -177,21 +177,21 @@
             </div>
             <div class="cart-sum provisional">
                 <h5 class="fw-bold">TẠM TÍNH</h5>
-                <div class="d-flex justify-content-between total">
-                    <div>
-                        <p>Thành tiền</p>
-                    </div>
-                    <div>
-                        {{ formatPrice(carts.into_money) }}
-                    </div>
+                <div class="provisional-item">
+                    <p>Tổng đơn hàng</p>
+                    <p>{{ formatPrice(carts.total_price) }}</p>
                 </div>
-                <div class="d-flex justify-content-between total">
-                    <div>Giảm giá</div>
-                    <div>0</div>
+                <div class="provisional-item">
+                    <p>Giảm giá</p>
+                    <p class="sale">-{{ formatPrice(carts.total_price - carts.into_money) }}</p>
                 </div>
-                <div class="d-flex justify-content-between mt-4">
-                    <div>Tổng đơn đặt hàng</div>
-                    <div>{{ formatPrice(carts.into_money) }}</div>
+                <div class="provisional-item">
+                    <p>Phí vận chuyển</p>
+                    <p>{{ formatPrice(25000) }}</p>
+                </div>
+                <div class="provisional-item bold">
+                    <p>Tổng giá trị đơn hàng</p>
+                    <p>{{ formatPrice(carts.into_money) }}</p>
                 </div>
                 <hr>
                 <div class="checkout">
@@ -436,6 +436,7 @@ export default {
 .checkout {
     background-color: #000;
     padding: 10px;
+    margin-top: 16px;
 }
 
 .checkout:hover {
@@ -461,15 +462,25 @@ export default {
 }
 
 .cart-info {
-    width: 70%;
+    width: 68%;
 }
 
 .cart-sum {
-    width: 25%;
+    width: 27%;
     margin-left: 4%;
 }
 
 .cart-info .product-info {
     width: 220px;
+}
+.provisional-item {
+    display: flex;
+    justify-content: space-between;
+    color: #000;
+    font-weight: normal;
+}
+.provisional-item.bold p {
+    font-weight: bold;
+    font-size: 18px;
 }
 </style>

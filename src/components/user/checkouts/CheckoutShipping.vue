@@ -60,16 +60,16 @@
             <p>Hình thức giao hàng</p>
         </div>
         <div class="dash_main">
-            <ul class="item">
-                <li class="py-0">
-                    <p class="mb-3">
-                        <input type="checkbox" checked>
-                        Giao hàng tiêu chuẩn
-                    </p>
-                    <p>Ghi chú đơn hàng</p>
+            <div class="ps-5">
+                <p>
+                    <input type="checkbox" checked>
+                    Giao hàng tiêu chuẩn
+                </p>
+                <p>Ghi chú đơn hàng</p>
+                <p>
                     <textarea name="" id="" cols="50" rows="4" v-model="orderLocal.note"></textarea>
-                </li>
-            </ul>
+                </p>
+            </div>
         </div>
     </div>
 </template>
@@ -148,8 +148,9 @@
 
 <style>
     .dash_blog_inner .list_cont {
-        padding: 15px 30px;
+        padding: 15px 30px 5px 30px;
         text-transform: uppercase;
+        margin-top: 10px;
     }
     .dash_blog_inner .list_cont p {
         margin: 2px 0 0 0;
@@ -167,7 +168,7 @@
         border-radius: 5px 5px 0 0;
         padding: 25px 30px;
         background-size: cover;
-        background-color: #f3faff;
+        background-color: #fffcf6;
         position: relative;
         border-bottom: 1px solid #ccc;
     }
@@ -180,7 +181,6 @@
         margin: 0;
     }
     .item {
-        float: left;
         width: 100%;
         list-style: none;
         margin: 0;
@@ -188,9 +188,10 @@
     .item li,
     .item .form-check {
         padding: 12px 25px;
-        line-height: normal;
         font-size: 14px;
         color: #333333;
+        display: flex;
+        align-items: center;
     }
     .item.item1 li {
         flex-basis: 48%; 

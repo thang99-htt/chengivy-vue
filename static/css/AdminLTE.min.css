@@ -1895,10 +1895,15 @@ a:focus {
   position: relative;
 }
 
-.box-body .dataTable thead {
+.box-body .dataTable tr {
   color: #1f4173;
   background-color: #fff;
   border-radius: 10px;
+  height: 36px;
+}
+.box-body .dataTable tbody tr td,
+.box-body .dataTable tfoot tr th {
+  border-top: 1px solid #ddd;
 }
 .box-body .dataTable::before {
   position: absolute;

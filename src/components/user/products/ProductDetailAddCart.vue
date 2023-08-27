@@ -296,7 +296,7 @@ export default {
                         });
                     } else {
                         // Bỏ yêu thích sản phẩm
-                        await FavoriteService.deleteByUser(this.getUser.id, product.id).then(async (response) => {
+                        await FavoriteService.delete(this.getUser.id, product.id).then(async (response) => {
                             showAlert(response);
                             this.$store.commit('addToFavorite', await FavoriteService.getFavorite(this.getUser.id));
                         });

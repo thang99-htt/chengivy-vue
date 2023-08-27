@@ -8,7 +8,7 @@
                 <th width="8%">Số sao</th>
                 <th width="8%">Tổng thể</th>
                 <th width="14%">Nội dung</th>
-                <th width="12%">Trả lời</th>
+                <th width="12%">Phản hồi</th>
                 <th width="8%">Trạng thái</th>
                 <th width="7%">Tùy chọn</th>
                 <th width="5%">Chọn</th>
@@ -19,7 +19,7 @@
                 <td>
                     {{ review.product.id }}
                 </td>
-                <td>{{ review.user }}</td>
+                <td>{{ review.user.name }}</td>
                 <td>{{ review.date }}</td>
                 <td>
                     <ul class="review">
@@ -45,9 +45,6 @@
                 <td class="text-center">
                     <button type="button" class="btn"  @click="showModalEdit(review.id)">                        
                         <img src="/images/icon/iconedit.png" alt="">
-                    </button>
-                    <button type="button" class="btn">                        
-                        <img src="/images/icon/icondetail.png" alt="">
                     </button>
                 </td>
                 <td class="text-center">
@@ -92,9 +89,8 @@ export default {
         formatPrice,
         statusUpdate(review) {
             try {
-                Reviewservice.updateStatus(this.getAdmin.id, review.id, review.status.id).then(() => {
-                    this.$parent.refreshList();
-                })
+                Reviewservice.updateStatus(this.getAdmin.id, review);
+                this.$parent.refreshList();
             } catch (error) {
                 console.log(error);
             }
@@ -123,6 +119,10 @@ export default {
                 });
             }
         },
+        showModalEdit(reviewID) {
+            this.$emit('update-modal', true);
+            this.$emit('update-reviewID', reviewID);
+        }
     },
 
 };

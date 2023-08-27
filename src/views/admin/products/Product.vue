@@ -28,7 +28,7 @@
                                     :productID="productID"
                                     @update-productID="updateProduct"
                                 />
-                                <p v-else>Không có sản phẩm nào.</p>
+                                <!-- <p v-else>Không có sản phẩm nào.</p> -->
                             </div>
                         </div>
                     </div>

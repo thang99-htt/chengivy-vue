@@ -1,4 +1,7 @@
 <template>
+    <ReviewModal v-if="showModal" :showModal="showModal" 
+        @closeModal="closeModal" :reviewID="reviewID"/>
+
     <section class="content">
         <div class="row center-block">
             <div class="col-md-12">
@@ -20,6 +23,10 @@
                                     v-if="filteredReviewsCount > 0" 
                                     :reviews="filteredReviews"
                                     :selectedIds="selectedIds" 
+                                    :showModal="showModal"
+                                    @update-modal="updateShowModal"
+                                    :reviewID="reviewID"
+                                    @update-reviewID="updateReview"
                                 />
                                 <p v-else>Không có đánh giá nào.</p>
                             </div>
@@ -35,16 +42,20 @@ import $ from 'jquery'
 import { initializeDataTable } from '../../../utils';
 import ReviewList from "@/components/admin/reviews/ReviewList.vue";
 import Reviewservice from "@/services/admin/review.service";
+import ReviewModal from "@/components/admin/reviews/ReviewModal.vue";
 
 export default {
     components: {
         ReviewList,
+        ReviewModal
     },
     name: 'review',
     data() {
         return {
             reviews: [],
             selectedIds: [],
+            reviewID: null,
+            showModal: false
         };
     },
     computed: {
@@ -93,6 +104,16 @@ export default {
                     this.$swal.fire('Đã xóa thành công!', '', 'success')
                 }
             })
+        },
+        closeModal() {
+            this.showModal = false;
+            this.reviewID = null;
+        },
+        updateShowModal(value) {
+            this.showModal = value;
+        },
+        updateReview(value) {
+            this.reviewID = value;
         },
     },
     mounted() {

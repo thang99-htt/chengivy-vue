@@ -119,8 +119,8 @@ export default {
 
 <style>
 .btn-staff {
-    color: #000;
-    background-color: #f2a900;
+    color: #363636;
+    background-color: #ffaf38;
     border-radius: 4px;
     display: inline-block;
     padding: 4px 10px;

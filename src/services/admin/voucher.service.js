@@ -1,10 +1,13 @@
 import createApiClient from "../api.service";
-class BrandService {
-    constructor(baseUrl = "/api/admin/brands") {
+class VoucherService {
+    constructor(baseUrl = "/api/admin/vouchers") {
         this.api = createApiClient(baseUrl);
     }
     async getAll() {
         return (await this.api.get("/")).data;
+    }
+    async getByUser(id) {
+        return (await this.api.get(`/voucher-by-user-${id}`)).data;
     }
     async create(data) {
         return (await this.api.post("/", data)).data;
@@ -22,4 +25,4 @@ class BrandService {
         return (await this.api.delete("/", { data: selectedIds })).data;
     }
 }
-export default new BrandService();
+export default new VoucherService();

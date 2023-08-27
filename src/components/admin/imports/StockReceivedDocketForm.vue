@@ -35,7 +35,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <table class="example1 table table-bordered dataTable">
+                        <table class="example1 table dataTable">
                             <thead>
                                 <tr role="row">
                                     <th width="4%">#</th>
@@ -558,11 +558,6 @@ export default {
 };
 </script>
 <style scoped>
-.box-body .dataTable thead {
-    background-color: #dae9f3;
-    color: #000;
-}
-
 .product-form {
     font-weight: normal;
     font-size: 13px;

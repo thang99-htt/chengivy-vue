@@ -14,7 +14,26 @@
 
   </head>
   <body class="hold-transition skin-blue sidebar-mini">
+    <div id="loader-wrapper">
+      <div id="loader"></div>
+      <div class="loader-section section-left"></div>
+      <div class="loader-section section-right"></div>
+  </div>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Simulate a delay to hide the loader after your content is ready
+        setTimeout(function() {
+          document.getElementById("loader-wrapper").style.display = "none";
+        }, 1000); // Adjust the delay as needed
+      });
+    </script>
   </body>
 </html>

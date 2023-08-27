@@ -82,11 +82,11 @@
                             </p>
                             <p>
                                 <span>Mã giảm giá <span class="voucher">{{ order.voucher.name }}</span></span>
-                                <span class="text-danger">{{ formatPrice(order.voucher.price_discount) }}</span>
+                                <span class="sale">{{ formatPrice(order.voucher.price_discount) }}</span>
                             </p>
                             <p>
                                 <span>Tổng giảm giá</span>
-                                <span class="text-danger">{{ formatPrice(order.total_discount) }}</span>
+                                <span class="sale">{{ formatPrice(order.total_discount) }}</span>
                             </p>
                             <p>
                                 <span>Tổng giá trị</span>
@@ -251,10 +251,6 @@
 
     .order-detail .order-summary .item-content p span:last-child {
         font-weight: 600;
-    }
-
-    .order-detail .order-summary .item-content p .text-danger {
-        color: #da4343;
     }
 
     .order-detail .order-summary .item-content p .voucher {

@@ -55,8 +55,6 @@ export default {
                         title: res.message
                     });
                 });
-                this.reset();
-                this.$parent.refreshList();
                 this.closeModal();
             } catch (error) {
                 console.log(error);

@@ -66,7 +66,7 @@ const routes = [
                         name: "sale",
                         component: () => import("../components/admin/products/ProductSale.vue"),
                         meta: {
-                            description: 'Tồn kho',
+                            description: 'Giảm giá',
                             permissionID: 40
                         }
                     },
@@ -92,7 +92,6 @@ const routes = [
             },
             {
                 path: "import",
-                component: () => import("../views/admin/imports/ImportDefault.vue"),
                 children: [
                     {
                         path: "supplier",

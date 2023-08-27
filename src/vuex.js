@@ -35,7 +35,7 @@ const store = createStore({
     addToFavorite(state, items) {
       state.favorites = items;
     },
-    clearProductBuyNow(state, items) {
+    addBuyNow(state, items) {
       state.productBuyNow = items; 
     },
   },
@@ -59,7 +59,7 @@ const store = createStore({
       context.commit('addToFavorite', product);
     },
     removeProductBuyNow(context, data) {
-      context.commit('clearProductBuyNow', data);
+      context.commit('addBuyNow', data);
     }
   },
   plugins: [

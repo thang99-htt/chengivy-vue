@@ -7,13 +7,13 @@
                 <ul>
                     <li><span>{{ productLocal.reviews.average_star_rating }}</span></li>
                     <li>
-                        <template v-for="n in Math.floor(productLocal.reviews.average_star_rating)">
+                        <template v-for="n in Math.min(Math.floor(productLocal.reviews.average_star_rating), 5)">
                             <i class="bi bi-star-fill"></i>
                         </template>
-                        <template v-if="productLocal.reviews.average_star_rating - Math.floor(productLocal.reviews.average_star_rating) >= 0.5">
+                        <template v-if="productLocal.reviews.average_star_rating - Math.floor(productLocal.reviews.average_star_rating) >= 0.5 && Math.floor(productLocal.reviews.average_star_rating) < 5">
                             <i class="bi bi-star-half"></i>
                         </template>
-                        <template v-else>
+                        <template v-if="productLocal.reviews.average_star_rating - Math.floor(productLocal.reviews.average_star_rating) < 0.5 && Math.floor(productLocal.reviews.average_star_rating) < 5">
                             <i class="bi bi-star"></i>
                         </template>
                     </li>
@@ -140,14 +140,19 @@
                                     <p class="text-secondary">{{ new Date(review.date).toISOString().replace('T', ' ').substr(0, 16) }}</p>
                                     <p class="text-secondary">Phân loại: {{ review.classify }}</p>
                                     <p>{{ review.content }}</p>
-                                    <div class="d-flex review-image" >
+                                    <div class="d-flex review-image" v-if="review.images.length>0">
                                         <img 
                                             v-for="(image, index) in review.images"
-                                            :key="image.id"
+                                            :key="index"
+                                            :class="{'active': index === currentImageIndex}"
                                             class="d-block me-3" width="100" 
                                             :src="image.image" alt=""
                                             @click="openImageModal(index, review.id)"
                                         >
+                                    </div>
+                                    <div v-if="review.reply" class="review-reply">
+                                        <p>Phản Hồi Từ Người Bán</p>
+                                        <p>{{ review.reply }}</p>
                                     </div>
                                     <div v-show="reviewID == review.id" class="image-modal">
                                         <div class="container">
@@ -157,7 +162,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -233,7 +237,7 @@
                 itemsPerPage: 5,
                 maxVisibleButtons: 2,
                 reviewID: 0,
-                currentImageIndex: 1,
+                currentImageIndex: -1,
             };
         },
         computed: {
@@ -277,6 +281,12 @@
                     filtered = filtered.filter(item => {
                         const sizePart = item.classify.split(',')[1]; // Lấy phần sau dấu phẩy
                         return sizePart.toLowerCase().trim() === this.selectedSize.toLowerCase();
+                    });
+                }
+
+                if(this.checkOption == 2) {
+                    filtered = filtered.filter(item => {
+                        return item.images.length>0;
                     });
                 }
                 return filtered;
@@ -336,12 +346,16 @@
                 } else {
                     this.reviewID = id;
                 }
-                this.currentImageIndex = index;
+                if(this.currentImageIndex == index) {
+                    this.currentImageIndex = -1;
+                } else {
+                    this.currentImageIndex = index;
+                }
             },
             openImageNext(images) {
                 this.currentImageIndex++;
                 if(this.currentImageIndex == images.length) {
-                    this.currentImageIndex = 1;
+                    this.currentImageIndex = 0;
                 }
             },
             plusSlides(n) {
@@ -534,7 +548,8 @@
     .product-review .accordion .review-image {
         height: 80px;
     }
-    .product-review .accordion .review-image img:hover {
+    .product-review .accordion .review-image img:hover,
+    .product-review .accordion .review-image img.active {
         border: 2px solid #3872b2;
         padding: 2px;
     }
@@ -552,6 +567,7 @@
         left: 0;
         width: 400px;
         height: 600px;
+        margin-top: 10px;
     }
 
     .product-review .accordion .container .mySlides::after {
@@ -591,5 +607,14 @@
 
     .image-modal {
         height: 600px;
+    }
+
+    .review-reply {
+        padding: 10px;
+        background-color: #fff5e5;
+        margin-top: 10px;
+    }
+    .review-reply p:last-child {
+        color: #555;
     }
 </style>
