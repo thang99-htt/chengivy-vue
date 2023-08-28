@@ -45,12 +45,12 @@
                             <img src="/images/icon/iconedit.png" alt="">
                         </button>
                         <button type="button" class="btn">
-                            <router-link :to="{
+                            <!-- <router-link :to="{
                                 name: 'product.view',
                                 params: { id: product.id },
                             }">
                                 <img src="/images/icon/icondetail.png" alt="">
-                            </router-link>
+                            </router-link> -->
                         </button>
                     </div>
                 </td>

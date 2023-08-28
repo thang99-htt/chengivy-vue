@@ -132,7 +132,7 @@
                                             </div>
                                             <div class="">
                                                 <h6><a href="product-details.html">{{ cart.product.name }}</a></h6>
-                                                <p>Size: {{ cart.size_name }}</p>
+                                                <p>Phân loại: {{ cart.color_name }}, {{ cart.size_name }}</p>
                                                 <p class="quantity">
                                                     <span class="me-1">{{ cart.quantity }} x </span>
                                                     <span :class="{ 'text-danger': cart.product.discount_percent > 0 }">
@@ -214,9 +214,16 @@
                                             </div>
                                             <div class="">
                                                 <h6><a href="product-details.html">{{ productBuyNow.name }}</a></h6>
-                                                <p>Size: {{ productBuyNow.sizes[0].size_name }}</p>
+                                                <p>Phân loại: {{ productBuyNow.color_name }}, {{ productBuyNow.size_name }}</p>
                                                 <p class="quantity">
-                                                   1 x - {{ formatPrice(productBuyNow.final_price) }}
+                                                    <span class="me-1">1 x </span>
+                                                    <span :class="{ 'text-danger': productBuyNow.discount_percent > 0 }">
+                                                         {{ formatPrice(productBuyNow.price_final) }}
+                                                    </span>
+                                                    <span class="text-decoration-line-through text-secondary ms-3"
+                                                        v-if="productBuyNow.discount_percent > 0">
+                                                        {{ formatPrice(productBuyNow.price) }}
+                                                    </span>
                                                 </p>
                                             </div>
                                         </li>
@@ -225,27 +232,45 @@
                                     <div class="bottom mt-4">
                                         <div class="total">
                                             <span>Tổng tiền</span>
-                                            <span class="total-amount">{{ formatPrice(productBuyNow.final_price) }}</span>
+                                            <span class="total-amount">{{ formatPrice(productBuyNow.price_final) }}</span>
+                                        </div>
+                                        <div class="total">
+                                            <span>Sản phẩm khuyến mãi</span>
+                                            <span class="total-amount sale">
+                                                -{{ formatPrice(discountProduct) }}
+                                            </span>
+                                        </div>
+                                        <div class="total">
+                                            <span>Mã giảm giá <span class="voucher" v-if="selectedVoucher">{{ selectedVoucher.name }}</span></span>
+                                            <span class="total-amount sale">
+                                                -{{ formatPrice(discountVoucher) }}
+                                            </span>
+                                        </div>
+                                        <div class="total">
+                                            <span>Tổng giảm giá</span>
+                                            <span class="total-amount sale">
+                                                -{{ formatPrice(discountTotal) }}
+                                            </span>
                                         </div>
                                         <div class="total">
                                             <span>Phí vận chuyển</span>
-                                            <span class="total-amount">25.000 VNĐ</span>
+                                            <span class="total-amount">{{ formatPrice(25000) }}</span>
+                                        </div>
+                                        <div class="total">
+                                            <span>Tổng đơn đặt hàng</span>
+                                            <span class="total-amount">{{ formatPrice(totalValue) }}</span>
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="bottom mt-4">
                                         <div class="total">
-                                            <span>Tổng đơn đặt hàng</span>
-                                            <span class="total-amount bold">{{ formatPrice(productBuyNow.final_price + 25000) }}</span>
+                                            <span class="payment">
+                                                <span>Cần thanh toán</span>
+                                                <span>(1 sản phẩm)</span>
+                                            </span>
+                                            <span class="total-amount bold">{{ formatPrice(totalValue) }}</span>
                                         </div>
-                                        <Field    
-                                            hidden
-                                            name="order_total_price" type="number"
-                                            class="form-control select" id="order_total_price"
-                                           :value="((productBuyNow.final_price+25000)/23795).toFixed()"
-                                        />
                                     </div>
-                                    
                                     <div v-show="orderLocal.payment_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
                                         <div ref="paypal"></div>
                                     </div>
@@ -331,7 +356,11 @@
                 this.retrieveVoucher();
             },
             submitOrder() {
-                this.orderLocal.total_price = this.cartLocal.total_price;
+                if(this.productBuyNow) {
+                    this.orderLocal.total_price = this.productBuyNow.price_final;
+                } else {
+                    this.orderLocal.total_price = this.cartLocal.total_price;
+                }
                 this.orderLocal.total_discount = this.discountTotal;
                 this.orderLocal.total_value = this.totalValue;
             },
@@ -415,26 +444,46 @@
             },
             discountVoucher() {
                 if(this.selectedVoucher) {
-                    return this.cartLocal.into_money*(this.selectedVoucher.discount/100);
+                    if(this.productBuyNow) {
+                        return this.productBuyNow.price_final*(this.selectedVoucher.discount/100);
+                    } else {
+                        return this.cartLocal.into_money*(this.selectedVoucher.discount/100);
+                    }
                 } else {
                     return 0;
                 }
             },
             discountProduct() {
-                return this.cartLocal.total_price - this.cartLocal.into_money;
+                if(this.productBuyNow) {
+                    return this.productBuyNow.price - this.productBuyNow.price_final;
+                } else {
+                    return this.cartLocal.total_price - this.cartLocal.into_money;
+                }
             },
             discountTotal() {
                 if(this.selectedVoucher) {
-                    return this.cartLocal.into_money*(this.selectedVoucher.discount/100) + this.discountProduct;
+                    if(this.productBuyNow) {
+                        return this.productBuyNow.price_final*(this.selectedVoucher.discount/100) + this.discountProduct;
+                    } else {
+                        return this.cartLocal.into_money*(this.selectedVoucher.discount/100) + this.discountProduct;
+                    }
                 } else {
                     return this.discountProduct;
                 }
             },
             totalValue() {
-                return this.cartLocal.total_price + 25000 - this.discountTotal;
+                if(this.productBuyNow) {
+                    return this.productBuyNow.price_final + 25000 - this.discountTotal;
+                } else {
+                    return this.cartLocal.total_price + 25000 - this.discountTotal;
+                }
             },
             totalCheck() {
-                return this.cartLocal.total_price + 25000 - this.discountProduct;
+                if(this.productBuyNow) {
+                    return this.productBuyNow.price_final + 25000 - this.discountProduct;
+                } else {
+                    return this.cartLocal.total_price + 25000 - this.discountProduct;
+                }
             }
         },        
      };

@@ -24,8 +24,7 @@
                     v-model="brandLocal.image" id="my-file" />
             </div>
             <div>
-                <img v-if="this.brand.image" :src="getImage(this.brand.image)" alt="Hình ảnh" class="img-edit img-responsive center-block">
-                <img v-else :src="brandLocal.image" alt="Hình ảnh" class="img-edit img-responsive center-block">
+                <img src="brandLocal.image" alt="Hình ảnh" class="img-edit img-responsive center-block">
             </div>
             <ErrorMessage name="image" class="error-feedback" />
         </div>
@@ -84,9 +83,6 @@ export default {
             }
             // console.log(file);
             reader.readAsDataURL(file);
-        },
-        getImage(image) {
-            return 'http://127.0.0.1:8000/storage/uploads/brands/' + image;
         },
         submitBrand() {
             this.brandLocal.url = this.brandLocal.name.toLowerCase().replace(/\s+/g, '-');

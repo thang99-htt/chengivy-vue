@@ -64,6 +64,7 @@ export default {
 
 
             this.cart.color_id = colorId;
+            this.cart.color_name = color.color_name;
             this.cart.size_id = ((this.product.inventories)[0].items).find(item => {
                 return item.color_id === colorId && item.total_final !== 0;
             }).size_id;

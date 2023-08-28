@@ -104,7 +104,7 @@
                             </label>
                         </div>
                         <div class="form-group__input">
-                            <input name="date" type="date" class="datepicker d-block"
+                            <input name="date" type="datetime-local" class="datepicker d-block"
                                 v-model="stockReceivedDocketLocal.date">
                             <ErrorMessage name="date" class="error-feedback" />
                         </div>

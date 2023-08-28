@@ -24,7 +24,7 @@ export default {
                 'supplier_id': "",
                 'payment_voucher_id': "",
                 'form': "",
-                'date': new Date().toISOString().substr(0, 10),
+                'date': new Date(Date.now() + 7 * 60 * 60 * 1000).toISOString().slice(0, 16),
                 'total_price': 0,
                 'value_added': 0,
                 'total_value': 0,
@@ -47,21 +47,6 @@ export default {
     methods: {
         async submitStockReceivedDocket(data) {
             this.stockReceivedDocket.staff_id = this.getAdmin.id;
-
-            // Lấy giờ hiện tại theo múi giờ Việt Nam
-            const currentTime = new Date();
-            const vnTime = new Date(currentTime.getTime() + 7 * 60 * 60 * 1000); // Thêm 7 giờ
-
-            const hours = String(vnTime.getHours()).padStart(2, "0");
-            const minutes = String(vnTime.getMinutes()).padStart(2, "0");
-            const seconds = String(vnTime.getSeconds()).padStart(2, "0");
-
-            // Gộp ngày, giờ, phút, giây để tạo thành một đối tượng Date
-            const dateTimeString = `${this.stockReceivedDocket.date} ${hours}:${minutes}:${seconds}`;
-            const newDate = new Date(dateTimeString);
-
-            // Định dạng lại ngày thành "YYYY-MM-DD HH:mm:ss"
-            this.stockReceivedDocket.date = newDate.toISOString().substr(0, 19).replace("T", " ");
             
             const Toast = this.$swal.mixin({
                 toast: true,
@@ -107,7 +92,7 @@ export default {
             this.stockReceivedDocket.supplier_id = "";
             this.stockReceivedDocket.payment_voucher_id = "";
             this.stockReceivedDocket.form = "";
-            this.stockReceivedDocket.date = new Date().toISOString().substr(0, 10);
+            this.stockReceivedDocket.date = new Date(Date.now() + 7 * 60 * 60 * 1000).toISOString().slice(0, 16);
             this.stockReceivedDocket.total_value = 0;
             this.stockReceivedDocket.value_added = 0;
             this.stockReceivedDocket.total_price = 0;

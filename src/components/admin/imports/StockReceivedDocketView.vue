@@ -236,15 +236,6 @@ export default {
         async getStockReceivedDocket(id) {
             try {
                 this.stockReceivedDocketLocal = await StockReceivedDocketService.get(id);
-                const dateObject = new Date(this.stockReceivedDocketLocal.date);
-
-                const year = dateObject.getFullYear();
-                const month = dateObject.getMonth() + 1; // Lưu ý: Tháng trong JavaScript bắt đầu từ 0
-                const day = dateObject.getDate();
-
-                this.datePart = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-                this.stockReceivedDocketLocal.date = this.datePart;
-
             } catch (error) {
                 console.log(error);
             }

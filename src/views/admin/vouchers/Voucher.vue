@@ -1,6 +1,6 @@
 <template>
-    <ReviewModal v-if="showModal" :showModal="showModal" 
-        @closeModal="closeModal" :reviewID="reviewID"/>
+    <VoucherModal v-if="showModal" :showModal="showModal" 
+        @closeModal="closeModal" :voucherID="voucherID"/>
 
     <section class="content">
         <div class="row center-block">
@@ -12,23 +12,22 @@
                                 <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
                                 <input type="button" name="btnAdd" value="Thêm mới" @click="showModal = !showModal">
                                 <input type="button" name="btnAdd" value="Thêm từ file">
-                                <input type="button" name="btnDelete" value="Xóa" @click="deletereview()">
+                                <input type="button" name="btnDelete" value="Xóa" @click="deletevoucher()">
                                 <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
                                 <input type="button" id="exportExcelBtn" name="btnExcel" value="Xuất Excel">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 table-responsive">
-                                <ReviewList 
-                                    v-if="filteredReviewsCount > 0" 
-                                    :reviews="filteredReviews"
+                                <VoucherList 
+                                    v-if="filteredVouchersCount > 0" 
+                                    :vouchers="filteredVouchers"
                                     :selectedIds="selectedIds" 
                                     :showModal="showModal"
                                     @update-modal="updateShowModal"
-                                    :reviewID="reviewID"
-                                    @update-reviewID="updateReview"
+                                    :voucherID="voucherID"
+                                    @update-voucherID="updatevoucher"
                                 />
-                                <p v-else>Không có đánh giá nào.</p>
                             </div>
                         </div>
                     </div>
@@ -40,36 +39,36 @@
 <script>
 import $ from 'jquery'
 import { initializeDataTable } from '../../../utils';
-import ReviewList from "@/components/admin/reviews/ReviewList.vue";
-import ReviewService from "@/services/admin/review.service";
-import ReviewModal from "@/components/admin/reviews/ReviewModal.vue";
+import VoucherList from "@/components/admin/vouchers/VoucherList.vue";
+import VoucherService from "@/services/admin/voucher.service";
+import VoucherModal from "@/components/admin/vouchers/VoucherModal.vue";
 
 export default {
     components: {
-        ReviewList,
-        ReviewModal
+        VoucherList,
+        VoucherModal
     },
-    name: 'review',
+    name: 'voucher',
     data() {
         return {
-            reviews: [],
+            vouchers: [],
             selectedIds: [],
-            reviewID: null,
+            voucherID: null,
             showModal: false
         };
     },
     computed: {
-        filteredReviews() {
-            return this.reviews;
+        filteredVouchers() {
+            return this.vouchers;
         },
-        filteredReviewsCount() {
-            return this.filteredReviews.length;
+        filteredVouchersCount() {
+            return this.filteredVouchers.length;
         },
     },
     methods: {
-        async retrieveReviews() {
+        async retrieveVouchers() {
             try {
-                this.reviews = await ReviewService.getAll();
+                this.vouchers = await VoucherService.getAll();
                 if ($.fn.DataTable.isDataTable('.example1')) {
                     $('.example1').DataTable().destroy();
                 }
@@ -81,10 +80,10 @@ export default {
             }
         },
         refreshList() {
-            this.retrieveReviews();
+            this.retrieveVouchers();
             this.selectedIds = [];
         },
-        deletereview() {
+        deletevoucher() {
             this.$swal.fire({
                 title: 'Bạn có chắc?',
                 text: "Bạn sẽ không thể hoàn tác lại điều này!",
@@ -96,7 +95,7 @@ export default {
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.value) {
-                    ReviewService.delete(this.selectedIds).then((res) => {
+                    VoucherService.delete(this.selectedIds).then((res) => {
                         if (res.success) {
                             this.refreshList();
                         }
@@ -107,13 +106,13 @@ export default {
         },
         closeModal() {
             this.showModal = false;
-            this.reviewID = null;
+            this.voucherID = null;
         },
         updateShowModal(value) {
             this.showModal = value;
         },
-        updateReview(value) {
-            this.reviewID = value;
+        updatevoucher(value) {
+            this.voucherID = value;
         },
     },
     mounted() {

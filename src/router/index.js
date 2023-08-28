@@ -71,6 +71,15 @@ const routes = [
                         }
                     },
                     {
+                        path: "hidden",
+                        name: "hidden",
+                        component: () => import("../components/admin/products/ProductHidden.vue"),
+                        meta: {
+                            description: 'Sản phẩm ẩn',
+                            permissionID: 40
+                        }
+                    },
+                    {
                         path: "category",
                         name: "category",
                         component: () => import("../views/admin/products/Category.vue"),
@@ -190,13 +199,12 @@ const routes = [
                 }
             },
             {
-                path: "products/view/:id",
-                name: "product.view",
-                component: () => import("@/views/admin/products/ProductView.vue"),
-                props: true,
+                path: "vouchers",
+                name: "voucher",
+                component: () => import("../views/admin/vouchers/Voucher.vue"),
                 meta: {
-                    description: 'Xem Sản phẩm',
-                    permissionID: 10
+                    description: 'Phiếu khuyến mãi',
+                    permissionID: 51
                 }
             },
         ]

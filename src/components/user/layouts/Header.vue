@@ -860,4 +860,7 @@ export default {
     font-weight: 700 !important;
     color: #000 !important;
 }
+.history {
+    width: 80%;
+}
 </style>

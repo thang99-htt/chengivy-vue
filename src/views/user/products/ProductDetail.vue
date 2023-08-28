@@ -78,7 +78,9 @@
                 cart: {
                     'product_id': this.id,
                     'size_id': "",
+                    'size_name': "",
                     'color_id': "",
+                    "color_name": "",
                     'quantity': 1,
                 },
                 isColorSelected: null,
@@ -104,9 +106,13 @@
 
                     // Cart
                     this.cart.color_id = this.isColorSelected.color_id;
+                    this.cart.color_name = this.isColorSelected.color_name;
                     this.cart.size_id = (this.product.inventories)[0].items.find(item => {
                         return item.color_id === this.isColorSelected.color_id && item.total_final !== 0;
                     }).size_id;
+                    this.cart.size_name = (this.product.inventories)[0].items.find(item => {
+                        return item.color_id === this.isColorSelected.color_id && item.total_final !== 0;
+                    }).size_name;
 
                     this.findMatchingInventory();
                 } catch (error) {

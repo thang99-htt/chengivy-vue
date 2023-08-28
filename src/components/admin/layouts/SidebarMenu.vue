@@ -50,7 +50,7 @@
           </a>
         </li>
         <li>
-          <a href="/admin/products/inventory">
+          <a href="/admin/products/hidden">
             <i class="fa fa-ban"></i>Đã ẩn
           </a>
         </li>
@@ -109,10 +109,17 @@
         <span class="page">Đánh giá</span>
       </router-link>
     </li>
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(59)"
+      :class="{ active: $route.path.includes('/admin/vouchers') }">
+      <router-link to="/admin/vouchers">
+        <i class="fa fa-ticket color3"></i>
+        <span class="page">Phiếu khuyến mãi</span>
+      </router-link>
+    </li>
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(58)"
       :class="{ active: $route.path.includes('/admin/invoices') }">
       <router-link to="/admin/invoices">
-        <i class="fa fa-ticket color7"></i>
+        <i class="fa fa-list-alt color7"></i>
         <span class="page">Hóa đơn</span>
       </router-link>
     </li>
@@ -265,7 +272,7 @@ export default {
 }
 
 .color7 {
-  color: #00c3d5;
+  color: #6cbbc2;
 }
 
 .color8 {

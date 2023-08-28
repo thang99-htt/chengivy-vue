@@ -12,7 +12,7 @@
                 </div>
                 <div class="multi-size-selector multi-size-selector--4-columns filters-panel-group-box__value-selector">
                     <div class="form__column" v-for="size in getUniqueSizes(product.inventories[0].items)" :key="size"
-                        @click="sizeProducts(size.size_id)">
+                        @click="sizeProducts(size)">
                         <div class="form-input multi-size-selector__size" :class="{
                             'multi-size-selector__size--is-checked': size.size_id == inventoryLocal.size_id,
                             'multi-size-selector__size--out-stock': getOutStock.includes(size.size_id)
@@ -21,7 +21,7 @@
                                 <label class="form-input-checkbox">
                                     <div class="form-input-checkbox__input-wrapper">
                                         <input class="form-input-checkbox__input" type="checkbox" name="size_id"
-                                            :value="size.size_id" @change="sizeProducts(size.size_id)">
+                                            :value="size.size_id" @change="sizeProducts(size)">
                                     </div>
                                     <span class="form-input-checkbox__label">{{ size.size_name }}</span>
                                 </label>
@@ -279,9 +279,10 @@ export default {
             this.cartLocal.quantity++;
         },
         async sizeProducts(size) {
-            if (!this.getOutStock.includes(size)) {
-                this.inventoryLocal.size_id = size;
-                this.cartLocal.size_id = size;
+            if (!this.getOutStock.includes(size.id)) {
+                this.inventoryLocal.size_id = size.size_id;
+                this.cartLocal.size_id = size.size_id;
+                this.cartLocal.size_name = size.size_name;
             }
         },
         async toggleFavorite(product) {
@@ -331,6 +332,7 @@ export default {
         },
         goToCheckout() {
             this.$store.commit('addBuyNow', Object.assign({}, this.cartLocal, this.productLocal));
+            this.$router.push({ name: "checkout" });
         },
         getUniqueSizes(sizes) {
             const uniqueSizes = [];

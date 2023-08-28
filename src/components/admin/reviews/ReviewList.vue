@@ -2,13 +2,12 @@
     <table class="example1 table dataTable">
         <thead>
             <tr role="row">
+                <th width="11%">Ngày đánh giá</th>
                 <th width="7%">Sản phẩm</th>
                 <th width="10%">Khách hàng</th>
-                <th width="11%">Ngày đánh giá</th>
-                <th width="8%">Số sao</th>
-                <th width="8%">Tổng thể</th>
-                <th width="14%">Nội dung</th>
-                <th width="12%">Phản hồi</th>
+                <th width="8%">Đánh giá</th>
+                <th width="18%">Nội dung</th>
+                <th width="16%">Phản hồi</th>
                 <th width="8%">Trạng thái</th>
                 <th width="7%">Tùy chọn</th>
                 <th width="5%">Chọn</th>
@@ -16,23 +15,20 @@
         </thead>
         <tbody>
             <tr role="row" v-for="(review, index) in reviewsList" :key="review">
-                <td>
-                    {{ review.product.id }}
-                </td>
-                <td>{{ review.user.name }}</td>
                 <td>{{ review.date }}</td>
+                <td>{{ review.product.id }}</td>
+                <td>{{ review.user.name }}</td>
                 <td>
+                    <span v-if="review.fitted_value==1">Nhỏ</span>
+                    <span v-else-if="review.fitted_value==2">Đúng kích cỡ</span>
+                    <span v-else>Lớn</span>
+                    <br>
                     <ul class="review">
                         <li v-for="i in 5" :key="i">
                             <i v-if="i <= review.star" class="bi bi-star-fill"></i>
                             <i v-else class="bi bi-star"></i>
                         </li>
                     </ul>    
-                </td>
-                <td>
-                    <span v-if="review.fitted_value==1">Nhỏ</span>
-                    <span v-else-if="review.fitted_value==2">Đúng kích cỡ</span>
-                    <span v-else>Lớn</span>
                 </td>
                 <td>{{ review.content.split(' ').slice(0, 20).join(' ') + '.....' }}</td>
                 <td>{{ review.reply }}</td>
@@ -62,7 +58,7 @@
 </template>
 
 <script>
-import Reviewservice from "@/services/admin/review.service";
+import ReviewService from "@/services/admin/review.service";
 import { formatPrice } from "../../../utils";
 import {mapGetters} from 'vuex';
 
@@ -89,7 +85,7 @@ export default {
         formatPrice,
         statusUpdate(review) {
             try {
-                Reviewservice.updateStatus(this.getAdmin.id, review);
+                ReviewService.updateStatus(this.getAdmin.id, review);
                 this.$parent.refreshList();
             } catch (error) {
                 console.log(error);
