@@ -41,7 +41,7 @@
                                             <td>{{ formatPrice(product.price) }}</td>
                                             <td>{{product.discount_percent}}%</td>
                                             <td>
-                                                <span class="text-danger">{{ formatPrice(product.price_final) }}</span>
+                                                <span class="text-red">{{ formatPrice(product.price_final) }}</span>
                                             </td>
                                             <td class="text-center">
                                                 <input type="checkbox" @change="idSelected(product)" :checked="selectedProducts.includes(product)">
@@ -134,3 +134,9 @@ export default {
     },
 };
 </script>
+<style scoped>
+.text-red {
+    color: red;
+    font-weight: bold !important;
+}
+</style>

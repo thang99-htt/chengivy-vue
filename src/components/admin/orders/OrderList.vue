@@ -2,8 +2,8 @@
     <table class="example1 table dataTable">
         <thead>
             <tr role="row">
-                <th width="4%">ID</th>
-                <th width="10%">Khách hàng</th>
+                <th width="6%">ID</th>
+                <th width="8%">Khách hàng</th>
                 <th width="12%">Ngày đặt</th>
                 <th width="10%">Tổng giá trị</th>
                 <th width="21%">Địa chỉ</th>
@@ -187,45 +187,56 @@ export default {
         color: #fff;
         border: none;
         border-radius: 4px;
+        font-weight: bold;
     }
     
     .order-status1 {
-        background-color: #c20000;
+        color: #c20000;
+        background-color: #ffdddd;
     }
 
     .order-status2 {
-        background-color: #e96900;
+        color: #e96900;
+        background-color: #ffead8;
     }
 
     .order-status3 {
-        background-color: #4f2d9e;
+        color: #4f2d9e;
+        background-color: #ece4ff;
     }
 
     .order-status4 {
-        background-color: #b8002b;
+        color: #c1005d;
+        background-color: #ffe3ea;
     }
 
     .order-status5 {
-        background-color: #0098c2;
+        color: #006a87;
+        background-color: #ddf8ff;
     }
 
     .order-status6 {
-        background-color: #f000a4;
+        color: #f000a4;
+        background-color: #ffe2f6;
     }
 
     .order-status7 {
-        background-color: #d1d800;
+        color: #caa500;
+        background-color: #fff9dc;
     }
 
     .order-status8 {
-        background-color: #5cc815;
+        color: #868b00;
+        background-color: #fbfcda;
     }
 
     .order-status9 {
-        background-color: #00a30b;
+        color: #006b07;
+        background-color: #e0ffe2;
     }
 
     .order-status10 {
-        background-color: #676767e7;
+        color: #565656e7;
+        background-color: #e8e8e8e7;
     }
 </style>

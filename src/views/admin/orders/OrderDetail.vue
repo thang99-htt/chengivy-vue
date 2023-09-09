@@ -80,7 +80,7 @@
                                 <span>Phí vận chuyển</span>
                                 <span>{{ formatPrice(order.fee) }}</span>
                             </p>
-                            <p>
+                            <p v-if="order.voucher">
                                 <span>Mã giảm giá <span class="voucher">{{ order.voucher.name }}</span></span>
                                 <span class="sale">{{ formatPrice(order.voucher.price_discount) }}</span>
                             </p>

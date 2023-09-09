@@ -1067,7 +1067,7 @@ table.dataTable thead .sorting_desc:after {
   justify-content: end;
 }
 
-.detail-image .container {
+.detail-image .detail-image_container {
   position: relative;
   overflow: hidden;
 }
@@ -1735,6 +1735,8 @@ language-select .language-select-menu_item {
   border-radius: 3px;
   cursor: pointer;
   padding: 2px 6px;
+  color: #000;
+  font-weight: normal;
 }
 
 .cart-list .info-size_change .info-size_change-text div {
@@ -2024,48 +2026,65 @@ language-select .language-select-menu_item {
   background: #eaeaea;
 }
 
-input[name^="btnAdd"] {
-  background: url(/images/icon/btnadd.png) no-repeat 0 50%;
+.btnEdit,
+.btnAdd,
+.btnAddFile,
+.btnSave,
+.btnDelete,
+.btnBack,
+.btnPrint,
+.btnExcel {
+    background: #ffff;
+    color: #003ad2;
+    border-radius: 5px !important;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .4s;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 17px;
+    height: 40px;
+    min-width: 110px;
+    text-transform: uppercase;
 }
 
-input[name^="btnSave"] {
-  background: url(/images/icon/btnsave.png) no-repeat 0 50%;
+.btnAdd,
+.btnSave,
+.btnDelete,
+.btnBack {
+    border: 1px solid #003ad2 !important;
+
 }
 
-input[name^="btnDelete"] {
-  background: url(/images/icon/btndelete.png) no-repeat 0 50%;
+.btnAddFile,
+.btnPrint,
+.btnExcel {
+  border: 0 !important;
+  min-width: 80px;
 }
 
-input[name^="btnBack"] {
-  background: url(/images/icon/btnback.png) no-repeat 0 50%;
+.btnAddFile i,
+.btnEdit i,
+.btnSave i,
+.btnDelete i,
+.btnBack i,
+.btnPrint i,
+.btnExcel i {
+  color: #003ad2;
+  margin-right: 6px;
 }
 
-input[name^="btnPrint"] {
-  background: url(/images/icon/btnprint.png) no-repeat 0 50%;
-}
 
-input[name^="btnExcel"] {
-  background: url(/images/icon/btnexcel.png) no-repeat 0 50%;
+.btnAdd {
+  background: #003ad2;
+  border: 1px solid #003ad2;
+  color: #fff;
 }
-
-input[name^="btnEdit"] {
-  background: url(/images/icon/iconedit.png) no-repeat 0 50%;
+.btnAdd i {
+  margin-right: 6px;
 }
-
-input[name^="btnEdit"],
-input[name^="btnAdd"],
-input[name^="btnSave"],
-input[name^="btnDelete"],
-input[name^="btnBack"],
-input[name^="btnPrint"],
-input[name^="btnExcel"] {
-  padding: 6px 8px 6px 22px;
-  margin: 5px 6px;
-  border: 1px solid #ccc;
-  color: #3872b2;
-  background-color: #fdfdfd;
-}
-
 .form-control {
   border-radius: 0 !important;
 }
@@ -2354,40 +2373,26 @@ hr {
   display: flex;
   justify-content: start;
   box-shadow: 0 0 10px #00000012;
-  border: 1px solid #dee2e6;
-  background: #fff5e5;
+  border: 2px solid #e6eaf0;
 }
 
 .content .option-filter a {
-  padding: 8px 0;
+  padding: 6px 12px;
   font-size: 16px;
   cursor: pointer;
   position: relative;
-  width: 180px;
-  padding: 16px 20px;
+  width: auto;
   text-align: center;
-  color: #515151;
+  color: #1f4173;
   font-weight: 600;
-  margin-right: 6px;
+  margin: 8px;
+  border-radius: 4px;
+  background-color: rgba(31,65,115,.1);
 }
-.content .option-filter a:hover {
-  background-color: #fff;
-  color: #f39200;
-}
+.content .option-filter a:hover,
 .content .option-filter a.active {
-  background-color: #fff;
-  color: #f39200;
-}
-
-.content .option-filter a.active::before {
-  position: absolute;
-  content: "";
-  height: 3px;
-  width: 180px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ffaf38;
+  background-color: #f39200;
+  color: #fff;
 }
 
 .widden .modal-dialog {
@@ -2516,6 +2521,12 @@ table input::-webkit-outer-spin-button,
 table input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+table.dataTable tr td:first-child {
+  color: #1f4173;
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 .form-group {
@@ -2684,4 +2695,111 @@ table input::-webkit-inner-spin-button {
 .sale {
   color: #da4343 !important;
   font-weight: bold !important;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.2);
+}
+
+::-webkit-scrollbar-track {
+  background: #e6eaf0;
+}
+
+.statistical-range {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-color: #f5f5f5;
+  height: 70px;
+  margin: -16px -24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.statistical-range span span {
+  color: #003ad2;
+}
+
+.statistical-range>div>span {
+  margin-right: 30px;
+  font-size: 15px;
+  color: #1f4173;
+}
+
+.statistical-range .picker-container {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statistical-range .picker-container input {
+  border: none;
+  border-bottom: 1px solid #9e9e9e;
+  border-radius: 0;
+  outline: 0;
+  height: 40px;
+  width: 100%;
+  font-size: 1rem;
+  box-shadow: none;
+  box-sizing: content-box;
+  transition: all .3s;
+  background-color: #fff;
+  text-align: center;
+  color: #00409f;
+}
+
+.statistical-range .picker-container button {
+  width: 110px;
+  height: 40px;
+  letter-spacing: 0;
+  background-color: #2196f3;
+  color: #fff;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 5px;
+  margin-left: 6px;
+}
+
+.statistical-report {
+  margin-top: 25px;
+}
+
+.statistical-report .report-item {
+  margin-top: 30px;
+}
+
+.statistical-report h4 {
+  color: #004dc1;
+}
+.statistical-report .report-quantity {
+  padding: 10px 0;
+}
+
+.statistical-report .report-quantity p {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.statistical-report .report-quantity span {
+  font-size: 17px;
+  margin-right: 20px;
+  color: #000670bb;
+  font-weight: 600;
+}
+
+.statistical-report .report-quantity p span:last-child {
+  color: #1F4173;
+  font-size: 19px;
+  padding-top: 10px;
 }

@@ -36,25 +36,11 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-body">
-                        <div class="group-btn">
-                            <div class="d-flex align-items-center justify-content-end mb-3">
-                                <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
-                                <input type="button" name="btnAdd" value="Thêm mới" @click="showModal = !showModal">
-                                <input type="button" name="btnAdd" value="Thêm từ file">
-                                <input type="button" name="btnDelete" value="Xóa" @click="deleteorder()">
-                                <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
-                                <input type="button" id="exportExcelBtn" name="btnExcel" value="Xuất Excel">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 table-responsive">
-                                <OrderList 
-                                    v-if="filteredOrders" 
-                                    :orders="filteredOrders"
-                                    :selectedIds="selectedIds" 
-                                />
-                            </div>
-                        </div>
+                        <OrderList 
+                            v-if="filteredOrders" 
+                            :orders="filteredOrders"
+                            :selectedIds="selectedIds" 
+                        />
                     </div>
                 </div>
             </div>

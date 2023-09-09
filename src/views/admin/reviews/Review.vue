@@ -8,13 +8,29 @@
                 <div class="box">
                     <div class="box-body">
                         <div class="group-btn">
-                            <div class="d-flex align-items-center justify-content-end mb-3">
-                                <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
-                                <input type="button" name="btnAdd" value="Thêm mới" @click="showModal = !showModal">
-                                <input type="button" name="btnAdd" value="Thêm từ file">
-                                <input type="button" name="btnDelete" value="Xóa" @click="deletereview()">
-                                <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
-                                <input type="button" id="exportExcelBtn" name="btnExcel" value="Xuất Excel">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <div>
+                                    <button type="button" class="btnAdd" @click="showModal = !showModal">
+                                        <i class="fa fa-plus"></i>Thêm mới
+                                    </button>
+                                    <button type="button" class="btnPrint">
+                                        <i class="fa fa-print"></i>In
+                                    </button>
+                                    <button type="button" class="btnAddFile">
+                                        <i class="fa fa-download"></i>Thêm dữ liệu
+                                    </button>
+                                    <button type="button" class="btnExcel">
+                                        <i class="fa fa-upload"></i>Xuất dữ liệu
+                                    </button>
+                                </div>
+                                <div>
+                                    <button type="button" class="btnBack" @click="refreshList()">
+                                        <i class="fa fa-refresh"></i>Làm mới
+                                    </button>
+                                    <button type="button" class="btnDelete" @click="deleteReview()">
+                                        <i class="fa fa-trash"></i>Xóa
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -84,7 +100,7 @@ export default {
             this.retrieveReviews();
             this.selectedIds = [];
         },
-        deletereview() {
+        deleteReview() {
             this.$swal.fire({
                 title: 'Bạn có chắc?',
                 text: "Bạn sẽ không thể hoàn tác lại điều này!",

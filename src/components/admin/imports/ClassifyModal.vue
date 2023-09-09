@@ -200,7 +200,7 @@ export default {
                     toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                 }
             })
-            if (this.calculatedTotalQuantity !== this.currentProduct.quantity && this.calculatedTotalQuantity !== 0) {
+            if (this.calculatedTotalQuantity !== this.currentProduct.quantity) {
                 Toast.fire({
                     icon: 'warning',
                     title: "Tổng số lượng không tương thích!"

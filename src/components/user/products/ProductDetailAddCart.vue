@@ -7,8 +7,8 @@
                         Size
                         <span class="error-feedback">*</span>
                     </p>
-                    <p v-if="inventory.total_final == 0" class="guide text-danger">Hết hàng</p>
-                    <p v-else class="guide size-available">{{ inventory.total_final }} sản phẩm có sẵn</p>
+                    <p v-if="inventory" class="guide size-available">{{ inventory.total_final }} sản phẩm có sẵn</p>
+                    <p v-else class="guide text-danger">Hết hàng</p>
                 </div>
                 <div class="multi-size-selector multi-size-selector--4-columns filters-panel-group-box__value-selector">
                     <div class="form__column" v-for="size in getUniqueSizes(product.inventories[0].items)" :key="size"
@@ -337,12 +337,15 @@ export default {
         getUniqueSizes(sizes) {
             const uniqueSizes = [];
             const sizesSet = new Set();
+            const selectedColorId = this.isColorSelected.color_id;
+
             for (const size of sizes) {
-                if (!sizesSet.has(size.size_name)) {
+                if (size.color_id === selectedColorId && !sizesSet.has(size.size_name)) {
                     sizesSet.add(size.size_name);
                     uniqueSizes.push(size);
                 }
             }
+
             return uniqueSizes;
         },
         filterByColor(inventories, color_id) {

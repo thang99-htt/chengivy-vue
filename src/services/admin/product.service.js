@@ -6,6 +6,9 @@ class ProductService {
     async getAll() {
         return (await this.api.get("/")).data;
     }
+    async getProducts() {
+        return (await this.api.get("/get-products")).data;
+    }
     async getSales() {
         return (await this.api.get("/sales")).data;
     }

@@ -4,15 +4,18 @@
     <!-- <li class="pageLink" v-if="checkRangeOfPermissionIDs(getAdmin.permissionIDs, 21, 69)" :class="{ active: $route.path.includes('/admin/dashboard') }"> -->
     <li class="pageLink" :class="{ active: $route.path.includes('/admin/dashboard') }">
       <router-link to="/admin/dashboard">
-        <i class="fa fa-desktop color8"></i>
+        <i class="fa fa-th-large"></i>
         <span class="page">Dashboard</span>
       </router-link>
     </li>
     <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(23)"
       :class="{ active: $route.path.includes('/admin/staffs') }">
       <a href="/admin/staffs/staff-list">
-        <i class="fa fa-users color1"></i>
+        <i class="fa fa-users"></i>
         <span class="treeview-title">Nhân viên</span>
+        <span class="pull-right-container pull-right">
+          <i class="fa fa-angle-left fa-fw"></i>
+        </span>
       </a>
       <ul class="treeview-menu">
         <li>
@@ -30,8 +33,11 @@
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(40)"
       :class="{ active: $route.path.includes('/admin/products') }">
       <a href="/admin/products/overview">
-        <i class="fa fa-box color4"></i>
+        <i class="fa fa-box"></i>
         <span class="treeview-title">Sản phẩm</span>
+        <span class="pull-right-container pull-right">
+          <i class="fa fa-angle-left fa-fw"></i>
+        </span>
       </a>
       <ul class="treeview-menu">
         <li>
@@ -69,8 +75,11 @@
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(44)"
       :class="{ active: $route.path.includes('/admin/import') }">
       <a href="/admin/import/stock-received-docket">
-        <i class="fa fa-book color2"></i>
+        <i class="fa fa-book"></i>
         <span class="treeview-title">Nhập hàng</span>
+        <span class="pull-right-container pull-right">
+          <i class="fa fa-angle-left fa-fw"></i>
+        </span>
       </a>
       <ul class="treeview-menu">
         <li>
@@ -98,30 +107,30 @@
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(55)"
       :class="{ active: $route.path.includes('/admin/orders') }">
       <router-link to="/admin/orders">
-        <i class="fa fa-shopping-cart color5"></i>
+        <i class="fa fa-shopping-cart"></i>
         <span class="page">Đơn hàng</span>
       </router-link>
     </li>
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(59)"
       :class="{ active: $route.path.includes('/admin/reviews') }">
       <router-link to="/admin/reviews">
-        <i class="fa fa-star color6"></i>
+        <i class="fa fa-star"></i>
         <span class="page">Đánh giá</span>
       </router-link>
     </li>
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(59)"
       :class="{ active: $route.path.includes('/admin/vouchers') }">
       <router-link to="/admin/vouchers">
-        <i class="fa fa-ticket color3"></i>
+        <i class="fa fa-ticket"></i>
         <span class="page">Phiếu khuyến mãi</span>
       </router-link>
     </li>
-    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(58)"
-      :class="{ active: $route.path.includes('/admin/invoices') }">
-      <router-link to="/admin/invoices">
-        <i class="fa fa-list-alt color7"></i>
-        <span class="page">Hóa đơn</span>
-      </router-link>
+    <li class="pageLink" v-if="getAdmin.permissionIDs.includes(44)"
+      :class="{ active: $route.path.includes('/admin/statisticals') }">
+      <a href="/admin/statisticals/overview">
+        <i class="fa fa-bar-chart"></i>
+        <span class="treeview-title">Thống kê, báo cáo</span>
+      </a>
     </li>
     <li class="header">ME</li>
     <li class="pageLink">
@@ -221,8 +230,12 @@ export default {
 <style scoped>
 /* override default */
 .sidebar-menu>li>a {
-  padding: 10px 15px 12px 15px;
+  padding: 10px 20px 12px;
   margin-bottom: 4px;
+  font-size: 16px;
+  color: #30435e;
+  display: flex;
+  align-items: center;
 }
 
 .sidebar-menu li.active>a>.fa-angle-left,
@@ -236,6 +249,11 @@ export default {
   z-index: 1;
 }
 
+
+.fa.fa-star {
+    color: unset;
+}
+
 @keyframes rotate {
   0% {
     transform: rotate(0deg);
@@ -244,38 +262,5 @@ export default {
   100% {
     transform: rotate(-90deg);
   }
-}
-
-
-.color1 {
-  color: #6300cc;
-}
-
-.color2 {
-  color: #baa400;
-}
-
-.color3 {
-  color: #48b300;
-}
-
-.color4 {
-  color: #0498e8;
-}
-
-.color5 {
-  color: #d600bd;
-}
-
-.color6 {
-  color: #f701a9;
-}
-
-.color7 {
-  color: #6cbbc2;
-}
-
-.color8 {
-  color: #7a1b67;
 }
 </style>

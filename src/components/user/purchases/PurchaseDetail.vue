@@ -18,7 +18,7 @@
                                 <span class="me-1">{{ product.quantity }} x </span>
                                 <span class="text-danger me-3"
                                     v-if="product.price_discount > 0">
-                                    {{ formatPrice(product.price_discount) }}
+                                    {{ formatPrice(product.price-product.price_discount) }}
                                 </span>
                                 <span :class="{ 'text-decoration-line-through': product.price_discount > 0 }">
                                     {{ formatPrice(product.price) }}
@@ -28,8 +28,8 @@
                     </div>
                 </div>
                 <div class="purchase-price">
-                    <p v-if="product.price_discount > 0">{{ formatPrice(product.price_discount) }}</p>
-                    <p v-else>{{ formatPrice(product.price) }}</p>
+                    <p v-if="product.price_discount > 0">{{ formatPrice((product.price-product.price_discount)*product.quantity) }}</p>
+                    <p v-else>{{ formatPrice(product.price*product.quantity) }}</p>
                 </div>
             </div>
         </div>

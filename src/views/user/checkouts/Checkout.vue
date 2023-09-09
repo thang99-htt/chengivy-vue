@@ -93,18 +93,20 @@
                     try {
                         await OrderService.addBuyNow(this.getUser.id, Object.assign({}, data, this.productBuyNow));
                         this.$store.dispatch('removeProductBuyNow');
+                        this.stepCheck = 2;
+                        this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                     } catch (error) {
                         console.log(error.response);
                     }
                 } else {
                     try {
                         await OrderService.create(this.getUser.id, data);
+                        this.stepCheck = 2;
+                        this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
                     } catch (error) {
                         console.log(error);
                     }
                 }
-                this.stepCheck = 2;
-                this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
             },
         },
         computed: {

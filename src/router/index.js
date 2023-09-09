@@ -181,15 +181,6 @@ const routes = [
                 }
             },
             {
-                path: "invoices",
-                name: "invoice",
-                component: () => import("../views/admin/invoices/Invoice.vue"),
-                meta: {
-                    description: 'Hóa đơn',
-                    permissionID: 22
-                }
-            },
-            {
                 path: "reviews",
                 name: "review",
                 component: () => import("../views/admin/reviews/Review.vue"),
@@ -206,6 +197,84 @@ const routes = [
                     description: 'Phiếu khuyến mãi',
                     permissionID: 51
                 }
+            },
+            {
+                path: "statisticals",
+                children: [
+                    {
+                        path: "overview",
+                        name: "statistical.overview",
+                        component: () => import("../views/admin/statisticals/Statistical.vue"),
+                        meta: {
+                            description: 'Báo cáo, Thống kê',
+                            permissionID: 69
+                        },
+                    },
+                    {
+                        path: "finance",
+                        name: "statistical.finance",
+                        component: () => import("../views/admin/statisticals/StatisticalFinance.vue"),
+                        meta: {
+                            description: 'Hoạt động tài chính',
+                            permissionID: 69
+                        },
+                    },
+                    {
+                        path: "sell",
+                        name: "statistical.sell",
+                        component: () => import("../views/admin/statisticals/StatisticalSell.vue"),
+                        meta: {
+                            description: 'Hoạt động bán hàng',
+                            permissionID: 69
+                        },
+                    },
+                    {
+                        path: "top-product",
+                        name: "statistical.top",
+                        component: () => import("../views/admin/statisticals/StatisticalTopProduct.vue"),
+                        meta: {
+                            description: 'Top nổi bật',
+                            permissionID: 69
+                        },
+                    },
+                    {
+                        path: "inventory",
+                        name: "statistical.inventory",
+                        component: () => import("../views/admin/statisticals/StatisticalInventory.vue"),
+                        meta: {
+                            description: 'Lịch sử tồn kho',
+                            permissionID: 69
+                        },
+                    },
+                    {
+                        path: "invoice",
+                        name: "statistical.invoice",
+                        component: () => import("../views/admin/statisticals/StatisticalInvoice.vue"),
+                        meta: {
+                            description: 'Lịch sử hóa đơn',
+                            permissionID: 69
+                        },
+                    },
+                    {
+                        path: "return",
+                        name: "statistical.return",
+                        component: () => import("../views/admin/statisticals/StatisticalReturn.vue"),
+                        meta: {
+                            description: 'Lịch sử hoàn trả',
+                            permissionID: 69
+                        },
+                    },
+                    {
+                        path: "trend",
+                        name: "statistical.trend",
+                        component: () => import("../views/admin/statisticals/StatisticalTrend.vue"),
+                        meta: {
+                            description: 'Xu hướng bán hàng',
+                            permissionID: 69
+                        },
+                    },
+                ]
+
             },
         ]
     },

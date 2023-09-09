@@ -39,18 +39,20 @@
                             <thead>
                                 <tr role="row">
                                     <th width="4%">#</th>
-                                    <th width="10%">ID</th>
+                                    <th width="8%">ID</th>
                                     <th width="25%">Tên sản phẩm</th>
-                                    <th width="10%">Giá bán</th>
-                                    <th width="10%">Giá nhập</th>
+                                    <th width="12%">Giá bán</th>
+                                    <th width="12%">Giá nhập</th>
                                     <th width="10%">Số lượng</th>
                                     <th width="15%">Thành tiền</th>
-                                    <th width="10%">Phân loại</th>
-                                    <th width="6%"></th>
+                                    <th width="9%">Phân loại</th>
+                                    <th width="4%"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(product, index) in stockReceivedDocketLocal.items" :key="product">
+                                <tr v-for="(product, index) in stockReceivedDocketLocal.items" :key="product" 
+                                    :class="{ 'bg-import': shouldAddClass(product.product_id) }"
+                                >
                                     <td>{{ index + 1 }}</td>
                                     <td>{{ product.product_id }}</td>
                                     <td>{{ product.product_name }}</td>
@@ -431,7 +433,7 @@ export default {
         submitStockReceivedDocket() {
             this.$emit("submit:stockReceivedDocket", this.stockReceivedDocketLocal);
             // this.selectedSupplier = "---Chọn nhà cung cấp---";
-            // this.selectedPayment = "---Chọn phiếu chi---";
+            //this.selectedPayment = "---Chọn phiếu chi---";
         },
         deleteStockReceivedDocket() {
             this.$emit("delete:stockReceivedDocket", this.stockReceivedDocketLocal.id);
@@ -540,7 +542,12 @@ export default {
             if (index !== -1) {
                 this.stockReceivedDocketLocal.items.splice(index, 1);
             }
-           
+        },
+        shouldAddClass(productId) {
+            const isInItems = this.stockReceivedDocketLocal.items.some(item => item.product_id === productId);
+            const isInInventories = this.stockReceivedDocketLocal.inventories.some(inventory => inventory.product_id === productId);
+            
+            return isInItems && !isInInventories;
         }
     },
     mounted() {
@@ -584,5 +591,9 @@ export default {
 }
 .import .import-product::-webkit-scrollbar {
     width: 0;
+}
+
+.bg-import {
+    background-color: #ececec !important;
 }
 </style>

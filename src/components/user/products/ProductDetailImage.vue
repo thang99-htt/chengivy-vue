@@ -1,14 +1,16 @@
 <template>
     <div class="detail-image">
-        <div class="d-flex">
-            <div class="d-flex flex-column">
+        <div class="detail-image__item">
+            <div class="d-flex flex-column left-image__container">
                 <div v-for="img in isColorSelected.items" :key="img" class="left-image"
                     @mouseover="changPicture(img.image)">
                     <img class="demo" :src="img.image" alt=""
-                        :class="{ active: img.image === activeImage ? true : false }" width="100">
+                        :class="{ active: img.image === activeImage ? true : false }">
                 </div>
             </div>
-            <div class="container" @mousemove="handleMouseMove" @mouseleave="resetZoom">
+        </div>
+        <div class="detail-image__item">
+            <div class="detail-image_container" @mousemove="handleMouseMove" @mouseleave="resetZoom">
                 <div class="mySlides">
                     <img :src="activeImage" :style="zoomStyle" class="img-main">
                 </div>
@@ -80,8 +82,27 @@ export default {
     width: 90px;
     height: 120px;
 }
-
+.detail-image {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.detail-image__item:first-child {
+    width: 20%;
+}
+.detail-image__item:last-child {
+    width: 79%;
+}
 .img-main {
     height: 700px;
+}
+.left-image__container {
+    height: 700px;
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none; 
+}
+.left-image__container::-webkit-scrollbar {
+    width: 0;
 }
 </style>

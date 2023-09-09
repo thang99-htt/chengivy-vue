@@ -24,11 +24,12 @@
                                     <td class="text-center">
                                         <span v-if="!product.month_year" class="product-view_plus" @click="toggleAdditionalRow(product)">
                                             <i class="bi bi-chevron-right" :class="{ expanded: product.visible }"></i>
-                                        </span> <span v-if="!product.month_year">({{ product.filtered_inventories.length }})</span>
+                                        </span> 
+                                        <span v-if="!product.month_year">({{ product.filtered_inventories.length }})</span>
                                     </td>
                                     <td>
                                         <img v-if="product.image" :src="product.image" alt="" width="50" height="50">
-                                        <span class="ms-3">{{ product.name }}</span>
+                                        <span v-if="!product.color" class="ms-3">{{ product.name }}</span>
                                         <span class="d-flex align-items-end" v-if="product.color">
                                             <span
                                                 class="filters-panel-group-item__item-box circle" 
@@ -138,7 +139,7 @@ export default {
 
 <style scoped>
 .text-green {
-    color: #008000 !important;
+    color: #0cab0c !important;
     font-weight: 600;
 }
 </style>

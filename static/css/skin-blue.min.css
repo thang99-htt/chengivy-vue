@@ -36,7 +36,7 @@
     background-color: #3c8dbc;
   }
   .skin-blue .content-header {
-    background: transparent;
+    background: #fff;
   }
   .skin-blue .wrapper,
   .skin-blue .main-sidebar,
@@ -49,7 +49,7 @@
   }
   .skin-blue .sidebar-menu > li.header {
     color: #4b646f;
-    background: #f3f3f3;
+    background: #e8eef0;
     /* margin-bottom: 6px; */
   }
   .skin-blue .sidebar-menu > li > a {

@@ -1,5 +1,4 @@
 <template>
-    
     <section class="content mt-2">
         <div class="box-body">
             <div class="liveAlert"></div>
@@ -60,15 +59,35 @@ export default {
                 }
             })
             try {
+                
+            // Lấy danh sách product_id từ this.stockReceivedDocketLocal.inventories
+            const inventoryProductIds = this.stockReceivedDocket.inventories.map(inventory => inventory.product_id);
+
+            // Lọc items có product_id chưa có trong inventoryProductIds
+            const missingItems = this.stockReceivedDocket.items.filter(item => !inventoryProductIds.includes(item.product_id));
+
+            // Lấy danh sách product_name của các phần tử chưa có trong inventories
+            const missingProductNames = missingItems.map(item => item.product_name);
+
+            if (missingProductNames.length > 0) {
+                const missingProductNamesString = missingProductNames.join(', ');
+                Toast.fire({
+                    icon: 'warning',
+                    title: missingProductNamesString + " chưa được nhập phân loại."
+                });
+            } else {
                 await StockReceivedDocketService.create(data)
                     .then(res => {
-                        console.log(res);
+                        // console.log(res);
                         Toast.fire({
                             icon: res.success,
                             title: res.message
                         });
                     });
                 // this.reset();
+
+            }
+
             } catch (error) {
                 if (error.response && error.response.data) {
                     const errorData = error.response.data;
@@ -84,7 +103,6 @@ export default {
 
                     console.log(error);
                 }
-                // this.reset();
             }
         },
         reset () {

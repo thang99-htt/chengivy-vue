@@ -10,7 +10,7 @@ body {
     color: #898989;
     font-size: 14px;
     /* font-family: 'Poppins', sans-serif; */
-    font-family: Avenir-Black, sans-seri;
+    font-family: Proxima Nova, sans-seri;
     line-height: normal;
     font-weight: 300;
     overflow-x: hidden !important;
@@ -649,7 +649,7 @@ a:focus {
 .icon_info ul.user_profile_dd>li {
     width: auto;
     border-radius: 0;
-    background: #3c8dbc;
+    background: #424f74;
     margin: 0;
     padding: 7px 10px;
     height: 50px;
@@ -707,6 +707,81 @@ a:focus {
 .icon_info ul.user_profile_dd li div a:hover span,
 .icon_info ul.user_profile_dd li div a:focus span {
     color: #fff;
+}
+
+
+
+.icon_info .notification {
+    position: relative;
+}
+
+.icon_info .notification .dropdown-menu {
+    position: absolute;
+    content: "";
+    top: 30px;
+    right: 0;
+    left: unset;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.3), 0 4px 8px 3px #e6eaf0;
+    border: 0;
+    border-radius: 4px;
+    width: 400px;
+    height: auto;
+    max-height: 530px;
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none; 
+}
+.icon_info .notification .dropdown-menu::-webkit-scrollbar {
+    width: 0;
+}
+
+.icon_info .notification .dropdown-menu h3 {
+    text-align: center;
+    font-size: 20px;
+    text-transform: unset;
+    color: #1f4173;
+    font-weight: normal;
+    margin: 12px 0 20px;
+}
+.icon_info .notification .notification-item {
+    height: 80px;
+    background-color: rgba(188,218,255,0.22);
+    padding: 8px 16px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    border: 1px solid #e6eaf0;
+    margin: 8px;
+}
+
+.icon_info .notification .notification-item .notification-content {
+    color: #1f4173;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.icon_info .notification .notification-item .notification-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icon_info .notification .notification-item .notification-detail a {
+    color: #003ad2;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.icon_info .notification .notification-view {
+    border-top: 1px solid #003ad2;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon_info .notification .notification-view a {
+    color: #003ad2;
+    font-size: 17px;
 }
 
 .user_profile_dd .dropdown-menu {
@@ -1036,14 +1111,20 @@ button[data-toggle="collapse"] {
     margin: 0 15px;
 }
 
-.counter_section {
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-    border: 0px solid #e7e7e7;
-    height: 150px;
-    border-radius: 10px;
-    padding: 10px;
+.full.counter_section,
+.full.counter_section1 {
+    display: flex;
+    justify-content: space-between;
 }
 
+.counter_section,
+.counter_section1 {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    border: 0px solid #e7e7e7;
+    height: 130px;
+    border-radius: 20px;
+    padding: 10px;
+}
 .couter_icon span {
     width: 100%;
     text-align: center;
@@ -1070,6 +1151,23 @@ button[data-toggle="collapse"] {
     border-radius: 50%;
 }
 
+.counter_section1 .couter_icon i {
+    border-radius: 6px;
+    font-size: 20px;
+}
+
+.counter_section1 .counter_icon  i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 42px;
+    height: 42px;
+    color: #000;
+    background-color: #e6eaf0;
+    line-height: normal;
+    border-radius: 6px;
+}
+
 .couter_icon {
     padding: 0;
     border-top-left-radius: 10px;
@@ -1078,39 +1176,40 @@ button[data-toggle="collapse"] {
 
 .couter_icon>div {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-around;
-    margin-bottom: 10px;
-    padding: 12px;
+    justify-content: space-between;
+    padding: 12px 2px;
+    height: 100%;
 }
 
-.counter_no {
+.counter_section1 .couter_icon>div {
+    width: 100px;
+}
+
+.counter_icon {
     padding: 0 10px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-.counter_no>div {
+.counter_icon > div {
     display: flex;
+    flex-direction: column;
+    align-items: end;
     justify-content: space-between;
-    align-items: center;
+    padding: 12px 2px;
+    height: 100%;
 }
 
-.couter_icon p {
-    margin: 0;
-    font-size: 45px;
-    line-height: normal;
-    color: #000;
-    font-size: 18px;
-}
-
-.counter_no p:nth-child(2) {
+.counter_icon p:nth-child(2) {
     font-size: 15px;
     text-align: right;
     display: flex;
+    margin: 0;
 }
 
-.counter_no p:nth-child(2) i {
+.counter_icon p:nth-child(2) i {
     margin-right: 10px;
     width: 20px;
     height: 20px;
@@ -1121,27 +1220,37 @@ button[data-toggle="collapse"] {
     border-radius: 50%;
 }
 
+
+.counter_icon p:first-child {
+    font-size: 36px !important;
+    line-height: normal;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+}
+.counter_section1 .counter_icon  p:first-child {
+    color: #13356880;
+    font-size: 15px !important;
+}
 .couter_icon p.total_no {
     font-weight: 600;
     text-align: center;
 }
 
-.counter_no .head_couter,
+.counter_icon  .head_couter,
 .couter_icon .head_couter {
     float: left;
     width: 100%;
-    color: #525151;
+    color: #fff;
     font-weight: 500;
     margin: 0px 0 0 0;
     font-size: 16px;
-    text-align: left;
-    margin: 10px 0;
+    text-align: center;
+    font-weight: bold;
 }
-
-.counter_no .counter_desrp {
-    margin: 0;
-    color: #fff;
-    line-height: 18px;
+.counter_section1 .couter_icon .head_couter {
+    color: #1f4173;
+    font-size: 23px !important;
 }
 
 #myChart-top {
@@ -3376,9 +3485,9 @@ table.projects tr td:first-child {
 }
 
 .pageLink.active > a {
-    color: #3c8dbc;
-    background: #f6f9ff;
-    border-left: 6px solid #3c8dbc !important;
+    color: #053dd1 !important;
+    background: #f3f6fa;
+    border-left: 6px solid #053dd1 !important;
     border-top-left-radius: 0;
     /* border-top-right-radius: 30px !important;
     border-bottom-right-radius: 30px !important; */
@@ -3388,7 +3497,6 @@ table.projects tr td:first-child {
               0 4px 6px -4px rgba(0, 0, 0, 0.2) !important;
     /* width: 230px; */
     padding-left: 18px !important;
-    font-weight: 600;
 }
 
 @media (min-width: 768px) {

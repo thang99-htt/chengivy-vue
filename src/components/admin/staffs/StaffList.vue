@@ -2,15 +2,15 @@
     <table class="example1 table dataTable">
         <thead>
             <tr role="row">
-                <th width="2%">ID</th>
+                <th width="4%">ID</th>
                 <th width="12%">Họ tên</th>
                 <th width="4%">Email</th>
                 <th width="8%">Số điện thoại</th>
                 <th width="6%">Giới tính</th>
-                <th width="14%">Địa chỉ</th>
-                <th width="16%">Vai trò</th>
+                <th width="16%">Địa chỉ</th>
+                <th width="14%">Vai trò</th>
                 <th width="8%">Trạng thái</th>
-                <th width="6%">Tùy chọn</th>
+                <th width="4%">Sửa</th>
                 <th width="4%">Chọn</th>
             </tr>
         </thead>
@@ -120,7 +120,9 @@ export default {
 <style>
 .btn-staff {
     color: #363636;
-    background-color: #ffaf38;
+    color: #dc5400;
+    font-weight: bold;
+    background-color: #ffeed5;
     border-radius: 4px;
     display: inline-block;
     padding: 4px 10px;

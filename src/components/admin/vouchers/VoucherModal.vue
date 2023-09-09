@@ -7,7 +7,7 @@
                     <h4 class="modal-title fw-bold" v-else>Thêm mới phiếu khuyến mãi</h4>
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
-                <div class="modal-body">{{ voucher }}
+                <div class="modal-body">
                     <div v-if="voucher" class="box box-info">
                         <div class="box-body">
                             <VoucherForm :voucher="voucher" @submit:voucher="submitVoucher" :reset="reset"/>

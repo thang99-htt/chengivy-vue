@@ -15,6 +15,30 @@
                                 <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
                                 <input type="button" id="exportExcelBtn" name="btnExcel" value="Xuất Excel">
                             </div>
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <div>
+                                    <button type="button" class="btnAdd" @click="showModal = !showModal">
+                                        <i class="fa fa-plus"></i>Thêm mới
+                                    </button>
+                                    <button type="button" class="btnPrint">
+                                        <i class="fa fa-print"></i>In
+                                    </button>
+                                    <button type="button" class="btnAddFile">
+                                        <i class="fa fa-download"></i>Thêm dữ liệu
+                                    </button>
+                                    <button type="button" class="btnExcel">
+                                        <i class="fa fa-upload"></i>Xuất dữ liệu
+                                    </button>
+                                </div>
+                                <div>
+                                    <button type="button" class="btnBack" @click="refreshList()">
+                                        <i class="fa fa-refresh"></i>Làm mới
+                                    </button>
+                                    <button type="button" class="btnDelete" @click="deleteCategory()">
+                                        <i class="fa fa-trash"></i>Xóa
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 table-responsive">

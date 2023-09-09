@@ -1,151 +1,101 @@
 <template>
-    <div class="modal d-block" v-if="showModal">
-        <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title fw-bold">Phân loại sản phẩm</h4>
-                    <button type="button" class="btn-close" @click="closeModal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="box box-info">
-                        <div class="box-body">
-                            <div class="">
-                                <div class="form-group">
-                                    <table class="example1 table table-bordered dataTable">
-                                        <thead>
-                                            <tr role="row">
-                                                <th width="6%">#</th>
-                                                <th width="36%">Màu sắc</th>
-                                                <th width="29%">Kích cỡ</th>
-                                                <th width="29%">Số lượng</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(inventory, index) in filteredInventories" :key="inventory">
-                                                <td>{{ index+1 }}</td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <span
-                                                            class="filters-panel-group-item__item-box circle mb-0" 
-                                                            :style="`background-color: ${inventory.color}`"
-                                                        >
-                                                        </span>
-                                                        <span>{{ inventory.color_name }}</span>
-                                                    </div>
-                                                </td>
-                                                <td>{{ inventory.size_name }}</td>
-                                                <td>
-                                                    <input type="text" 
-                                                        :value="formattedPrice(inventory.quantity)" 
-                                                        @input="updateQuantity(index, $event)"
-                                                        @keypress="validateKeyPress"/>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th colspan="3" class="text-center text-bold">Tổng số lượng</th>
-                                                <th class="px-4">{{ calculatedTotalQuantity.toLocaleString() }}</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>        
-
     <section class="content">
-        <div class="box-body" v-if="stockReceivedDocketLocal">
+        <div class="box-body" v-if="stockReceivedDocket">
             <div class="import-view">
                 <div class="import-view__container">
                     <div class="import-view__item">
                         <label for="date">Số phiếu nhập:</label>
-                        <span>{{ stockReceivedDocketLocal.id }}</span>
+                        <span>{{ stockReceivedDocket.id }}</span>
                     </div>
                     <div class="import-view__item">
                         <label for="date">Ngày nhập:</label>
-                        <span>{{ stockReceivedDocketLocal.date }}</span>
+                        <span>{{ stockReceivedDocket.date }}</span>
                     </div>
                 </div>
                 <div class="import-view__container">
                     <div class="import-view__item">
                         <label for="date">Nhà cung cấp:</label>
-                        <span>{{ stockReceivedDocketLocal.supplier.name }}</span>
+                        <span>{{ stockReceivedDocket.supplier.name }}</span>
                     </div>
                     <div class="import-view__item">
                         <label for="date">Mã nhà cung cấp:</label>
-                        <span>{{ stockReceivedDocketLocal.supplier.id }}</span>
+                        <span>{{ stockReceivedDocket.supplier.id }}</span>
                     </div>
                     <div class="import-view__item">
                         <label for="date">Mã số thuế:</label>
-                        <span>{{ stockReceivedDocketLocal.supplier.tax_code }}</span>
+                        <span>{{ stockReceivedDocket.supplier.tax_code }}</span>
                     </div>
                 </div>
                 <div class="import-view__container">
                     <label for="date">Địa chỉ:</label>
-                    <span>{{ stockReceivedDocketLocal.supplier.address }}</span>
+                    <span>{{ stockReceivedDocket.supplier.address }}</span>
                 </div>
                 <div class="import-view__container">
                     <div class="import-view__item">
                         <label for="date">Số điện thoại:</label>
-                        <span>{{ stockReceivedDocketLocal.supplier.phone }}</span>
+                        <span>{{ stockReceivedDocket.supplier.phone }}</span>
                     </div>
                     <div class="import-view__item">
                         <label for="date">Email:</label>
-                        <span>{{ stockReceivedDocketLocal.supplier.email }}</span>
+                        <span>{{ stockReceivedDocket.supplier.email }}</span>
                     </div>
                     <div class="import-view__item">
                         <label for="date">Số tài khoản:</label>
-                        <span>{{ stockReceivedDocketLocal.supplier.bank_account }}</span>
+                        <span>{{ stockReceivedDocket.supplier.bank_account }}</span>
                     </div>
                 </div>
                 <div class="import-view__container">
-                    <table class="example1 table table-bordered dataTable">
+                    <table class="example1 table dataTable">
                         <thead>
                             <tr role="row">
-                                <th width="4%">#</th>
-                                <th width="10%">ID</th>
-                                <th width="25%">Tên sản phẩm</th>
+                                <th width="8%">#</th>
+                                <td width="8%"></td>
+                                <th width="10%">ID sản phẩm</th>
+                                <th width="21%">Tên sản phẩm</th>
                                 <th width="12%">Giá bán</th>
                                 <th width="12%">Giá nhập</th>
-                                <th width="10%">Số lượng</th>
-                                <th width="17%">Thành tiền</th>
-                                <th width="10%">Phân loại</th>
+                                <th width="12%">Số lượng</th>
+                                <th width="15%">Thành tiền</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(product, index) in stockReceivedDocketLocal.items" :key="product">
+                            <tr v-for="(product, index) in filteredCombinedData" :key="product">
                                 <td>{{ index + 1 }}</td>
-                                <td>{{ product.product_id }}</td>
-                                <td>{{ product.product_name }}</td>
-                                <td>
-                                    <input type="text" :value="formattedPrice(product.price)"
-                                        @input="updatePrice(index, $event)" @keypress="validateKeyPress">
+                                <td class="text-center">
+                                    <span v-if="!product.color" class="product-view_plus" @click="toggleAdditionalRow(product)">
+                                        <i class="bi bi-chevron-right" :class="{ expanded: product.visible }"></i>
+                                    </span> 
+                                    <span v-if="!product.color">({{ product.inventoryCount }})</span>
                                 </td>
                                 <td>
-                                    <input type="text" :value="formattedPrice(product.price_purchase)"
-                                        @input="updatePricePurchase(index, $event)" @keypress="validateKeyPress">
+                                    <span v-if="!product.color">{{ product.product_id }}</span>
                                 </td>
                                 <td>
-                                    <input type="text" :value="formattedPrice(product.quantity)"
-                                        @input="updateQuantity(index, $event)" @keypress="validateKeyPress">
+                                    <span v-if="product.product_name">{{ product.product_name }}</span>
+                                    <span class="d-flex align-items-end" v-else>
+                                        <span
+                                            class="filters-panel-group-item__item-box circle" 
+                                            :style="`background-color: ${product.color}`"
+                                        ></span> -
+                                        <span class="ms-2">{{ product.size_name }}</span>
+                                    </span>
                                 </td>
                                 <td>
-                                    <input type="text" :value=computedTotalItem(index) @keypress="validateKeyPress" />
+                                    <span v-if="product.price">{{ formatPrice(product.price) }}</span>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn border-0" @click="showModalClassify(product)">
-                                        <img src="/images/icon/icondetail.png" alt="">
-                                    </button>
+                                    <span v-if="product.price">{{ formatPrice(product.price_purchase) }}</span>
+                                </td>
+                                <td>
+                                    <span v-if="product.quantity">{{ (product.quantity).toLocaleString() }}</span>
+                                </td>
+                                <td>
+                                    <span v-if="product.price_purchase">{{ formatPrice(product.quantity*product.price_purchase) }}</span>
                                 </td>
                             </tr>
                         </tbody>
                         <tfoot>
-                            <tr v-if="stockReceivedDocketLocal.items.length == 0">
+                            <tr v-if="stockReceivedDocket.items.length == 0">
                                 <th colspan="9" class="text-center text-bold">Chưa có sản phẩm nào</th>
                             </tr>
                             <tr v-else>
@@ -159,23 +109,23 @@
                 </div>
                 <div class="import-view__container">
                     <label for="date">Diễn giải:</label>
-                    <span>{{ stockReceivedDocketLocal.description }}</span>
+                    <span>{{ stockReceivedDocket.description }}</span>
                 </div>
                 <div class="import-view__container">
                     <label for="date">Tổng tiền nhập hàng:</label>
-                    <span>{{ formatPrice(stockReceivedDocketLocal.total_price) }}</span>
+                    <span>{{ formatPrice(stockReceivedDocket.total_price) }}</span>
                 </div>
                 <div class="import-view__container">
                     <label for="date">Thuế GTGT:</label>
-                    <span>{{ formatPrice(stockReceivedDocketLocal.value_added) }}</span>
+                    <span>{{ formatPrice(stockReceivedDocket.value_added) }}</span>
                 </div>
                 <div class="import-view__container">
                     <label for="date">Tổng giá trị phiếu nhập:</label>
-                    <span>{{ formatPrice(stockReceivedDocketLocal.total_value) }}</span>
+                    <span>{{ formatPrice(stockReceivedDocket.total_value) }}</span>
                 </div>
                 <div class="import-view__container">
                     <label for="date">Người lập phiếu:</label>
-                    <span>{{ stockReceivedDocketLocal.staff.name }}</span>
+                    <span>{{ stockReceivedDocket.staff.name }}</span>
                 </div>
             </div>
         </div>
@@ -183,75 +133,78 @@
 </template>
 <script>
 import StockReceivedDocketService from "@/services/admin/stock-received-docket.service";
-import ClassifyModal from "@/components/admin/imports/ClassifyModal.vue";
 import { formatPrice } from "../../../utils";
 
 export default {
-    components: {
-        ClassifyModal
-    },
     props: {
         id: { type: Number, required: true },
     },
     data() {
         return {
-            stockReceivedDocketLocal: "",
-            datePart: null,
-            currentProduct: null,
-            showModal: false,
+            stockReceivedDocket: "",
+            selectedProductIndex: [],
+            combinedData: [],
+            visible: false
         };
-    },
-    computed: {
-        filteredInventories() {
-            return this.stockReceivedDocketLocal.inventories.filter(
-                inventory => inventory.product_id === this.currentProduct.product_id
-            );
-        },
-        computedTotalItem() {
-            return index => {
-                const item = this.stockReceivedDocketLocal.items[index];
-                return ((item.price_purchase * item.quantity) || 0).toLocaleString();
-            };
-        },
-        calculatedTotalQuantity() {
-            let total = 0;
-            for (const item of this.stockReceivedDocketLocal.items) {
-                total += item.quantity;
-            }
-            return total.toLocaleString();
-        },
-        calculatedIntoMoney() {
-            let total = 0;
-            for (const item of this.stockReceivedDocketLocal.items) {
-                total += item.quantity * item.price_purchase;
-            }
-            return total.toLocaleString();
-        },
     },
     methods: {
         formatPrice,
-        formattedPrice(value) {
-            return value.toLocaleString();
-        },
         async getStockReceivedDocket(id) {
             try {
-                this.stockReceivedDocketLocal = await StockReceivedDocketService.get(id);
+                this.stockReceivedDocket = await StockReceivedDocketService.get(id);
+
+                const combinedArray = [];
+
+                // Lặp qua từng item trong items
+                this.stockReceivedDocket.items.forEach(item => {
+                    // Thêm item vào mảng kết hợp
+                    combinedArray.push(item);
+
+                    // Tìm các inventories có product_id tương ứng và thêm vào mảng kết hợp
+                    const inventoriesForItem = this.stockReceivedDocket.inventories.filter(inventory => inventory.product_id === item.product_id);
+
+                    // Đếm số lượng inventories cho item này
+                    const inventoryCount = inventoriesForItem.length;
+
+                    // Thêm số lượng inventories vào item
+                    item.inventoryCount = inventoryCount;
+
+                    // Thêm các inventories vào mảng kết hợp
+                    item.visible = false;
+
+                    combinedArray.push(...inventoriesForItem);
+                });
+
+                // Gán mảng kết hợp vào displayArray để hiển thị
+                this.combinedData = combinedArray;
+                console.log(this.combinedData)
+
             } catch (error) {
                 console.log(error);
             }
         },
-        showModalClassify(product) {
-            console.log(product)
-            this.showModal = true;
-            this.currentProduct = product;
-        },
-        async closeModal() {
-            this.showModal = false;
-            this.currentProduct = null;
+        toggleAdditionalRow(product) {
+            product.visible = !product.visible;
+            const productId = product.product_id; // Assuming `id` is the product ID
+            for (const data of this.combinedData) {
+                if (data.product_id === productId) { // Assuming `product_id` is the ID in combinedData
+                    data.visible = !data.visible;
+                }
+            }
         },
     },
     async mounted() {
         this.getStockReceivedDocket(this.id);
+    },
+    computed: {
+        filteredCombinedData() {
+            if(this.combinedData) {
+                return this.combinedData.filter(product => {
+                    // Keep products with month_year or visible set to true
+                    return !product.color || product.visible;
+                });
+            }
+        }
     },
 };
 </script>
