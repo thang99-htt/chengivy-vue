@@ -16,7 +16,7 @@
                                 </div>
                                 <div class="sub-menu-search">
                                     <ul id="nav" class="navbar-nav ms-aut">
-                                        <li class="nav-item" v-for="product in productsAll" :key="product"
+                                        <li class="nav-item" v-for="product in filteredProducts" :key="product"
                                             @click="chooseProduct(product)">
                                             <div class="d-flex">
                                                 <img :src="product.image" width="60" height="60">
@@ -34,7 +34,9 @@
                                 </div>
                             </div>
                             <div class="product-sale__button">
-                                <input type="button" name="btnSave" value="Thực hiện" @click="submitProduct">
+                                <button type="button" class="btnSave" @click="submitProduct">
+                                    <i class="fa fa-plus"></i>Thực hiện
+                                </button>
                             </div>
                             <div class="product-sale__table">
                                 <table class=" example1 table dataTable">
@@ -99,8 +101,18 @@ export default {
     },
     data() {
         return {
-            productsAll: []
+            productsAll: [],
+            keyword: "",
         };
+    },
+    computed: {
+        filteredProducts() {
+            if (!this.keyword) return this.productsAll;
+            return this.productsAll.filter(item =>
+                item.name.toLowerCase().includes(this.keyword.toLowerCase()) ||
+                item.id.toString().toLowerCase().includes(this.keyword.toLowerCase())
+            );
+        },
     },
     methods: {
         formatPrice,
@@ -178,6 +190,7 @@ export default {
         },
         closeModal() {
             this.$emit('closeModal');
+            this.productsSale.splice(0, this.productsSale.length);
         },
         removeProduct(product) {
             const index = this.productsSale.findIndex(
@@ -200,10 +213,10 @@ export default {
                 }
             });
             try {
-                await ProductService.updateProductsSale(this.productsSale);
+                await ProductService.updateProductsSale(this.productsSale)
                 Toast.fire({
                     icon: 'success',
-                    title: 'Thêm sản phẩm giảm giá thành công.'
+                    title: 'Cập nhật sản phẩm giảm giá thành công.'
                 });
                 this.closeModal();
             } catch (error) {

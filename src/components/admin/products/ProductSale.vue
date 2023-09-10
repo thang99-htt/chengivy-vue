@@ -8,10 +8,18 @@
                 <div class="box">
                     <div class="box-body">
                         <div class="group-btn">
-                            <div class="d-flex align-items-center justify-content-end mb-3">
-                                <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
-                                <input type="button" name="btnAdd" value="Thêm mới" @click="openModal">
-                                <input type="button" name="btnEdit" value="Sửa" @click="openModal">
+                            <div class="d-flex align-items-center justify-content-end mb-4">
+                                <div>
+                                    <button type="button" class="btnAdd" @click="openModal">
+                                        <i class="fa fa-plus"></i>Thêm mới
+                                    </button>
+                                    <button type="button" class="btnBack" @click="refreshList()">
+                                        <i class="fa fa-refresh"></i>Làm mới
+                                    </button>
+                                    <button type="button" class="btnEdit" @click="openModal()">
+                                        <i class="fa fa-edit"></i>Sửa
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
