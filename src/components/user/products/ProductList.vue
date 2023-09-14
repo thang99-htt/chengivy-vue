@@ -368,9 +368,6 @@
                     </div>
                 </div>
             </div>
-            <div v-else>
-                <p class="text-center">Không có sản phẩm nào.</p>
-            </div>
         </div>
     </div>
     <div class="me-3">

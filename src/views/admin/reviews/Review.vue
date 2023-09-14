@@ -24,6 +24,11 @@
                                     </button>
                                 </div>
                                 <div>
+                                    <button type="button" class="btnBack sentiment-neg" 
+                                        :class="{'bg-neg': isSentimentFiltered}"
+                                        @click="sentimentReview()">
+                                        <i class="fa fa-thumbs-down"></i>Đánh giá tiêu cực
+                                    </button>
                                     <button type="button" class="btnBack" @click="refreshList()">
                                         <i class="fa fa-refresh"></i>Làm mới
                                     </button>
@@ -44,7 +49,6 @@
                                     :reviewID="reviewID"
                                     @update-reviewID="updateReview"
                                 />
-                                <p v-else>Không có đánh giá nào.</p>
                             </div>
                         </div>
                     </div>
@@ -59,6 +63,7 @@ import { initializeDataTable } from '../../../utils';
 import ReviewList from "@/components/admin/reviews/ReviewList.vue";
 import ReviewService from "@/services/admin/review.service";
 import ReviewModal from "@/components/admin/reviews/ReviewModal.vue";
+import axios from 'axios';
 
 export default {
     components: {
@@ -71,7 +76,8 @@ export default {
             reviews: [],
             selectedIds: [],
             reviewID: null,
-            showModal: false
+            showModal: false,
+            isSentimentFiltered: false, // Biến để kiểm tra trạng thái lọc đánh giá tiêu cực
         };
     },
     computed: {
@@ -85,7 +91,14 @@ export default {
     methods: {
         async retrieveReviews() {
             try {
-                this.reviews = await ReviewService.getAll();
+                if (this.isSentimentFiltered) {
+                    // Nếu đang lọc đánh giá tiêu cực, gọi API tương ứng và gán dữ liệu cho biến reviews
+                    const response = await axios.get('http://127.0.0.1:5000/reviews/sentiment');
+                    this.reviews = response.data;
+                } else {
+                    // Ngược lại, lấy danh sách đánh giá từ service
+                    this.reviews = await ReviewService.getAll();
+                }
                 if ($.fn.DataTable.isDataTable('.example1')) {
                     $('.example1').DataTable().destroy();
                 }
@@ -96,30 +109,15 @@ export default {
                 console.log(error);
             }
         },
+        sentimentReview() {
+            // Khi nhấp vào nút "Đánh giá tiêu cực," chuyển trạng thái và cập nhật danh sách đánh giá
+            this.isSentimentFiltered = !this.isSentimentFiltered;
+            this.retrieveReviews();
+        },
         refreshList() {
+            // Khi làm mới danh sách, chuyển trạng thái và cập nhật danh sách đánh giá
             this.retrieveReviews();
             this.selectedIds = [];
-        },
-        deleteReview() {
-            this.$swal.fire({
-                title: 'Bạn có chắc?',
-                text: "Bạn sẽ không thể hoàn tác lại điều này!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.value) {
-                    ReviewService.delete(this.selectedIds).then((res) => {
-                        if (res.success) {
-                            this.refreshList();
-                        }
-                    })
-                    this.$swal.fire('Đã xóa thành công!', '', 'success')
-                }
-            })
         },
         closeModal() {
             this.showModal = false;
@@ -133,7 +131,18 @@ export default {
         },
     },
     mounted() {
-        this.refreshList();
+        this.retrieveReviews();
     },
 };
 </script>
+
+<style scoped>
+    .sentiment-neg, 
+    .sentiment-neg i {
+        color: #e30000 !important;
+        font-weight: bold;
+    }
+    .bg-neg {
+        background-color: #ffffc1;
+    }
+</style>

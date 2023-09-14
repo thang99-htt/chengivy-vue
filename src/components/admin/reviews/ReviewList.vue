@@ -14,7 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr role="row" v-for="(review, index) in reviewsList" :key="review">
+            <tr role="row" v-for="(review, index) in reviewsList" :key="review" >
                 <td>{{ review.date }}</td>
                 <td>{{ review.product.id }}</td>
                 <td>{{ review.user.name }}</td>
@@ -30,7 +30,9 @@
                         </li>
                     </ul>    
                 </td>
-                <td>{{ review.content.split(' ').slice(0, 20).join(' ') + '.....' }}</td>
+                <td :class="{'bg-neg': review.sentiment}">
+                    {{ review.content.split(' ').slice(0, 20).join(' ') + '.....' }}
+                </td>
                 <td>{{ review.reply }}</td>
                 <td>
                     <button class="btn-sm" :class="[review.status == 1 ? 'btn-show' : 'btn-hide']"
@@ -123,7 +125,7 @@ export default {
 
 };
 </script>
-<style>
+<style scoped>
     .review i {
         color: #fecb00;
         font-size: 15px;
@@ -132,5 +134,8 @@ export default {
     .review li {
         display: inline-block;
         margin: 0;
+    }
+    .bg-neg {
+        background-color: rgb(255, 197, 197) !important;
     }
 </style>

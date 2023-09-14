@@ -33,6 +33,11 @@
                             :product="product"
                         />
                     </div>
+                    <div class="row">
+                        <ProductDetailSuggest
+                            :product="product"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,10 +48,10 @@
     import ProductDetailInfor from "@/components/user/products/ProductDetailInfor.vue";
     import ProductDetailAddCart from "@/components/user/products/ProductDetailAddCart.vue";
     import ProductDetailReview from "@/components/user/products/ProductDetailReview.vue";
+    import ProductDetailSuggest from "@/components/user/products/ProductDetailSuggest.vue";
 
     import ProductService from "@/services/admin/product.service";
     import CartService from "@/services/user/cart.service";
-    import ReviewService from "@/services/user/review.service";
     
     import {mapGetters} from 'vuex';
     import { showAlert } from '@/utils';
@@ -56,7 +61,8 @@
             ProductDetailImage,
             ProductDetailInfor,
             ProductDetailAddCart,
-            ProductDetailReview
+            ProductDetailReview,
+            ProductDetailSuggest
         },
         props: {
             id: { type: String, required: true },

@@ -1,7 +1,7 @@
 <template>
     <div class="product-review">
         <h3>Khách Hàng Đánh Giá ( {{ totalReviews }} )</h3>
-        <div class="review-overview">
+        <div class="review-overview" v-if="productLocal.reviews.items.length>0">
             <div class="review-item review">
                 <p>Đánh giá trung bình</p>
                 <ul>
@@ -49,9 +49,8 @@
                 </ul>
             </div>
         </div>
-        <p v-if="productLocal.reviews.items.length==0" class="fw-bold text-black my-3">Chưa có đánh giá nào.</p>
 
-        <div class="review-option">
+        <div class="review-option" v-if="productLocal.reviews.items.length>0">
             <span
                 :class="{ 'active': checkOption==1 }"
                 @click="checkOption=1"
@@ -112,7 +111,7 @@
                 </ul>
             </span>
         </div>
-        <div class="accordion mt-3" v-if="paginatedReviews.length>0">
+        <div class="accordion mt-3" v-if="paginatedReviews.length>0 && productLocal.reviews.items.length>0">
             <div 
                 v-for="(review, index) in paginatedReviews"
                 :key="review.id"
@@ -169,9 +168,8 @@
                 </div>
             </div>
         </div>
-        <p v-else class="mt-5">Không tìm thấy đánh giá theo lựa chọn của bạn.</p>
 
-        <div class="me-3">
+        <div class="me-3" v-if="productLocal.reviews.items.length>0">
             <div class="d-flex justify-content-end">
                 <ul class="pagination justify-content-end">
                 <li class="page-item" :class="{ disabled: currentPage <= 1 }">
@@ -207,6 +205,8 @@
                 </ul>
             </div>
         </div>
+        <p v-else class="fw-bold text-black my-3">Chưa có đánh giá nào.</p>
+
     </div>    
 </template>
 <script>
@@ -214,6 +214,16 @@
     export default {
         props: {
             product: { type: Object, required: true },
+        },
+        watch: {
+        'product': {
+                handler(newProduct) {
+                    // Cập nhật reviews khi product thay đổi
+                    this.productLocal.reviews.items = newProduct.reviews.items;
+                },
+                immediate: true, // Để chạy ngay khi component được mounted
+            },
+            // ...
         },
         data() {
             return {
@@ -234,7 +244,7 @@
                     {color_name: 'Tất cả', color: null}
                 ],
                 currentPage: 1,
-                itemsPerPage: 5,
+                itemsPerPage: 3,
                 maxVisibleButtons: 2,
                 reviewID: 0,
                 currentImageIndex: -1,
@@ -500,6 +510,7 @@
         padding: 16px 24px;
         opacity: 0;
         visibility: hidden;
+        z-index: 10;
     }
     
     .review-option ul::after {
