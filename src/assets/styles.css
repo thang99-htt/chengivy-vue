@@ -1559,7 +1559,8 @@ language-select .language-select-menu_item {
   }
 }
 
-.header .sub-menu-search {
+.header .sub-menu-search,
+.header .sub-search-image {
   position: absolute;
   top: 53px;
   left: 2%;
@@ -2405,9 +2406,12 @@ hr {
   max-width: 600px !important;
 }
 
+.offcanvas-header h5 {
+  font-size: 18px;
+}
 .offcanvas-header,
 .offcanvas-body {
-  padding: 10px 25px 25px;
+  padding: 10px 25px 0;
 }
 
 .import-product .search-input {
@@ -2698,8 +2702,8 @@ table.dataTable tr td:first-child {
 }
 
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 14px;
+  height: 14px;
 }
 
 ::-webkit-scrollbar-thumb {

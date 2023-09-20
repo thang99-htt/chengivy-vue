@@ -469,7 +469,7 @@ export default {
             minKnob: 0,
             maxKnob: 340,
             category: this.$route.query.category,
-            favoriteProductIds: []
+            favoriteProductIds: [],
         };
     },
     async created() {

@@ -39,8 +39,8 @@ class ProductService {
     async updateProductsSale(data) {
         return (await this.api.put("/update-product-sale", data)).data;
     }
-    async delete(id) {
-        return (await this.api.delete(`/${id}`)).data;
+    async delete(selectedIds) {
+        return (await this.api.delete("/delete-product", { data: selectedIds })).data;
     }
     async deleteImage(id) {
         return (await this.api.delete(`/delete-image/${id}`)).data;

@@ -9,7 +9,7 @@
                             <div class="product-item" v-for="item in inventories.missing_products" :key="item">
                                 <img :src="item.image" alt="">
                                 <p>{{ item.name.slice(0, 17) }}...</p>
-                                <p>Đã bán <span>{{ formatPrice(item.price) }}</span></p>
+                                <p>Giá <span>{{ formatPrice(item.price) }}</span></p>
                             </div>
                         </div>
                     </div>
@@ -19,7 +19,8 @@
                             <div class="product-item" v-for="item in inventories.out_of_stock_products" :key="item">
                                 <img :src="item.image" alt="">
                                 <p>{{ item.name.slice(0, 17) }}...</p>
-                                <p>Đã bán <span>{{ formatPrice(item.price) }}</span></p>
+                                <p>{{ item.color }} - {{ item.size }}</p>
+                                <p>Đã bán <span>{{ (item.totalExport).toLocaleString() }}</span></p>
                             </div>
                         </div>
                     </div>
@@ -29,7 +30,7 @@
                             <div class="product-item" v-for="item in inventories.unsold_products" :key="item">
                                 <img :src="item.image" alt="">
                                 <p>{{ item.name.slice(0, 17) }}...</p>
-                                <p>Đã bán <span>{{ formatPrice(item.price) }}</span></p>
+                                <p>Giá bán <span>{{ formatPrice(item.price) }}</span></p>
                             </div>
                         </div>
                     </div>
@@ -78,7 +79,7 @@ import { formatPrice } from "../../../utils";
 
 .product-item {
     border-bottom: 1px solid #e5e5e5;
-    flex: 0 0 calc(20% - 10px) ;
+    flex: 0 0 calc(13% - 5px) ;
     margin: 5px;
     box-sizing: border-box;
     text-align: center;
@@ -98,6 +99,6 @@ import { formatPrice } from "../../../utils";
     color: #1f4173;
 }
 .product-item p:nth-child(2) {
-    height: 40px;
+    height: 20px;
 }
 </style>

@@ -2,7 +2,6 @@
     <section class="product-list mt-5 filter_products mb-5">
       <p v-if="keyword" class="text-center">Kết quả tìm kiếm cho từ khóa "{{ keyword }}"</p>
       <ProductList v-if="filteredProductsCount > 0" :products="filteredProducts" />
-      <p class="mt-100 text-center" v-else>Không có sản phẩm nào.</p>
     </section>
   </template>
   

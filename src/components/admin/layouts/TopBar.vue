@@ -17,23 +17,25 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
                                 <h3>Thông báo</h3>
-                                <div class="notification-item"
-                                    v-for="notification in notifications" :key="notification"
-                                >
-                                    <p class="notification-content">
-                                        {{ notification.user }}: {{ notification.message }}
-                                    </p>
-                                    <p class="notification-detail">
-                                        <span>{{ formattedDate(notification.date) }}</span>
-                                        <a :href="notification.link">Chi tiết</a>
-                                    </p>
+                                <div class="notification-container">
+                                    <div class="notification-item"
+                                        v-for="notification in notifications" :key="notification"
+                                    >
+                                        <p class="notification-content">
+                                            {{ notification.user }}: {{ notification.message }}
+                                        </p>
+                                        <p class="notification-detail">
+                                            <span>{{ formattedDate(notification.date) }}</span>
+                                            <a :href="notification.link">Chi tiết</a>
+                                        </p>
+                                    </div>
                                 </div>
                                 <div class="notification-view">
                                     <a href="#">Xem tất cả</a>
                                 </div>
                             </div>
                         </li>
-                        <li><a href="#"><i class="fa fa-envelope"></i><span class="badge">3</span></a></li>
+                        <li><a href="https://mail.google.com/mail/u/2/"><i class="fa fa-envelope"></i><span class="badge">3</span></a></li>
                         <li><a href="#"><i class="fa fa-question-circle"></i></a></li>
                     </ul>
                     <ul class="user_profile_dd dropdown">
@@ -70,6 +72,7 @@
                 authorization: [],
                 notifications: [],
                 currentTime: new Date(),
+                reviews: [],
             };
         },
         methods: {
@@ -147,25 +150,34 @@
                     return formattedDate;
                 }
             },
-
+            async retrieveReviews() {
+                try {
+                    const response = await axios.get('http://127.0.0.1:5000/reviews/sentiment');
+                    this.reviews = response.data;
+                    console.log(this.reviews)
+                } catch (error) {
+                    console.log(error);
+                }
+            },
         },
         computed: {
             ...mapGetters(['getAdmin'])
         },
         mounted() {
             this.retrieveNotifications();
-            // Pusher.logToConsole = true;
-            // const pusher = new Pusher('0d5201b4ba1917ad2dcf', {
-            //     cluster: 'ap1',
-            // });
+            this.retrieveReviews()
+            Pusher.logToConsole = true;
+            const pusher = new Pusher('0d5201b4ba1917ad2dcf', {
+                cluster: 'ap1',
+            });
 
-            // const channel = pusher.subscribe('notification');
-            // channel.bind('notification', (data) => {
-            //     this.notifications.push(data);
-            //     this.retrieveNotifications();
-            // });
-            // // Cập nhật thời gian mỗi giây
-            // setInterval(this.updateCurrentTime, 1000); // Mỗi giây (1000 ms)
+            const channel = pusher.subscribe('notification');
+            channel.bind('notification', (data) => {
+                this.notifications.push(data);
+                this.retrieveNotifications();
+            });
+            // Cập nhật thời gian mỗi giây
+            setInterval(this.updateCurrentTime, 1000); // Mỗi giây (1000 ms)
         },
     };
 </script>

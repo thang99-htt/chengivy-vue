@@ -35,7 +35,10 @@
                                                     @click="changeColor(color)"
                                                 >
                                                 </span>
-                                                <input class="btn-add__color" type="button" name="btnSave" value="Thêm màu" @click="openModalProduct">
+                                                <span class="filters-panel-group-item__item-box circle btn-add__color"
+                                                @click="openModalProduct">
+                                                    <i class="fa fa-plus"></i>
+                                                </span>
                                             </div>
                                         </div>  
                                         <div class="form-group">
@@ -69,7 +72,9 @@
                                             </div>
                                         </div>  
                                         <div class="form-group mb-3">
-                                            <input class="btn-add" type="button" name="btnSave" value="Thêm phân loại" @click.stop="addInventory">
+                                            <button type="button" class="btnAdd btn-add" @click.stop="addInventory">
+                                                <i class="fa fa-plus"></i>Thêm phân loại
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="col-7">
@@ -294,13 +299,17 @@ export default {
         padding: 6px 20px;
         text-align: center;
     }
+    .info-color {
+        display: flex;
+    }
     .btn-add__color {
-        position: absolute;
-        content: "";
-        top: 10px;
-        right: 0;
-        padding: 6px 20px;
-        text-align: center;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #003ad2;
+    }
+    .btn-add__color i {
+        color: #003ad2;
     }
     table {
         width: 100%;

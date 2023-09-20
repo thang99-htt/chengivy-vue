@@ -711,11 +711,11 @@ a:focus {
 
 
 
-.icon_info .notification {
+.notification {
     position: relative;
 }
 
-.icon_info .notification .dropdown-menu {
+.notification .dropdown-menu {
     position: absolute;
     content: "";
     top: 30px;
@@ -725,17 +725,13 @@ a:focus {
     border: 0;
     border-radius: 4px;
     width: 400px;
-    height: auto;
     max-height: 530px;
-    overflow: hidden;
-    overflow-y: scroll;
-    scrollbar-width: none; 
 }
-.icon_info .notification .dropdown-menu::-webkit-scrollbar {
-    width: 0;
+.notification .notification-container::-webkit-scrollbar {
+    width: 7px;
 }
 
-.icon_info .notification .dropdown-menu h3 {
+.notification .dropdown-menu h3 {
     text-align: center;
     font-size: 20px;
     text-transform: unset;
@@ -743,7 +739,16 @@ a:focus {
     font-weight: normal;
     margin: 12px 0 20px;
 }
-.icon_info .notification .notification-item {
+
+.notification .notification-container {
+    height: auto;
+    max-height: 460px;
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none; 
+}
+
+.notification .notification-item {
     height: 80px;
     background-color: rgba(188,218,255,0.22);
     padding: 8px 16px;
@@ -752,34 +757,46 @@ a:focus {
     border: 1px solid #e6eaf0;
     margin: 8px;
 }
-
-.icon_info .notification .notification-item .notification-content {
+.notification .notification-item .notification-content {
+    display: flex;
+    justify-content: space-between;
+}
+.notification .notification-item .notification-content span {
     color: #1f4173;
     font-size: 17px;
     font-weight: bold;
 }
+.notification .notification-item .notification-content span:last-child {
+    font-weight: normal;
+}
 
-.icon_info .notification .notification-item .notification-detail {
+.notification .notification-item .notification-detail {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.icon_info .notification .notification-item .notification-detail a {
+.notification .notification-item .notification-detail a {
     color: #003ad2;
     font-size: 15px;
     cursor: pointer;
 }
 
-.icon_info .notification .notification-view {
+.notification .notification-view {
     border-top: 1px solid #003ad2;
     height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    content: "";
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: #fff;
 }
 
-.icon_info .notification .notification-view a {
+.notification .notification-view a {
     color: #003ad2;
     font-size: 17px;
 }
@@ -1151,9 +1168,10 @@ button[data-toggle="collapse"] {
     border-radius: 50%;
 }
 
-.counter_section1 .couter_icon i {
+.counter_section1 .counter_icon i {
     border-radius: 6px;
     font-size: 20px;
+    cursor: pointer;
 }
 
 .counter_section1 .counter_icon  i {

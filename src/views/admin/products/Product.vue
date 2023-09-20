@@ -3,50 +3,46 @@
         @closeModal="closeModal" :productID="productID"/>
 
     <section class="content">
-        <div class="row center-block">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-body">
-                        <div class="group-btn">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <div>
-                                    <button type="button" class="btnAdd" @click="showModal = !showModal">
-                                        <i class="fa fa-plus"></i>Thêm mới
-                                    </button>
-                                    <button type="button" class="btnPrint">
-                                        <i class="fa fa-print"></i>In
-                                    </button>
-                                    <button type="button" class="btnAddFile">
-                                        <i class="fa fa-download"></i>Thêm dữ liệu
-                                    </button>
-                                    <button type="button" class="btnExcel">
-                                        <i class="fa fa-upload"></i>Xuất dữ liệu
-                                    </button>
-                                </div>
-                                <div>
-                                    <button type="button" class="btnBack" @click="refreshList()">
-                                        <i class="fa fa-refresh"></i>Làm mới
-                                    </button>
-                                    <button type="button" class="btnDelete" @click="deleteProduct()">
-                                        <i class="fa fa-trash"></i>Xóa
-                                    </button>
-                                </div>
-                            </div>
+        <div class="box">
+            <div class="box-body">
+                <div class="group-btn">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div>
+                            <button type="button" class="btnAdd" @click="showModal = !showModal">
+                                <i class="fa fa-plus"></i>Thêm mới
+                            </button>
+                            <button type="button" class="btnPrint">
+                                <i class="fa fa-print"></i>In
+                            </button>
+                            <button type="button" class="btnAddFile">
+                                <i class="fa fa-download"></i>Thêm dữ liệu
+                            </button>
+                            <button type="button" class="btnExcel">
+                                <i class="fa fa-upload"></i>Xuất dữ liệu
+                            </button>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12 table-responsive">
-                                <ProductOverview 
-                                    v-if="filteredProductsCount > 0" 
-                                    :products="filteredProducts" 
-                                    :selectedIds="selectedIds" 
-                                    :showModal="showModal"
-                                    @update-modal="updateShowModal"
-                                    :productID="productID"
-                                    @update-productID="updateProduct"
-                                />
-                                <!-- <p v-else>Không có sản phẩm nào.</p> -->
-                            </div>
+                        <div>
+                            <button type="button" class="btnBack" @click="refreshList()">
+                                <i class="fa fa-refresh"></i>Làm mới
+                            </button>
+                            <button type="button" class="btnDelete" @click="deleteProduct()">
+                                <i class="fa fa-trash"></i>Xóa
+                            </button>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 table-responsive">
+                        <ProductOverview 
+                            v-if="filteredProductsCount > 0" 
+                            :products="filteredProducts" 
+                            :selectedIds="selectedIds" 
+                            :showModal="showModal"
+                            @update-modal="updateShowModal"
+                            :productID="productID"
+                            @update-productID="updateProduct"
+                        />
+                        <!-- <p v-else>Không có sản phẩm nào.</p> -->
                     </div>
                 </div>
             </div>

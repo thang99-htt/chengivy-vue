@@ -199,6 +199,15 @@ const routes = [
                 }
             },
             {
+                path: "notifications",
+                name: "notification",
+                component: () => import("../views/admin/notifications/Notification.vue"),
+                meta: {
+                    description: 'Thông báo',
+                    permissionID: 51
+                }
+            },
+            {
                 path: "statisticals",
                 children: [
                     {

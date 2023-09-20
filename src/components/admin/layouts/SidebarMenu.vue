@@ -134,6 +134,12 @@
     </li>
     <li class="header">ME</li>
     <li class="pageLink">
+      <router-link to="/admin/notifications">
+        <i class="fa fa-bell"></i>
+        <span class="page">Thông báo</span>
+      </router-link>
+    </li>
+    <li class="pageLink">
       <router-link to="/admin/tasks">
         <i class="fa fa-tasks"></i>
         <span class="page">Nhiệm vụ</span>
@@ -144,32 +150,6 @@
         <i class="fa fa-cog"></i>
         <span class="page">Cài đặt</span>
       </router-link>
-    </li>
-    <li class="treeview">
-      <a href="#">
-        <i class="fa fa-folder"></i>
-        <span class="treeview-title">Files</span>
-        <span class="pull-right-container pull-right">
-          <i class="fa fa-angle-left fa-fw"></i>
-        </span>
-      </a>
-      <ul class="treeview-menu">
-        <li>
-          <a href="#">
-            <i class="fa fa-file-word"></i> Item 1
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-file-picture"></i> Item 2
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-file-pdf"></i> Item 3
-          </a>
-        </li>
-      </ul>
     </li>
 
     <li class="header">LOGS</li>

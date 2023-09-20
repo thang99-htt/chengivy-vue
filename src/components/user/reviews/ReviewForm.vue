@@ -5,7 +5,7 @@
             :key="purchase.product_id"
         >
             <div class="d-flex">
-                <img class="d-block me-3" width="70" :src="purchase.image" alt="">
+                <img class="d-block me-3" width="120" :src="purchase.image" alt="">
                 <div>
                     <router-link 
                         :to="{

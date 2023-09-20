@@ -21,6 +21,9 @@
 <script>
 import ReviewForm from "./ReviewForm.vue";
 import ReviewService from "@/services/admin/review.service";
+import NotificationService from "@/services/admin/notification.service";
+import axios from 'axios';
+import { mapGetters } from "vuex";
 
 export default {
     props: {
@@ -35,6 +38,9 @@ export default {
             reviews: []
         };
     },
+    computed: {
+        ...mapGetters(['getUser'])
+    },
     methods: {
         async submitReview(data) {
             const Toast = this.$swal.mixin({
@@ -48,6 +54,7 @@ export default {
                     toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                 }
             })
+
             try {
                 await ReviewService.create(data).then(res => {
                     Toast.fire({
@@ -55,6 +62,12 @@ export default {
                         title: res.message
                     });
                 });
+                const response = await axios.get('http://127.0.0.1:5000/reviews/sentiment');
+               
+                if(response.data) {
+                    await NotificationService.createReview(this.getUser.id);
+                }
+
                 this.closeModal();
             } catch (error) {
                 console.log(error);

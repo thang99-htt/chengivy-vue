@@ -75,7 +75,7 @@
                 handler() {
                     this.findMatchingInventory();
                 },
-                deep: true, // Watch for nested changes inside inventoryLocal
+                deep: true, 
             },
         },
         data() {
@@ -101,25 +101,30 @@
         methods: {
             async getProduct(id) {
                 try {
-                    this.product = await ProductService.getDetail(id);
-                    
-                    this.isColorSelected = (this.product.images)[0];
+                    const response = await ProductService.getDetail(id);
+                    this.product = response;
+                    this.isColorSelected = (response.images)[0];
                     this.inventoryLocal.color_id = this.isColorSelected.color_id;
 
-                    this.inventoryLocal.size_id = (this.product.inventories)[0].items.find(item => {
+                    this.inventoryLocal.size_id = (response.inventories)[0].items.find(item => {
                         return item.color_id === this.isColorSelected.color_id && item.total_final !== 0;
                     }).size_id;
 
                     // Cart
                     this.cart.color_id = this.isColorSelected.color_id;
                     this.cart.color_name = this.isColorSelected.color_name;
-                    this.cart.size_id = (this.product.inventories)[0].items.find(item => {
+                    this.cart.size_id = (response.inventories)[0].items.find(item => {
                         return item.color_id === this.isColorSelected.color_id && item.total_final !== 0;
                     }).size_id;
-                    this.cart.size_name = (this.product.inventories)[0].items.find(item => {
+                    this.cart.size_name = (response.inventories)[0].items.find(item => {
                         return item.color_id === this.isColorSelected.color_id && item.total_final !== 0;
                     }).size_name;
 
+                    this.inventoryLocal = {
+                        'product_id': this.id,
+                        'size_id': this.inventoryLocal.size_id,
+                        'color_id': this.inventoryLocal.color_id,
+                    },
                     this.findMatchingInventory();
                 } catch (error) {
                     console.log(error);

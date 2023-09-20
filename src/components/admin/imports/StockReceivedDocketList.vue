@@ -20,7 +20,7 @@
                 <td>{{ stockReceivedDocket.form }}</td>
                 <td>{{ stockReceivedDocket.supplier.name }}</td>
                 <td>
-                    {{ stockReceivedDocket.payment_voucher.id }}, <br>
+                    Phiếu chi {{ stockReceivedDocket.payment_voucher.id }}, <br>
                     {{ stockReceivedDocket.payment_voucher.date }}, <br>
                     {{ formatPrice(stockReceivedDocket.payment_voucher.total_price) }}
                 </td>

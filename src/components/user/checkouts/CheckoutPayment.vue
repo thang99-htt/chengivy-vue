@@ -195,9 +195,13 @@
                                            :value="((cartLocal.into_money+25000)/23795).toFixed()"
                                         />
                                     </div>
-                                    
-                                    <div v-show="orderLocal.payment_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
+                                    <div v-show="orderLocal.payment_method_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
                                         <div ref="paypal"></div>
+                                    </div>
+                                    <div v-show="orderLocal.payment_method_id == 4 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
+                                        <div ref="vnpay">
+                                            <span @click="makePayment">Pay Now</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="shopping-item" v-else>
@@ -271,7 +275,7 @@
                                             <span class="total-amount bold">{{ formatPrice(totalValue) }}</span>
                                         </div>
                                     </div>
-                                    <div v-show="orderLocal.payment_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
+                                    <div v-show="orderLocal.payment_method_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
                                         <div ref="paypal"></div>
                                     </div>
                                 </div>
@@ -290,6 +294,8 @@
     import { Form, Field, ErrorMessage } from "vee-validate";
     import { formatPrice } from '@/utils';
     import {mapGetters} from 'vuex';
+    import axios from 'axios';
+    import VNPayService from "../../../services/user/vnpay.service";
 
     export default {
         name: 'Header',
@@ -435,7 +441,38 @@
                     this.orderLocal.total_discount = this.discountTotal;
                     this.orderLocal.total_value = this.totalValue;
                 }
-            }
+            },
+            async initiatePayment() {
+                // Make an API request to Laravel to create a payment
+                // You can use Axios or another HTTP library
+                try {
+                    await VNPayService.create()
+                        .then((response) => {
+                            console.log(response)
+                        // Redirect the user to the VNPAY payment page
+                        window.location.href = response.data.redirect_url;
+                        })
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            async makePayment() {
+                try {
+                const response = await axios.get('https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=1806000&vnp_Command=pay&vnp_CreateDate=20210801153333&vnp_CurrCode=VND&vnp_IpAddr=127.0.0.1&vnp_Locale=vn&vnp_OrderInfo=Thanh+toan+don+hang+%3A5&vnp_OrderType=other&vnp_ReturnUrl=https%3A%2F%2Fdomainmerchant.vn%2FReturnUrl&vnp_TmnCode=4KUPP2WR&vnp_TxnRef=5&vnp_Version=2.1.0&vnp_SecureHash=PBYDPRCYJCZPSVYNTNQNOXKTZBUWIDYD', {
+                    // Add your payment data here
+                    // Example: paymentAmount, orderId, etc.
+                });
+
+                    // Handle the response from VNPAY
+                    console.log(response.data);
+
+                    // Redirect the user to the payment gateway
+                    window.location.href = response.data.paymentUrl;
+                } catch (error) {
+                // Handle errors
+                    console.log(error);
+                }
+            },
         }, 
         computed: {
             ...mapGetters(['productBuyNow', 'getUser']),
@@ -484,7 +521,7 @@
                 } else {
                     return this.cartLocal.total_price + 25000 - this.discountProduct;
                 }
-            }
+            },
         },        
      };
 </script>

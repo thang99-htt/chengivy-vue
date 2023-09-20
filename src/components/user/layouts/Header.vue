@@ -283,9 +283,14 @@
             </div>
             <div class="main-menu-search">
                 <div class="navbar-search search-style-5">
-                    <div class="search-input" @click="viewSearchHistory">
+                    <div class="search-input">
                         <button class="search-btn"><i class="bi bi-search"></i></button>
-                        <input type="text" v-model="keyword" placeholder="Tìm kiếm" @keypress="handleKeyPress" />
+                        <input type="text" v-model="keyword" placeholder="Nhập nội dung cần tìm kiếm" 
+                            @click="viewSearchHistory"
+                            @keypress="handleKeyPress" />
+                        <button class="camera-btn" @click="viewSearchImage">
+                            <i class="bi bi-camera"></i>
+                        </button>
                         <button @click="startListening" class="microphone-btn"><i class="bi bi-mic"></i></button>
                     </div>
                 </div>
@@ -308,6 +313,27 @@
                             </a>
                         </li>
                     </ul>
+                </div>
+                <div class="sub-search-image">
+                    <h3>Tìm kiếm bất kỳ hình ảnh nào với Chengivy!</h3>
+                    <div class="searcr-image__body">
+                        <div class="upload-file">
+                            <img src="/images/icon/file.svg" alt="" width="70">
+                            <span id="file-span" @click="openFileInput()">Tải ảnh lên</span>
+                            <input type="file" id="file" style="display: none;" accept="image/*" @change="handleFileChange">
+                        </div>
+                        <div class="or">
+                            <span></span>
+                            <span>Hoặc</span>
+                            <span></span>
+                        </div>
+                        <div class="upload-url">
+                            <input type="text" v-model="keywordImage" placeholder="Nhập liên kết hình ảnh">
+                            <button type="button" class="btnAdd" @click="submitSearchImage">
+                                Tìm kiếm
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="middle-right-area">
@@ -569,7 +595,8 @@
                 <div class="navbar-search search-style-5">
                     <div class="search-input">
                         <button class="search-btn"><i class="bi bi-search"></i></button>
-                        <input type="text" v-model="keyword" placeholder="Tìm kiếm" @keypress="handleKeyPress" />
+                        <input type="text" v-model="keyword" placeholder="Nhập nội dung cần tìm kiếm" @keypress="handleKeyPress" />
+                        <button @click="startListening" class="microphone-btn"><i class="bi bi-mic"></i></button>
                         <button @click="startListening" class="microphone-btn"><i class="bi bi-mic"></i></button>
                     </div>
                 </div>
@@ -593,10 +620,41 @@
             </div>
         </div>
     </header>
+    <div class="modal d-block search-image" v-if="checkSearchImage">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title fw-bold">Kết quả tìm kiếm</h4>
+                    <button type="button" class="btn-close" @click="checkSearchImage=!checkSearchImage"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="search-image__container">
+                        <div class="search-image__path">
+                            <img :src="searchImages.img_path" width="360">
+                        </div>
+                        <div class="search-image__pred">
+                            <div class="row">
+                                <div class="col-2 image-pred"  v-for="product in searchImages.pred" >
+                                    <router-link :to="{
+                                        name: 'product.detail',
+                                        params: { id: product.id },
+                                    }" target="_blank">
+                                        <img :src="product.image">
+                                    </router-link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
 import CategoryService from "@/services/user/category.service";
 import CartService from "@/services/user/cart.service";
+import UploadService from "@/services/user/upload.service";
+
 import FavoriteService from "@/services/user/favorite.service";
 import axios from 'axios';
 import { mapGetters } from 'vuex';
@@ -638,7 +696,10 @@ export default {
             ],
             searchHistory: [],
             maxSearchHistory: 8,
-            subCategory: false
+            subCategory: false,
+            checkSearchImage: false,
+            searchImages: [],
+            keywordImage: ""
         };
     },
     async created() {
@@ -723,12 +784,22 @@ export default {
             }
         },
         startListening() {
-            const recognition = new window.webkitSpeechRecognition()
+            const recognition = new window.webkitSpeechRecognition();
+
+            // Thiết lập ngôn ngữ là tiếng Việt
+            recognition.lang = 'vi-VN';
+
+            // Tùy chỉnh các thiết lập khác nếu cần
+            // recognition.continuous = true; // Cho phép ghi âm liên tục
+            // recognition.interimResults = true; // Hiển thị kết quả tạm thời
+
             recognition.onresult = (event) => {
-                const speechToText = event.results[0][0].transcript
-                this.keyword = speechToText
-            }
-            recognition.start()
+                const speechToText = event.results[0][0].transcript;
+                this.keyword = speechToText;
+                this.redirectToSearchPage();
+            };
+
+            recognition.start();
         },
         handleKeyPress(event) {
             if (event.key === 'Enter') {
@@ -811,6 +882,38 @@ export default {
             const navbarToggler = document.querySelector(".sub-menu-search");
             navbarToggler.classList.toggle("d-block");
         },
+        viewSearchImage() {
+            const navbarToggler = document.querySelector(".sub-search-image");
+            navbarToggler.classList.toggle("d-block");
+        },
+        async submitSearchImage() {
+            try {
+                const postData = {
+                        'image_path': this.keywordImage, 
+                    }; 
+                const response = await axios.post('http://127.0.0.1:5000/search-image-similar', postData);
+                this.searchImages = response.data.result;
+                this.checkSearchImage = true;
+                this.keywordImage = ""
+            } catch (error) {
+                console.error('Error fetching search image similar:', error);
+            }
+            
+        },
+        openFileInput() {
+            const navbarToggler = document.querySelector("#file");
+            navbarToggler.click();
+        },
+        async handleFileChange(event) {
+            let file = event.target.files[0];
+            let reader = new FileReader();
+            reader.onloadend = async (file) => {
+                const image = reader.result;
+                this.keywordImage = await UploadService.upload(image);
+                this.submitSearchImage();
+            }
+            reader.readAsDataURL(file);
+        },
     },
     computed: {
         ...mapGetters(['getUser', 'carts', 'favorites']),
@@ -829,6 +932,7 @@ export default {
 
 <style scoped>
 .microphone-btn,
+.camera-btn,
 .search-btn {
     background-color: #fff;
     width: 45px;
@@ -846,6 +950,10 @@ export default {
     border-radius: 0 50% 50% 0;
 }
 
+.camera-btn {
+    border-left: none;
+    border-right: none;
+}
 .search-btn {
     border-right: none;
     padding-left: 10px;
@@ -862,5 +970,103 @@ export default {
 }
 .history {
     width: 80%;
+}
+.sub-search-image {
+    height: 340px;
+    overflow: hidden;
+}
+.sub-search-image h3 {
+    font-size: 17px;
+    text-align: center;
+}
+.searcr-image__body {
+    background: #f3f8fd;
+    border: 1px dashed #d8dadc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 270px;
+    padding: 20px;
+    position: relative;
+    margin: 0 20px;
+}
+.searcr-image__body .upload-file {
+    margin: 0 auto;
+    padding: 40px 0;
+}
+.searcr-image__body .upload-file  span {
+    margin-left: 10px;
+    text-decoration: underline;
+    color: #0061cf;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.searcr-image__body .or {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.searcr-image__body .or span:nth-child(2) {
+    width: 12%;
+    text-align: center;
+}
+.searcr-image__body .or span:first-child,
+.searcr-image__body .or span:last-child {
+    height: 1px;
+    background-color: #d5d5d5;
+    width: 44%;
+}
+.searcr-image__body .upload-url {
+    padding: 40px 20px;
+    display: flex;
+    justify-content: space-between;
+}
+.searcr-image__body .upload-url input {
+    width: 320px;
+    border-radius: 20px;
+    border: 1px solid #d5d5d5;
+    padding: 10px;
+}
+.modal.search-image .modal-dialog {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+.modal.search-image .modal-content {
+    height: 750px !important;
+    max-height: 750px !important;
+    padding: 0 !important;
+}
+.modal.search-image .modal-body {
+    padding: 0 !important;
+}
+.search-image__container {
+    display: flex;
+    justify-content: space-between;
+}
+.modal-header button {
+    margin-right: 10px;
+}
+.search-image__path {
+    width: 40%;
+    background-color: #000;
+    height: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-image__pred {
+    width: 59%;
+    cursor: pointer;
+}
+.search-image__pred .image-pred {
+    margin-bottom: 10px;
+    height: 220px;
+}
+.search-image__pred .image-pred img {
+    height: 100%;
 }
 </style>

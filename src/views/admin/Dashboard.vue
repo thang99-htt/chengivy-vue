@@ -92,7 +92,7 @@
               <div class="counter_icon ">
                 <div>
                   <p class="total_no">Đơn chờ xác nhận</p>
-                  <i class="bi bi-chevron-right"></i>
+                  <a href="/admin/orders"><i class="bi bi-chevron-right"></i></a>
                   <!-- <p>Khách hàng mua nhiều nhất: {{ statisticals.customers }}</p> -->
                 </div>
               </div>
@@ -103,7 +103,7 @@
               <div class="couter_icon">
                 <div>
                   <i class="fa fa-home icon-red"></i>
-                  <p class="head_couter">{{ statisticals.prducts_out_of_stock }}</p>
+                  <p class="head_couter">{{ statisticals.products_out_of_stock }}</p>
                 </div>
               </div>
               <div class="counter_icon">

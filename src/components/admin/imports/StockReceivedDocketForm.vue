@@ -5,7 +5,7 @@
         :currentProduct="currentProduct" :showModal="showModal" @closeModal="closeModal" />
     <ProductModal v-if="modalProduct" :showModal="showModal" @closeModal="closeModal" />
 
-    <Form @submit="submitStockReceivedDocket">
+    <Form>
         <div class="row import">
             <div class="col-8">
                 <div class="form-group">
@@ -273,10 +273,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group float-end pe-3">
-                    <input type="submit" name="btnSave" value="Thực hiện">
-                    <input type="button" name="btnDelete" value="Xóa" v-if="stockReceivedDocketLocal.id">
-                    <input type="button" name="btnBack" value="Hủy" v-else @click="reset">
+                <div class="form-group float-end pe-4 mt-1">
+                    <button type="button" class="btnAdd" @click="submitStockReceivedDocket">
+                        <i class="fa fa-plus"></i>Thực hiện
+                    </button>
+                    <button type="button" class="btnBack ms-2" @click="reset">
+                        <i class="fa fa-refresh"></i>Hủy
+                    </button>
                 </div>
             </div>
         </div>
@@ -587,7 +590,7 @@ export default {
 .import .import-product {
     overflow-y: scroll;
     height: 480px;
-    scrollbar-width: none; 
+    scrollbar-width: none;                                                                                          
 }
 .import .import-product::-webkit-scrollbar {
     width: 0;
