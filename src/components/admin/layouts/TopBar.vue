@@ -152,7 +152,7 @@
             },
             async retrieveReviews() {
                 try {
-                    const response = await axios.get('http://127.0.0.1:5000/reviews/sentiment');
+                    const response = await axios.post('http://127.0.0.1:5000/reviews/toxic');
                     this.reviews = response.data;
                     console.log(this.reviews)
                 } catch (error) {

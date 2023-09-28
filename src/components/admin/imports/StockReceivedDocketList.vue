@@ -34,7 +34,7 @@
                                 params: { id: stockReceivedDocket.id },
                             }" 
                         >
-                            <img src="/images/icon/iconedit.png" alt="">
+                            <img v-if="isEditable(stockReceivedDocket.date)" src="/images/icon/iconedit.png" alt="">
                         </router-link>
                     </button>
                     <button type="button" class="btn">
@@ -86,6 +86,19 @@ export default {
     },
     methods: {
         formatPrice,
+        isEditable(date) {
+            // Chuyển đổi ngày thành đối tượng Date
+            const docketDate = new Date(date);
+            
+            // Lấy ngày hiện tại
+            const currentDate = new Date();
+            
+            // Trừ đi 3 ngày
+            currentDate.setDate(currentDate.getDate() - 3);
+
+            // So sánh ngày trong docketDate với currentDate
+            return docketDate > currentDate;
+        },
         statusUpdate(stockReceivedDocket) {
             try {
                 StockReceivedDocketService.updateStatus(stockReceivedDocket.id, stockReceivedDocket.status).then(() => {

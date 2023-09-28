@@ -3,8 +3,8 @@ class OrderService {
     constructor(baseUrl = "/api/admin/orders") {
         this.api = createApiClient(baseUrl);
     }
-    async getAll() {
-        return (await this.api.get("/")).data;
+    async getAll(data) {
+        return (await this.api.post("/", data)).data;
     }
     async deleteAll() {
         return (await this.api.delete("/")).data;

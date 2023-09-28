@@ -213,7 +213,7 @@ export default {
                 }
             });
             try {
-                await ProductService.updateProductsSale(this.productsSale)
+                await ProductService.updateProductsSale(this.productsSale);
                 Toast.fire({
                     icon: 'success',
                     title: 'Cập nhật sản phẩm giảm giá thành công.'

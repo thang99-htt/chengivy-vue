@@ -30,7 +30,7 @@
                         </li>
                     </ul>    
                 </td>
-                <td :class="{'bg-neg': review.sentiment}">
+                <td :class="{'bg-neg': review.classification}">
                     {{ review.content.split(' ').slice(0, 20).join(' ') + '.....' }}
                 </td>
                 <td>{{ review.reply }}</td>

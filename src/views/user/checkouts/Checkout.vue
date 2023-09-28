@@ -27,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            <div class="dash_blog">
+            <div class="dash_blog1">
                 <div class="liveAlert"></div>
                 <CheckoutShipping 
                     v-if="stepCheck == 0"
@@ -156,7 +156,7 @@
         box-shadow: none;
     }
     .checkout-progress .progress-bar .step {
-        z-index: 2;
+        z-index: 5;
         position: relative;
     }
     .checkout-progress .progress-bar .step .step-label {
@@ -224,8 +224,9 @@
     }
     .button-container {
         position: absolute;
-        bottom: 20px;
-        left: 0;
+        content: "";
+        left: 50px;
+        bottom: 30px;
     }
     .button-container .btn {
         display: inline-block;
@@ -240,8 +241,7 @@
         transition: 0.3s ease;
         cursor: pointer;
         text-align: center;
-        width: 380px;
-        margin-left: 25px;
+        width: 360px;
     }
     .checkout-progress-fill-1:before {
         content: "";
@@ -253,7 +253,7 @@
         background-color: #00b141;
         -webkit-transform: translateY(-50%) perspective(1000px);
         transform: translateY(-50%) perspective(1000px);
-        z-index: 1;
+        z-index: 2;
     }
 
     .checkout-progress-fill-2:before {
@@ -279,15 +279,16 @@
         color: #fff !important;
     }
     
-    .dash_blog {
-        min-height: 750px;
+    .dash_blog1 {
+        height: auto;
+        padding-bottom: 120px;
         background: #fafdff;
         border-radius: 5px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        float: left;
         width: 100%;
         margin-top: 20px;
         position: relative;
+        margin-top: 100px;
     }
     .cursor {
         cursor: pointer;

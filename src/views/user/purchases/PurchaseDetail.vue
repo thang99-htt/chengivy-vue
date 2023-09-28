@@ -17,31 +17,31 @@
                     <div class="step-label">Đơn hàng đã đặt</div>
                     <div class="step-label-date">{{ order.ordered_at }}</div>
                 </div>
-                <div class="step" :class="{'active': order.status.id == 2 || order.status.id == 4 || order.status.id == 8 || order.status.id == 9}">
+                <div class="step" :class="{'active': order.status.id >= 2 }">
                     <span><i class="bi bi-cash-coin"></i></span>
                     <div class="step-label">Đã xác nhận</div>
                     <div class="step-label-date">{{ order.confirmed_at }}</div>
                 </div>
-                <div class="step" :class="{'active': order.status.id == 4 || order.status.id == 8 || order.status.id == 9}">
+                <div class="step" :class="{'active': order.status.id >= 4 }">
                     <span><i class="bi bi-truck"></i></span>
-                    <div class="step-label" v-if="order.status.id == 4 || order.status.id == 8 || order.status.id == 9">Đã giao cho ĐVVC</div>
-                    <div class="step-label-date" v-if="order.status.id == 4 || order.status.id == 8 || order.status.id == 9">{{ order.ordered_at }}</div>
+                    <div class="step-label" v-if="order.status.id >= 4 ">Đã giao cho ĐVVC</div>
+                    <div class="step-label-date" v-if="order.status.id >= 4 ">{{ order.ordered_at }}</div>
                     <div class="step-label" v-else>Vận chuyển</div>
                 </div>
-                <div class="step" :class="{'active': order.status.id == 4 || order.status.id == 8 || order.status.id == 9}">
+                <div class="step" :class="{'active': order.status.id >= 4 }">
                     <span><i class="bi bi-journal-arrow-down"></i></span>
-                    <div class="step-label" v-if="order.status.id == 4 || order.status.id == 8 || order.status.id == 9">Đã nhận được hàng</div>
-                    <div class="step-label-date" v-if="order.status.id == 4 || order.status.id == 8 || order.status.id == 9">{{ order.receipted_at }}</div>
-                    <div class="step-label" v-else>Đang giao</div>
+                    <div class="step-label" v-if="order.status.id >= 4 && order.status.id <= 7 ">Đang giao</div>
+                    <div class="step-label" v-else>Đã nhận được hàng</div>
+                    <div class="step-label-date" v-if="order.status.id >= 4 ">{{ order.receipted_at }}</div>
                 </div>
-                <div class="step" :class="{'active': order.status.id == 9}">
+                <div class="step" :class="{'active': order.status.id >= 8 }">
                     <span><i class="bi bi-star"></i></span>
                     <div class="step-label" v-if="order.status.id == 9">Đã hoàn thành</div>
                     <div class="step-label-date" v-if="order.status.id == 9">{{ order.receipted_at }}</div>
                     <div class="step-label" v-else>Đánh giá</div>
-                </div>                        
+                </div>                     
             </div>
-        </div>
+        </div> 
         <div class="purchase-store">
             <div class="purchase-store__rate" v-if="order.receipted_at && isCurrentDateLessThanReceiptDate ">
                 <p>Đánh giá trước ngày {{ addDays(order.receipted_at, 30) }} để nhận 200 xu tại Chengivy!</p>
@@ -50,6 +50,7 @@
                         <button
                             type="button"
                             class="btn btn-warning me-3"
+                            @click="openModal(order.items)"
                         >
                             Đánh giá
                         </button>  
@@ -146,14 +147,18 @@
             :order="order"
         />          
     </div>
+    <ReviewModal v-if="showModal" :showModal="showModal" 
+        @closeModal="closeModal" :selectedPurchase="selectedPurchase"/>
 </template>
 <script>
     import OrderService from "@/services/user/order.service";
     import PurchaseDetail from "@/components/user/purchases/PurchaseDetail.vue";
+    import ReviewModal from "@/components/user/reviews/ReviewModal.vue";
 
     export default {
         components: {
             PurchaseDetail,
+            ReviewModal
         },
         props: {
             id: { type: String, required: true },
@@ -163,6 +168,8 @@
             return {
                 token: localStorage.getItem('token'),
                 order: null,
+                selectedPurchase: [],
+                showModal: false
             };
         },
         computed: {
@@ -259,7 +266,15 @@
                 const newDate = new Date(date);
                 newDate.setDate(newDate.getDate() + days);
                 return newDate.toISOString().slice(0, 19).replace('T', ' ');
-            }
+            },
+            openModal(purchase) {
+                this.selectedPurchase = purchase;
+                this.showModal = true;
+            },
+            closeModal() {
+                this.showModal = false;
+                this.selectedPurchase = [];
+            },
         },
         created() {
             this.getPurchase(this.id);

@@ -158,10 +158,6 @@
         color: #000;
         font-weight: 900;
     }
-    .dash_blog_inner {
-        float: left;
-        width: 100%;
-    }
     .dash_head {
         font-weight: normal;
         height: auto;

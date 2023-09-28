@@ -2374,7 +2374,8 @@ hr {
   display: flex;
   justify-content: start;
   box-shadow: 0 0 10px #00000012;
-  border: 2px solid #e6eaf0;
+  margin-bottom: 12px;
+  margin: 0 -24px 10px; 
 }
 
 .content .option-filter a {
@@ -2388,11 +2389,11 @@ hr {
   font-weight: 600;
   margin: 8px;
   border-radius: 4px;
-  background-color: rgba(31,65,115,.1);
+  background-color: rgba(57, 97, 156, 0.313)
 }
 .content .option-filter a:hover,
 .content .option-filter a.active {
-  background-color: #f39200;
+  background-color: #003ad2;
   color: #fff;
 }
 
