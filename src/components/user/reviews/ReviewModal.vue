@@ -27,7 +27,6 @@ import { mapGetters } from "vuex";
 
 export default {
     props: {
-        modalReview: { type: Boolean, required: true },
         selectedPurchase: { type: Array, required: true }
     },
     components: {

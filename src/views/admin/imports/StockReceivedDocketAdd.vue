@@ -22,7 +22,6 @@ export default {
                 'staff_id': "",
                 'supplier_id': "",
                 'payment_voucher_id': "",
-                'form': "",
                 'date': new Date(Date.now() + 7 * 60 * 60 * 1000).toISOString().slice(0, 16),
                 'total_price': 0,
                 'value_added': 0,
@@ -109,7 +108,6 @@ export default {
             this.stockReceivedDocket.staff_id = "";
             this.stockReceivedDocket.supplier_id = "";
             this.stockReceivedDocket.payment_voucher_id = "";
-            this.stockReceivedDocket.form = "";
             this.stockReceivedDocket.date = new Date(Date.now() + 7 * 60 * 60 * 1000).toISOString().slice(0, 16);
             this.stockReceivedDocket.total_value = 0;
             this.stockReceivedDocket.value_added = 0;

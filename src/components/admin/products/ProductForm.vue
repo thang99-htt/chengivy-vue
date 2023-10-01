@@ -2,9 +2,7 @@
     <BrandModal v-if="modalBrand" :showModal="showModal" @closeModal="closeModal"/>
     <CategoryModal v-if="modalCategory" :showModal="showModal" @closeModal="closeModal"/>
     
-    <Form
-        @submit="submitProduct"
-    >
+    <Form>
         <div class="row">
             <div class="col-6">
                 <h4>Thông tin</h4>
@@ -65,10 +63,13 @@
                     />
                     <ErrorMessage name="price_final" class="error-feedback" />
                 </div>
-                <div class="form-group">
-                    <input type="submit" name="btnSave" value="Thực hiện">
-                    <input type="button" name="btnDelete" value="Xóa" v-if="productLocal.id">
-                    <input type="button" name="btnBack" value="Hủy" v-else @click="reset">
+                <div class="form-group mt-5">
+                    <button type="button" class="btnAdd" @click="submitProduct">
+                        <i class="fa fa-plus"></i>Thực hiện
+                    </button>
+                    <button type="button" class="btnBack ms-2" @click="reset">
+                        <i class="fa fa-refresh"></i>Hủy
+                    </button>
                 </div>
             </div>
             <div class="col-6">

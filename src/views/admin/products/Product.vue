@@ -25,6 +25,9 @@
                             <button type="button" class="btnBack" @click="refreshList()">
                                 <i class="fa fa-refresh"></i>Làm mới
                             </button>
+                            <button type="button" class="btnDelete" @click="hiddenProduct()">
+                                <i class="fa fa-eye-slash"></i>Ẩn
+                            </button>
                             <button type="button" class="btnDelete" @click="deleteProduct()">
                                 <i class="fa fa-trash"></i>Xóa
                             </button>
@@ -96,6 +99,24 @@ export default {
             this.retrieveProducts();
             this.selectedIds = [];
         },
+        hiddenProduct() {
+            this.$swal.fire({
+                title: 'Bạn có chắc?',
+                text: "Bạn sẽ không thể hoàn tác lại điều này!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ẩn',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.value) {
+                    ProductService.hidden(this.selectedIds);
+                    this.refreshList();
+                    this.$swal.fire('Đã ẩn thành công!', '', 'success')
+                }
+            })
+        },
         deleteProduct() {
             this.$swal.fire({
                 title: 'Bạn có chắc?',
@@ -108,11 +129,8 @@ export default {
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.value) {
-                    ProductService.delete(this.selectedIds).then((res) => {
-                        if (res.success) {
-                            this.refreshList();
-                        }
-                    })
+                    ProductService.delete(this.selectedIds);
+                    this.refreshList();
                     this.$swal.fire('Đã xóa thành công!', '', 'success')
                 }
             })

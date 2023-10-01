@@ -215,8 +215,8 @@ export default {
             }
         },
         ordersCancelCount() {
-            if (this.orders.orders_cancle && this.orders.orders_cancle.length > 0) {
-                return this.orders.orders_cancle.reduce(
+            if (this.orders.orders_cancel && this.orders.orders_cancel.length > 0) {
+                return this.orders.orders_cancel.reduce(
                     (total, item) => total + item.total,
                     0
                 );
@@ -300,8 +300,8 @@ export default {
                     });
     
                     const cancelData = dates.map((date) => {
-                        const totalCancel = res.orders_cancle
-                            .filter((item) => item.cancle_date === date)
+                        const totalCancel = res.orders_cancel
+                            .filter((item) => item.cancel_date === date)
                             .reduce((sum, item) => sum + parseInt(item.total), 0);
                         return totalCancel;
                     });

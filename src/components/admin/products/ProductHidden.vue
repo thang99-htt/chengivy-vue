@@ -1,63 +1,52 @@
 <template>
     <section class="content">
-        <div class="row center-block">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-body">
-                        <div class="group-btn">
-                            <div class="d-flex align-items-center justify-content-end mb-3">
-                                <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
-                                <input type="button" name="btnAdd" value="Thêm mới" @click="openModal">
-                                <input type="button" name="btnEdit" value="Sửa" @click="openModal">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 table-responsive">
-                                <table class="example1 table dataTable">
-                                    <thead>
-                                        <tr role="row">
-                                            <th width="6%" data-orderable="false">ID</th>
-                                            <th width="35%">Sản phẩm</th>
-                                            <th width="12%">Có sẵn</th>
-                                            <th width="14%">Giá nhập</th>
-                                            <th width="14%">Giá bán</th>
-                                            <th width="12%">Trạng thái</th>
-                                            <th width="7%">Chọn</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr role="row" v-for="(product, index) in products" :key="product">
-                                            <td>{{ product.id }}</td>
-                                            <td>
-                                                <img v-if="product.image" :src="product.image" alt="" width="50"
-                                                    height="50">
-                                                <span class="ms-3">{{ product.name }}</span>
-                                            </td>
-                                            <td>{{ (product.total_final).toLocaleString() }}</td>
-                                            <td>{{ formatPrice(product.price_purchase) }}</td>
-                                            <td>{{ formatPrice(product.price) }}</td>
-                                            <td>
-                                                <button class="btn-sm"
-                                                    :class="[product.status == 1 ? 'btn-show' : 'btn-hide']"
-                                                    @click="statusUpdate(product)">
-                                                    {{ product.status == 1 ? 'Đăng bán' : 'Ẩn' }}
-                                                </button>
-                                            </td>
-                                            <td class="text-center">
-                                                <input type="checkbox" @change="idSelected(product)"
-                                                    :checked="selectedProducts.includes(product)">
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="6" class="text-center text-bold">Chọn tất cả</th>
-                                            <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
+        <div class="box">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-12 table-responsive">
+                        <table class="example1 table dataTable">
+                            <thead>
+                                <tr role="row">
+                                    <th width="6%" data-orderable="false">ID</th>
+                                    <th width="35%">Sản phẩm</th>
+                                    <th width="12%">Có sẵn</th>
+                                    <th width="14%">Giá nhập</th>
+                                    <th width="14%">Giá bán</th>
+                                    <th width="12%">Trạng thái</th>
+                                    <th width="7%">Chọn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr role="row" v-for="(product, index) in products" :key="product">
+                                    <td>{{ product.id }}</td>
+                                    <td>
+                                        <img v-if="product.image" :src="product.image" alt="" width="50"
+                                            height="50">
+                                        <span class="ms-3">{{ product.name }}</span>
+                                    </td>
+                                    <td>{{ (product.total_final).toLocaleString() }}</td>
+                                    <td>{{ formatPrice(product.price_purchase) }}</td>
+                                    <td>{{ formatPrice(product.price) }}</td>
+                                    <td>
+                                        <button class="btn-sm"
+                                            :class="[product.status == 1 ? 'btn-show' : 'btn-hide']"
+                                            @click="statusUpdate(product)">
+                                            {{ product.status == 1 ? 'Đăng bán' : 'Ẩn' }}
+                                        </button>
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="checkbox" @change="idSelected(product)"
+                                            :checked="selectedProducts.includes(product)">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="6" class="text-center text-bold">Chọn tất cả</th>
+                                    <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>

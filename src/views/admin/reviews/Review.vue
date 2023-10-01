@@ -161,11 +161,8 @@ export default {
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.value) {
-                    ReviewService.hidden(this.selectedIds).then((res) => {
-                        if (res.success) {
-                            this.refreshList();
-                        }
-                    })
+                    ReviewService.hidden(this.selectedIds);
+                    this.refreshList();
                     this.$swal.fire('Đã ẩn thành công!', '', 'success')
                 }
             })

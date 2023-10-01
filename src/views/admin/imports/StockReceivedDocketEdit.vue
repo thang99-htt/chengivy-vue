@@ -22,6 +22,20 @@
                 datePart: null
             };
         },
+        watch: {
+            'stockReceivedDocket.value_added': function(newValue) {
+                if (newValue !== "") {  // Kiểm tra nếu newValue không rỗng
+                    this.stockReceivedDocket.total_value = parseFloat(this.stockReceivedDocket.total_price) + parseFloat(newValue);
+                } else {
+                    this.stockReceivedDocket.total_value = "";  // Nếu newValue rỗng, đặt total_value thành rỗng
+                }
+            },
+            'stockReceivedDocket.total_price': function(newValue) {
+                if (newValue !== "") {  // Kiểm tra nếu newValue không rỗng
+                    this.stockReceivedDocket.total_value = parseFloat(this.stockReceivedDocket.value_added) + parseFloat(newValue);
+                } 
+            },
+        },
         methods: {
             async getStockReceivedDocket(id) {
                 try {
@@ -44,6 +58,7 @@
                         }
                     })
                     await StockReceivedDocketService.update(this.id, data).then(res=> {
+                        console.log(res)
                         Toast.fire({
                             icon: res.success,
                             title: res.message
@@ -53,16 +68,6 @@
                     
                 } catch (error) {
                     console.log(error.response);
-                }
-            },
-            async deleteStockReceivedDocket() {
-                if (confirm("Bạn muốn xóa Sản phẩm này?")) {
-                    try {
-                        await StockReceivedDocketService.delete(this.stockReceivedDocket.id);
-                        this.$router.push({ name: "stockReceivedDocket" });
-                    } catch (error) {
-                        console.log(error);
-                    }
                 }
             },
         },

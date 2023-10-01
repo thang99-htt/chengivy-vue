@@ -174,9 +174,9 @@
         },
         computed: {
             isCurrentDateLessThanReceiptDate() {
-            const currentDate = new Date();
-            const receiptDte = new Date(this.addDays(this.order.receipted_at, 30));
-            return currentDate < receiptDte;
+                const currentDate = new Date();
+                const receiptDte = new Date(this.addDays(this.order.receipted_at, 30));
+                return currentDate < receiptDte;
             }
         },
         methods: {

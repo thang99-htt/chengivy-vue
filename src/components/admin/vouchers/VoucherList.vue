@@ -16,11 +16,11 @@
             <tr v-for="(voucher, index) in vouchersList" :key="voucher">
                 <td>{{ voucher.name }}</td>
                 <td>
-                    <span v-if="voucher.date_start" :class="{'text-decoration-line-through': new Date(voucher.date_end) > currentDate}">
+                    <span v-if="voucher.date_start && voucher.id != 1" :class="{'text-decoration-line-through': new Date(voucher.date_end) < currentDate}">
                         {{ voucher.date_start }} đến {{ voucher.date_end }}
                     </span>
                     <br>
-                    <span v-if="new Date(voucher.date_end) > currentDate" class="text-danger">
+                    <span v-if="new Date(voucher.date_end) < currentDate && voucher.id != 1" class="text-danger">
                         Hết hạn
                     </span>
                 </td>

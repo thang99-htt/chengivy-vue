@@ -115,26 +115,6 @@
                 <div class="form-group">
                     <div class="form-group__container">
                         <div class="form-group__label">
-                            <label for="form">Hình thức
-                                <span class="error-feedback">*</span>
-                            </label>
-                        </div>
-                        <div class="form-group__input">
-                            <div class="d-flex align-items-center">
-                                <input v-model="stockReceivedDocketLocal.form" name="form" type="radio"
-                                    value="Nhập hàng mới" class="m-2 ms-0" />
-                                <label for="form" class="product-form">Nhập hàng mới</label>
-                                <input v-model="stockReceivedDocketLocal.form" name="form" type="radio"
-                                    value="Nhập lại vào kho" class="m-2" />
-                                <label for="form" class="product-form">Nhập lại vào kho</label>
-                            </div>
-                            <ErrorMessage name="form" class="error-feedback" />
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-group__container">
-                        <div class="form-group__label">
                             <label for="supplier_id">Nhà cung cấp
                                 <span class="error-feedback">*</span>
                             </label>
@@ -596,7 +576,7 @@ export default {
     width: 0;
 }
 
-.bg-import {
+.bg-import td {
     background-color: #ececec !important;
 }
 </style>

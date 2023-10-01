@@ -746,6 +746,7 @@ a:focus {
     overflow: hidden;
     overflow-y: scroll;
     scrollbar-width: none; 
+    margin-bottom: 50px;
 }
 
 .notification .notification-item {

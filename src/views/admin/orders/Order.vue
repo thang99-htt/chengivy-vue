@@ -1,48 +1,31 @@
 <template>
     <section class="content">
-        
         <div class="box">
             <div class="box-body">
                 <StatisticalPicker :startDateFormatted="startDateFormatted" :endDateFormatted="endDateFormatted"
-                            @update:startDateFormatted="updateStartDate" @update:endDateFormatted="updateEndDate" />
-                            
+                    @update:startDateFormatted="updateStartDate" @update:endDateFormatted="updateEndDate" />
+
                 <div class="option-filter">
-                    <a 
-                        @click="selectedOption=0"
-                        :class="{ active: selectedOption==0 }"    
-                    >   Tất cả
-                    </a>  
-                    <a 
-                        @click="selectedOption=1"
-                        :class="{ active: selectedOption==1 }"    
-                    >   Chờ xử lý ({{ orderWaiting }})
-                    </a> 
-                    <a 
-                        @click="selectedOption=6"
-                        :class="{ active: selectedOption==6 }"   
-                    >   Đang giao ({{ orderShipping }})
-                    </a>
-                    <a 
-                        @click="selectedOption=9"
-                        :class="{ active: selectedOption==9 }"   
-                    >   Hoàn thành ({{ orderCompleted }})
-                    </a>
-                    <a 
-                        @click="selectedOption=10"
-                        :class="{ active: selectedOption==10 }"   
-                    >   Đã hủy ({{ orderCancled }})
-                    </a>
-                    <a 
-                        @click="selectedOption=11"
-                        :class="{ active: selectedOption==11 }"   
-                    >   Bán tại cửa hàng
-                    </a>
+                    <div>
+                        <a @click="selectedOption = 0" :class="{ active: selectedOption == 0 }"> Tất cả
+                        </a>
+                        <a @click="selectedOption = 1" :class="{ active: selectedOption == 1 }"> Chờ xử lý ({{ orderWaiting }})
+                        </a>
+                        <a @click="selectedOption = 6" :class="{ active: selectedOption == 6 }"> Đang giao ({{ orderShipping }})
+                        </a>
+                        <a @click="selectedOption = 9" :class="{ active: selectedOption == 9 }"> Hoàn thành ({{ orderCompleted
+                        }})
+                        </a>
+                        <a @click="selectedOption = 10" :class="{ active: selectedOption == 10 }"> Đã hủy ({{ orderCanceled }})
+                        </a>
+                        <a @click="selectedOption = 11" :class="{ active: selectedOption == 11 }"> Bán tại cửa hàng
+                        </a>
+                    </div>
+                    <button type="button" class="btnDelete option-cancel" @click="cancelOrder">
+                        <i class="fa fa-close"></i>Hủy đơn
+                    </button>
                 </div>
-                <OrderList 
-                    v-if="filteredOrders" 
-                    :orders="filteredOrders"
-                    :selectedIds="selectedIds" 
-                />
+                <OrderList v-if="filteredOrders" :orders="filteredOrders" :selectedIds="selectedIds" />
             </div>
         </div>
     </section>
@@ -68,7 +51,7 @@ export default {
             orderWaiting: 0,
             orderShipping: 0,
             orderCompleted: 0,
-            orderCancled: 0,
+            orderCanceled: 0,
             startDateFormatted: "",
             endDateFormatted: "",
             datesUpdated: false,
@@ -87,8 +70,8 @@ export default {
         },
     },
     watch: {
-        startDateFormatted: 'handleDatesChange', 
-        endDateFormatted: 'handleDatesChange', 
+        startDateFormatted: 'handleDatesChange',
+        endDateFormatted: 'handleDatesChange',
     },
     methods: {
         updateStartDate(value) {
@@ -100,7 +83,7 @@ export default {
         handleDatesChange() {
             if (this.datesUpdated) {
                 this.retrieveorders();
-                this.datesUpdated = false; 
+                this.datesUpdated = false;
             }
         },
         async retrieveorders() {
@@ -109,12 +92,16 @@ export default {
                     startDate: this.startDateFormatted,
                     endDate: this.endDateFormatted
                 };
+                this.orderWaiting = 0;
+                this.orderShipping = 0;
+                this.orderCompleted = 0;
+                this.orderCanceled = 0;
                 this.orders = await OrderService.getAll(data);
                 this.orders.forEach(order => {
-                    if(order.status.id == 1) this.orderWaiting = this.orderWaiting+1;
-                    if(order.status.id == 6) this.orderShipping = this.orderShipping+1;
-                    if(order.status.id == 9) this.orderCompleted = this.orderCompleted+1;
-                    if(order.status.id == 10) this.orderCancled = this.orderCancled+1;
+                    if (order.status.id == 1) this.orderWaiting = this.orderWaiting + 1;
+                    if (order.status.id == 6) this.orderShipping = this.orderShipping + 1;
+                    if (order.status.id == 9) this.orderCompleted = this.orderCompleted + 1;
+                    if (order.status.id == 10) this.orderCanceled = this.orderCanceled + 1;
                 });
                 if ($.fn.DataTable.isDataTable('.example1')) {
                     $('.example1').DataTable().destroy();
@@ -130,30 +117,56 @@ export default {
             this.retrieveorders();
             this.selectedIds = [];
         },
-        deleteorder() {
-            this.$swal.fire({
-                title: 'Bạn có chắc?',
-                text: "Bạn sẽ không thể hoàn tác lại điều này!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.value) {
-                    OrderService.delete(this.selectedIds).then((res) => {
-                        if (res.success) {
-                            this.refreshList();
-                        }
+        cancelOrder() {
+            try {
+                OrderService.cancelOrder(this.selectedIds)
+                    .then(async (res) => {
+                        const Toast = this.$swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                                toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                            }
+                        })
+                        Toast.fire({
+                            icon: res.success,
+                            title: res.message
+                        })
+                        console.log(res)
+                        this.refreshList();
+
                     })
-                    this.$swal.fire('Đã xóa thành công!', '', 'success')
-                }
-            })
+
+            } catch (error) {
+                console.log(error);
+            }
         },
+
     },
     mounted() {
         this.refreshList();
     },
 };
 </script>
+<style scoped>
+.option-filter {
+    display: flex;
+    justify-content: space-between;
+}
+
+.option-cancel {
+    margin-top: 3px;
+    margin-right: 24px;
+    color: #fff;
+    background-color: #c50000;
+    border-color: #fff !important;
+}
+
+.option-cancel i {
+    color: #fff;
+}
+</style>

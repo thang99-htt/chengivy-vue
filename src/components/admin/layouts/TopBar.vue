@@ -72,7 +72,6 @@
                 authorization: [],
                 notifications: [],
                 currentTime: new Date(),
-                reviews: [],
             };
         },
         methods: {
@@ -150,22 +149,12 @@
                     return formattedDate;
                 }
             },
-            async retrieveReviews() {
-                try {
-                    const response = await axios.post('http://127.0.0.1:5000/reviews/toxic');
-                    this.reviews = response.data;
-                    console.log(this.reviews)
-                } catch (error) {
-                    console.log(error);
-                }
-            },
         },
         computed: {
             ...mapGetters(['getAdmin'])
         },
         mounted() {
             this.retrieveNotifications();
-            this.retrieveReviews()
             Pusher.logToConsole = true;
             const pusher = new Pusher('0d5201b4ba1917ad2dcf', {
                 cluster: 'ap1',

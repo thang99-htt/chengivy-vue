@@ -73,18 +73,26 @@
                         v-if="purchase.status.id == 1"
                         type="button"
                         class="btn btn-danger"
-                        @click="cancleOrder(purchase)"
+                        @click="cancelOrder(purchase)"
                     >
                         Hủy đơn
                     </button>
                     <button
-                        v-if="purchase.status.id == 9"
+                        v-if="purchase.status.id == 9 && isCurrentDateLessThanReceiptDate(purchase.receipted_at)"
                         type="button"
                         class="btn btn-warning me-3"
                         @click="openModal(purchase.items)"
                     >
                         Đánh giá
                     </button>  
+                    <button
+                        v-if="purchase.status.id == 9 && isCurrentDateLessThanReturnDate(purchase.receipted_at)"
+                        type="button"
+                        class="btn btn-light me-3"
+                        @click="showModalReturn = !showModalReturn"
+                    >
+                        Hoàn trả
+                    </button> 
                     <button
                         v-if="purchase.status.id == 9"
                         type="button"
@@ -113,15 +121,18 @@
         </div>
     </div>
 
+    <ReturnModal v-if="showModalReturn" :showModalReturn="showModalReturn" 
+        @closeModal="closeModal" :selectedPurchase="selectedPurchase"/>
+
     <ReviewModal v-if="showModal" :showModal="showModal" 
         @closeModal="closeModal" :selectedPurchase="selectedPurchase"/>
 </template>
 
 <script>
     import OrderService from "@/services/user/order.service";
-    import ReviewService from "@/services/user/review.service";
     import ReviewForm from "@/components/user/reviews/ReviewForm.vue";
     import ReviewModal from "@/components/user/reviews/ReviewModal.vue";
+    import ReturnModal from "@/components/user/returns/ReturnModal.vue";
     import {mapGetters} from 'vuex';
     import { formatPrice } from '@/utils';
 
@@ -129,7 +140,8 @@
         name: 'PurchaseList',
         components: {
             ReviewForm,
-            ReviewModal
+            ReviewModal,
+            ReturnModal
         },
         props: {
             purchases: { type: Array, default: [] },
@@ -139,6 +151,7 @@
                 purchasesList: this.purchases,
                 isClicked: false,
                 showModal: false,
+                showModalReturn: false,
                 selectedPurchase: [],
             };
         },
@@ -149,9 +162,9 @@
         },
         methods: {
             formatPrice,
-            cancleOrder(order) {
+            cancelOrder(order) {
                 try {
-                    OrderService.cancleOrder(order.id)
+                    OrderService.cancelOrder(order.id)
                     .then(async (response) => {
                         const Toast = this.$swal.mixin({
                             toast: true,
@@ -217,6 +230,21 @@
             closeModal() {
                 this.showModal = false;
                 this.selectedPurchase = [];
+                this.showModalReturn = false;
+            },
+            isCurrentDateLessThanReceiptDate(date) {
+                const currentDate = new Date();
+                const newDate = new Date(date);
+                newDate.setDate(newDate.getDate() + 30);
+                const receiptDte = new Date(newDate.toISOString().slice(0, 19).replace('T', ' '));
+                return currentDate < receiptDte;
+            },
+            isCurrentDateLessThanReturnDate(date) {
+                const currentDate = new Date();
+                const newDate = new Date(date);
+                newDate.setDate(newDate.getDate() + 7);
+                const receiptDte = new Date(newDate.toISOString().slice(0, 19).replace('T', ' '));
+                return currentDate < receiptDte;
             },
         },
         computed: {

@@ -36,7 +36,7 @@
                                 <div class="form-group">
                                     <div class="d-flex align-items-center">
                                         <label for="star" class="mb-0">Chất lượng sản phẩm</label>
-                                        <ul class="review ms-1">
+                                        <ul class="review">
                                             <li v-for="i in 5" :key="i" @click="setStaring(i, index)">
                                                 <i v-if="i <= review.star" class="bi bi-star-fill"></i>
                                                 <i v-else class="bi bi-star"></i>
@@ -60,8 +60,13 @@
                                     <label for="">Phản hồi đánh giá:</label>
                                     <textarea v-model="review.reply" cols="94" rows="6"></textarea>
                                 </div>
-                                <div class="form-group">
-                                    <input type="button" name="btnSave" value="Thực hiện" class="float-end" @click="submitReview">
+                                <div class="form-group mt-4">
+                                    <button type="button" class="btnAdd" @click="submitReview">
+                                        <i class="fa fa-plus"></i>Thực hiện
+                                    </button>
+                                    <button type="button" class="btnBack ms-2" @click="reset">
+                                        <i class="fa fa-refresh"></i>Hủy
+                                    </button>
                                 </div>
                             </Form>
                         </div>
@@ -122,3 +127,17 @@ export default {
     },
 };
 </script>
+<style scoped>
+.review {
+    display: flex;
+    margin-left: 10px;
+}
+.review li {
+    margin-right: 6px;
+}
+
+.review li i {
+    color: #fecb00;
+    font-size: 17px;
+}
+</style>

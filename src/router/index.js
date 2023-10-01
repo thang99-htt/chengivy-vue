@@ -385,6 +385,11 @@ const routes = [
                         name: "favorite",
                         component: () => import("@/views/user/favorites/Favorite.vue"),
                     },
+                    {
+                        path: "returns/:id",
+                        name: "return",
+                        component: () => import("@/views/user/returns/Return.vue"),
+                    },
                 ]
             },
             {
