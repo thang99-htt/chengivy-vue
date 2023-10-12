@@ -89,7 +89,7 @@
                         v-if="purchase.status.id == 9 && isCurrentDateLessThanReturnDate(purchase.receipted_at)"
                         type="button"
                         class="btn btn-light me-3"
-                        @click="showModalReturn = !showModalReturn"
+                        @click="openModalReturn(purchase)"
                     >
                         Hoàn trả
                     </button> 
@@ -226,6 +226,10 @@
             openModal(purchase) {
                 this.selectedPurchase = purchase;
                 this.showModal = true;
+            },
+            openModalReturn(purchase) {
+                this.selectedPurchase = purchase;
+                this.showModalReturn = true;
             },
             closeModal() {
                 this.showModal = false;

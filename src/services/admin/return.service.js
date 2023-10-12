@@ -1,6 +1,6 @@
 import createApiClient from "../api.service";
-class ReviewService {
-    constructor(baseUrl = "/api/admin/reviews") {
+class ReturnService {
+    constructor(baseUrl = "/api/admin/returns") {
         this.api = createApiClient(baseUrl);
     }
     async get(id) {
@@ -9,8 +9,8 @@ class ReviewService {
     async getAll(data) {
         return (await this.api.post("/all", data)).data;
     }
-    async updateStatus(id, data) {
-        return (await this.api.put(`/user-${id}`, data)).data;
+    async updateStatus(data) {
+        return (await this.api.put(`/update-status`, data)).data;
     }
     async update(id, data) {
         return (await this.api.put(`/${id}`, data)).data;
@@ -18,8 +18,5 @@ class ReviewService {
     async hidden(selectedIds) {
         return (await this.api.put("/hidden", { data: selectedIds })).data;
     }
-    async create(data) {
-        return (await this.api.post("/", data)).data;
-    }
 }
-export default new ReviewService();
+export default new ReturnService();

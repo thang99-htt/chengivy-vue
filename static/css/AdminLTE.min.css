@@ -548,6 +548,9 @@ a:focus {
 .sidebar-menu .treeview-menu > li:last-child > a {
   padding-bottom: 16px;
 }
+.sidebar-menu .treeview-menu > li > a > .fa {
+  margin-right: 10px;
+}
 .sidebar-menu .treeview-menu > li > a > .fa,
 .sidebar-menu .treeview-menu > li > a > .glyphicon,
 .sidebar-menu .treeview-menu > li > a > .ion {

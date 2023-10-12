@@ -43,8 +43,9 @@
                     <img src="/images/icon/icon-history-loyalty.svg" alt="">Lịch sử điểm
                 </router-link>
                 <router-link 
-                    :to="{ name: 'purchase' }"
+                    :to="{ name: 'return' }"
                     class="nav-item nav-link"
+                    :class="{ active: $route.path.includes('/returns') }"
                 >
                     <img src="/images/icon/icon-return-menu.svg" alt="">Đổi trả
                 </router-link>

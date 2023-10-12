@@ -163,22 +163,37 @@ const routes = [
             },
             {
                 path: "orders",
-                name: "order",
-                component: () => import("../views/admin/orders/Order.vue"),
-                meta: {
-                    description: 'Đơn hàng',
-                    permissionID: 55
-                }
-            },
-            {
-                path: "orders/:id",
-                name: "order.view",
-                component: () => import("@/views/admin/orders/OrderDetail.vue"),
-                props: true,
-                meta: {
-                    description: 'Chi tiết đơn hàng',
-                    permissionID: 22
-                }
+                children: [
+                    {
+                        path: "overview",
+                        name: "order",
+                        component: () => import("../views/admin/orders/Order.vue"),
+                        meta: {
+                            description: 'Đơn hàng',
+                            permissionID: 55
+                        }
+                    },
+                    {
+                        path: ":id",
+                        name: "order.view",
+                        component: () => import("@/views/admin/orders/OrderDetail.vue"),
+                        props: true,
+                        meta: {
+                            description: 'Chi tiết đơn hàng',
+                            permissionID: 22
+                        }
+                    },
+                    {
+                        path: "returns",
+                        name: "return.admin",
+                        component: () => import("../views/admin/returns/Return.vue"),
+                        meta: {
+                            description: 'Hoàn trả',
+                            permissionID: 55
+                        }
+                    },
+                ]
+
             },
             {
                 path: "reviews",
@@ -386,7 +401,7 @@ const routes = [
                         component: () => import("@/views/user/favorites/Favorite.vue"),
                     },
                     {
-                        path: "returns/:id",
+                        path: "returns",
                         name: "return",
                         component: () => import("@/views/user/returns/Return.vue"),
                     },

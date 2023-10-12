@@ -2,144 +2,166 @@
     <div class="profile-info">
         <div class="liveAlert"></div>
         <h3>Yêu cầu Trả hàng / Hoàn tiền</h3>
-        <div class="profile-item">
-            <h4 class="text-white">aaaaaaa</h4>
-            <hr>
-            <h3 class="name">Sản phẩm cần hoàn trả</h3>
-            <p class="rating">Hạng thành viên:
-                <span>MEMBER</span>
-            </p>
-            <p>Mua sắm nhiều hơn để có được mức thành viên cao hơn.</p>
-        </div>
 
-        <div class="profile-item">
+        <div class="profile-item" v-for="ret in returns" :key="ret">
             <hr>
-            <h3>Lý do Trả hàng và Hoàn tiền?</h3>
-            <p>{{ account.name }}</p>
-            <p>{{ account.email }}</p>
-            <p>{{ account.phone }}</p>
-            <p>{{ account.gender }}</p>
-            <p>
-                <span class="pe-3 border-end">
-                    <a class="text-danger" @click="openModalProfile(account)">
-                        Chỉnh sửa
-                    </a>
-                </span>
-                <span class="ps-2 pe-3">
-                    <a class="text-danger" @click="modalPassword = !modalPassword">Thay đổi mật khẩu</a>
-                </span>
-            </p>
-        </div>
-    </div>
-    <div v-if="modalUpdate">
-        <div class="modal d-block">
-            <div class="modal-dialog modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title fw-bold">Cập nhật hồ sơ</h4>
-                        <button type="button" class="btn-close" @click="modalUpdate = !modalUpdate"></button>
-                    </div>
-                    <div class="modal-body">
-                        <ProfileForm :accountProfile="accountProfile" @submit:accountProfile="updateProfile" />
-                    </div>
+            <div class="return-cancel">
+                <h3>Đơn hàng #{{ ret.order_id }}</h3>
+                <div class="button" v-if="ret.status == 'Đã ghi nhận'">
+                    <button class="btn" @click="cancelReturn(ret.id)">Hủy yêu cầu</button>
                 </div>
             </div>
-        </div>
-    </div>
-    <div v-if="modalPassword">
-        <div class="modal d-block">
-            <div class="modal-dialog modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <p class="modal-title fw-bold fs-4">Thay đổi mật khẩu</p>
-                        <button type="button" class="btn-close" @click="modalPassword = ! modalPassword"></button>
+            <div class="return-head">
+                <p class="return-status">
+                    <span class="pe-3 border-end">
+                        <a class="text-status">
+                            {{ ret.status }}
+                        </a>
+                    </span>
+                    <span class="ps-2 pe-3">
+                        <a class="text-primaly" v-if="ret.returned_at">Ngày hoàn trả: {{ ret.returned_at }}</a>
+                        <a class="text-primaly" v-else>Ngày yêu cầu: {{ ret.requested_at }}</a>
+                    </span>
+                </p>
+                <p class="return-reason">Lý do: {{ ret.reason }}</p>
+            </div>
+            <p>Mô tả: {{ ret.description }}</p>
+            <router-link class="d-block" :to="{
+                name: 'purchase.detail',
+                params: { id: ret.id },
+            }" v-if="ret.order">
+                <div class="purchase-content">
+                    <div class="purchase-item" v-for="product in ret.return_product" :key="product.id">
+                        <div class="purchase-info">
+                            <div class="d-flex">
+                                <img class="d-block me-3" width="100" :src="product.product.product_image[0].image" alt="">
+                                <div>
+                                    <router-link :to="{
+                                        name: 'product.detail',
+                                        params: { id: product.id },
+                                    }" class="text-dark">
+                                        {{ product.name }}
+                                    </router-link>
+                                    <p>Phân loại: {{ product.color }}, {{ product.size }}</p>
+                                    <p>
+                                        <span class="me-1">{{ product.quantity }} x </span>
+                                        <span class="me-3 text-danger " v-if="product.price_discount > 0">
+                                            {{ formatPrice(product.price - product.price_discount) }}
+                                        </span>
+                                        <span :class="{ 'text-decoration-line-through ': product.price_discount > 0 }">
+                                            {{ formatPrice(product.price) }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="purchase-price">
+                            <p v-if="product.price_discount > 0">{{
+                                formatPrice((product.price - product.price_discount) * product.quantity) }}</p>
+                            <p v-else>{{ formatPrice(product.price * product.quantity) }}</p>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <PasswordForm :accountPassword="accountPassword" @submit:accountPassword="updatePassword" />
-                    </div>
+                </div>
+            </router-link>
+            <hr>
+            <div class="return-image">
+                <span v-for="image in ret.return_image" :key="image">
+                    <img :src="image.image" alt="">
+                </span>
+            </div>
+            <div class="purchase-btn">
+                <div class="purchase-price__item">
+                    <p>Thành tiền: </p>
+                    <p>{{ formatPrice(ret.total_price) }}</p>
+                </div>
+                <div class="purchase-price__item">
+                    <p>Phương thức thanh toán: </p>
+                    <p>Tài khoản ngân hàng</p>
+                </div>
+                <div class="purchase-price__item">
+                    <p class="fw-bold">Số tiền được hoàn trả: </p>
+                    <p class="total-price">{{ formatPrice(ret.total_price) }}</p>
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
-import UserService from "@/services/user/user.service";
-import ProfileForm from "@/components/user/profiles/ProfileForm.vue";
-import PasswordForm from "@/components/user/profiles/PasswordForm.vue";
-import { mapGetters } from 'vuex';
-import axios from 'axios';
-import { showAlert } from '@/utils';
+import ReturnService from "@/services/user/return.service";
+import { formatPrice } from '@/utils';
 
 export default {
     components: {
-        ProfileForm,
-        PasswordForm
+
     },
     data() {
         return {
-            token: localStorage.getItem('tokenUser'),
-            account: [],
-            modalUpdate: false,
-            modalPassword: false,
-            accountProfile: {},
-            accountPassword: {
-                'password': "",
-                'new_password': "",
-                'confirm_password': ""
-            }
+            returns: []
         };
     },
     methods: {
-        openModalProfile(account) {
-            this.modalUpdate = true;
-            this.accountProfile = {...account};
-        },
-        async retrieveAccount() {
+        formatPrice,
+        async retrieveReturns() {
             try {
-                this.account = await UserService.getInfoAccount(this.getUser.id);
+                this.returns = await ReturnService.getAll();
             } catch (error) {
                 console.log(error);
             }
         },
-        async updateProfile(data) {
-            try {
-                await UserService.updateProfile(this.getUser.id, data).then(async (response) => {
-                    if (response.success == 'success') {
-                        showAlert(response);
-                        this.retrieveAccount();
-                    }
-                    this.modalUpdate = false;
+        async cancelReturn(ret) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            await ReturnService.cancelReturn(ret);
+            this.retrieveReturns();
+            Toast.fire({
+                    icon: 'success',
+                    title: 'Hủy yêu cầu Trả hàng/Hoàn tiền thành công.'
                 });
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        async updatePassword(data) {
-            try {
-                await UserService.updatePassword(this.getUser.id, data).then(async (response) => {
-                    try {
-                        axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;
-                        await axios.post(`http://127.0.0.1:8000/api/logout`).then((res) => {
-                            localStorage.removeItem('tokenUser');
-                            this.$store.dispatch('logoutUser');
-                            this.$router.push({ name: "login" });
-                        });
-                    } catch (error) {
-                        console.log(error);
-                    }
-                    showAlert(response);
-                    this.modalPassword = false;
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        },
+        }
     },
     mounted() {
-        this.retrieveAccount();
+        this.retrieveReturns();
     },
-    computed: {
-        ...mapGetters(['getUser']),
-    }
 };
 </script>
+
+<style scoped>
+.return-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.return-status .text-status {
+    color: #12b712;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.return-reason {
+    color: #d20000 !important;
+}
+
+.return-image span {
+    width: 150px;
+    margin-right: 10px;
+}
+.return-cancel {
+    display: flex;
+    justify-content: space-between;
+}
+.return-cancel .btn {
+    background-color: #c70404 !important;
+    padding: 10px 14px !important;
+    border-radius: 6px !important;
+}
+</style>
