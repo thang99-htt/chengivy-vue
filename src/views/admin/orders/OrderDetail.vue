@@ -67,7 +67,7 @@
                             <h4>Thanh toán</h4>
                         </div>  
                         <div class="item-content">
-                            <p>{{ order.payment_method.description }}</p>
+                            <p>{{ order.payment_method }}</p>
                         </div>
                     </div>
                     <div class="order-summary">

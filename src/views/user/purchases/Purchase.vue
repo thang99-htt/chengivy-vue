@@ -8,7 +8,6 @@
             <span :class="{'active': purchaseStatus == 6}" @click="purchaseStatus=6">Đang giao</span>
             <span :class="{'active': purchaseStatus == 9}" @click="purchaseStatus=9">Hoàn thành</span>
             <span :class="{'active': purchaseStatus == 10}" @click="purchaseStatus=10">Đã hủy</span>
-            <span :class="{'active': purchaseStatus == 11}" @click="purchaseStatus=11">Trả hàng</span>
         </div>
         <div class="profile-item">
             <PurchaseList 

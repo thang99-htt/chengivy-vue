@@ -33,7 +33,7 @@ export default {
   methods: {
     async createRegister(form) {
         try {
-            await AuthService.register(form).then((response) => {
+            await AuthService.register(form).then(() => {
                 const Toast = this.$swal.mixin({
                     toast: true,
                     position: 'top-end',

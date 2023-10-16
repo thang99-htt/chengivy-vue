@@ -46,8 +46,11 @@
                 </td>
                 <td>{{ ret.staff.name }}</td>
                 <td class="text-center">
-                    <button type="button" class="btn"  @click="showModalEdit(ret.id)">                        
+                    <button type="button" class="btn" @click="showModalEdit(ret.id)">                        
                         <img src="/images/icon/iconedit.png" alt="">
+                    </button>
+                    <button type="button" class="btn">                        
+                        <i class="fa fa-university"></i>
                     </button>
                 </td>
                 <td class="text-center">
@@ -181,5 +184,8 @@ export default {
 
     .dropdown-menu>li>a:hover {
         background-color: #ceffce;
+    }
+    .fa-university {
+        color: #2570b4;
     }
 </style>

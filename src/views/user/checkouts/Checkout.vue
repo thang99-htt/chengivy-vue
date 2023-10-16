@@ -67,7 +67,7 @@
                 stepCheck: 0,  
                 order: {
                     'delivery_address': "",
-                    'payment_method_id': 1,
+                    'payment_method': 'Thanh toán khi nhận hàng (COD)',
                     'voucher_id': 0,
                     'note': "",
                     'paid': 0,

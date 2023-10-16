@@ -97,7 +97,7 @@
                         </div>
                         <h3>Phương thức thanh toán</h3>
                         <div>
-                            <span>{{ order.payment_method.description }}</span>
+                            <span>{{ order.payment_method }}</span>
                         </div>
                     </div>
                     <!-- <div class="purchase-summary__follow">

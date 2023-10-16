@@ -157,10 +157,13 @@
             </div>
             <ErrorMessage name="role_id" class="error-feedback" />
         </div>
-        <div class="form-group">
-            <input type="submit" name="btnSave" value="Thực hiện">
-            <input type="button" name="btnDelete" value="Xóa" v-if="staffLocal.id">
-            <input type="button" name="btnBack" value="Hủy" v-else @click="emitReset">
+        <div class="form-group mt-5">
+            <button type="button" class="btnAdd" @click="submitStaff">
+                <i class="fa fa-plus"></i>Thực hiện
+            </button>
+            <button type="button" class="btnBack ms-2" @click="reset">
+                <i class="fa fa-refresh"></i>Hủy
+            </button>
         </div>
     </Form>
     

@@ -1,10 +1,10 @@
 import createApiClient from "../api.service";
-class PaymentVoucherService {
-    constructor(baseUrl = "/api/admin/payment-methods") {
+class StatusService {
+    constructor(baseUrl = "/api/admin/statuses") {
         this.api = createApiClient(baseUrl);
     }
     async getAll() {
         return (await this.api.get("/")).data;
     }
 }
-export default new PaymentVoucherService();
+export default new StatusService();

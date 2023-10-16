@@ -186,14 +186,31 @@ const routes = [
                     {
                         path: "returns",
                         name: "return.admin",
-                        component: () => import("../views/admin/returns/Return.vue"),
+                        component: () => import("../views/admin/orders/Return.vue"),
                         meta: {
                             description: 'Hoàn trả',
                             permissionID: 55
                         }
                     },
+                    {
+                        path: "sold-at-store",
+                        name: "sold-at-store",
+                        component: () => import("../views/admin/orders/SoldAtStore.vue"),
+                        meta: {
+                            description: 'Bán tại cửa hàng',
+                            permissionID: 55
+                        }
+                    },
                 ]
-
+            },
+            {
+                path: "customers",
+                name: "customer",
+                component: () => import("../views/admin/customers/Customer.vue"),
+                meta: {
+                    description: 'Khách hàng',
+                    permissionID: 27
+                }
             },
             {
                 path: "reviews",
@@ -404,6 +421,11 @@ const routes = [
                         path: "returns",
                         name: "return",
                         component: () => import("@/views/user/returns/Return.vue"),
+                    },
+                    {
+                        path: "returns/guide",
+                        name: "return.guide",
+                        component: () => import("@/views/user/returns/ReturnGuide.vue"),
                     },
                 ]
             },

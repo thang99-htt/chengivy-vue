@@ -16,7 +16,7 @@
                                 v-for="(payment, index) in payments"
                                 :key="payment"
                             >
-                                <Field name="payment" type="radio" :value="payment.id" v-model="orderLocal.payment_method_id"/>
+                                <Field name="payment" type="radio" :value="payment.description" v-model="orderLocal.payment_method"/>
                                 <label class="form-check-label ms-2" for="exampleRadios1">
                                     <img :src="payment.image" width="25" alt="">
                                     {{ payment.description }}
@@ -195,10 +195,10 @@
                                            :value="((cartLocal.into_money+25000)/23795).toFixed()"
                                         />
                                     </div>
-                                    <div v-show="orderLocal.payment_method_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
+                                    <div v-show="orderLocal.payment_method == 'Thanh toán qua PayPal' && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
                                         <div ref="paypal"></div>
                                     </div>
-                                    <div v-show="orderLocal.payment_method_id == 4 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
+                                    <div v-show="orderLocal.payment_method == 'Thanh toán qua PayPal' && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
                                         <div ref="vnpay">
                                             <span @click="makePayment">Pay Now</span>
                                         </div>
@@ -275,7 +275,7 @@
                                             <span class="total-amount bold">{{ formatPrice(totalValue) }}</span>
                                         </div>
                                     </div>
-                                    <div v-show="orderLocal.payment_method_id == 3 && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
+                                    <div v-show="orderLocal.payment_method == 'Thanh toán qua PayPal' && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
                                         <div ref="paypal"></div>
                                     </div>
                                 </div>
@@ -289,7 +289,6 @@
 </template>
 
 <script>
-    import PaymentMethodService from "@/services/admin/payment-method.service";
     import VoucherService from "@/services/admin/voucher.service";
     import { Form, Field, ErrorMessage } from "vee-validate";
     import { formatPrice } from '@/utils';
@@ -323,7 +322,10 @@
             const nextThreeDaysVietnamese = daysOfWeek[dayOfWeekIndex] + ", " + 
                     dayOfMonth + " " + monthsOfYear[monthIndex] + " " + year;
             return {
-                payments: [],
+                payments: [
+                    {'id': 1, 'name': 'COD', 'description': 'Thanh toán khi nhận hàng (COD)', 'image': 'https://docs.google.com/uc?id=1MbzIvWQadSSeeWOV5z8dxhyraPqthTr3'},
+                    {'id': 2, 'name': 'PayPal', 'description': 'Thanh toán qua PayPal', 'image': 'https://docs.google.com/uc?id=1CiZFIJPGjEgcL1V4AwQaTZMfi3CMfsC7'}
+                ],
                 vouchers: [],
                 cartLocal: this.carts,
                 orderLocal: this.order,
@@ -343,13 +345,6 @@
         },
         methods: {
             formatPrice,
-            async retrievePaymentMethod() {
-                try {
-                    this.payments = await PaymentMethodService.getAll();
-                } catch (error) {
-                    console.log(error);
-                }
-            },
             async retrieveVoucher() {
                 try {
                     this.vouchers = await VoucherService.getByUser(this.getUser.id);
@@ -358,7 +353,6 @@
                 }
             },
             refreshList() {
-                this.retrievePaymentMethod();
                 this.retrieveVoucher();
             },
             submitOrder() {

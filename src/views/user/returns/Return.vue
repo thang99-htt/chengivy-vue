@@ -1,16 +1,20 @@
 <template>
     <div class="profile-info">
         <div class="liveAlert"></div>
-        <h3>Yêu cầu Trả hàng / Hoàn tiền</h3>
+        <div class="return-guide">
+            <h3>Yêu cầu Trả hàng / Hoàn tiền</h3>
+            <a href="returns/guide">Hướng dẫn chi tiết</a>
+        </div>
 
-        <div class="profile-item" v-for="ret in returns" :key="ret">
+        <div v-if="returns.length>0" class="profile-item" v-for="ret in returns" :key="ret">
             <hr>
             <div class="return-cancel">
-                <h3>Đơn hàng #{{ ret.order_id }}</h3>
+                <h3>Mã yêu cầu trả hàng #{{ ret.id }}</h3>
                 <div class="button" v-if="ret.status == 'Đã ghi nhận'">
                     <button class="btn" @click="cancelReturn(ret.id)">Hủy yêu cầu</button>
                 </div>
             </div>
+            <h4>Đơn hàng: #{{ ret.order_id }}</h4>
             <div class="return-head">
                 <p class="return-status">
                     <span class="pe-3 border-end">
@@ -83,6 +87,10 @@
                     <p class="total-price">{{ formatPrice(ret.total_price) }}</p>
                 </div>
             </div>
+        </div>
+        <div v-else class="d-flex flex-column align-items-center mt-5">
+            <img src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/return/5fafbb923393b712b96488590b8f781f.png" alt="" width="150">
+            <p class="mt-3">Bạn hiện không có yêu cầu Trả hàng/Hoàn tiền nào.</p>
         </div>
     </div>
 </template>
@@ -163,5 +171,15 @@ export default {
     background-color: #c70404 !important;
     padding: 10px 14px !important;
     border-radius: 6px !important;
+}
+.return-guide {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.return-guide a {
+    color: #0070b5;
+    font-weight: bold;
+    text-decoration: underline;
 }
 </style>

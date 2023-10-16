@@ -11,7 +11,7 @@
     <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(23)"
       :class="{ active: $route.path.includes('/admin/staffs') }">
       <a href="/admin/staffs/staff-list">
-        <i class="fa fa-users"></i>
+        <i class="fa fa-user"></i>
         <span class="treeview-title">Nhân viên</span>
         <span class="pull-right-container pull-right">
           <i class="fa fa-angle-left fa-fw"></i>
@@ -29,6 +29,13 @@
           </a>
         </li>
       </ul>
+    </li>
+    <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(27)"
+      :class="{ active: $route.path.includes('/admin/customers') }">
+      <a href="/admin/customers">
+        <i class="fa fa-users"></i>
+        <span class="treeview-title">Khách hàng</span>
+      </a>
     </li>
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(40)"
       :class="{ active: $route.path.includes('/admin/products') }">
@@ -122,6 +129,11 @@
         <li>
           <a href="/admin/orders/returns">
             <i class="fa fa-retweet"></i>Hoàn trả
+          </a>
+        </li>
+        <li>
+          <a href="/admin/orders/sold-at-store">
+            <i class="fa fa-street-view"></i>Bán tại cửa hàng
           </a>
         </li>
       </ul>

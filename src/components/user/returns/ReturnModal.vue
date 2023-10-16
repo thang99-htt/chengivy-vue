@@ -54,7 +54,7 @@
                             </p>
                             <p>
                                 <span>Hoàn tiền vào:</span> 
-                                <span class="acccount">Tài khoản ngân hàng</span>
+                                <span class="acccount" @click="modalUpdate = !modalUpdate">Tài khoản ngân hàng</span>
                             </p>
                             <p>
                                 <span>Email:</span> 
@@ -77,15 +77,26 @@
                                 <span>{{ formatPrice(totalReturn-25000) }}</span>
                             </p>
                             <div class="form-group float-end mt-5">
-                                <router-link 
-                                    :to="{ name: 'return' }"
-                                >
-                                    <button type="button" class="btnAdd" @click="submitReturn">
-                                        Thực hiện
-                                    </button>
-                                </router-link>
+                                <button type="button" class="btnAdd" @click="submitReturn">
+                                    Thực hiện
+                                </button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-if="modalUpdate">
+        <div class="modal d-block">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title fw-bold">Cập nhật hồ sơ</h4>
+                        <button type="button" class="btn-close" @click="modalUpdate = !modalUpdate"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ProfileForm :accountProfile="accountProfile" @submit:accountProfile="updateProfile" />
                     </div>
                 </div>
             </div>
@@ -95,7 +106,11 @@
 <script>
 import ReturnForm from "./ReturnForm.vue";
 import ReturnService from "@/services/user/return.service";
+import UserService from "@/services/user/user.service";
+import ProfileForm from "@/components/user/profiles/ProfileForm.vue";
 import { formatPrice } from '@/utils';
+import { mapGetters } from 'vuex';
+import { showAlert } from '@/utils';
 
 export default {
     props: {
@@ -103,6 +118,7 @@ export default {
     },
     components: {
         ReturnForm,
+        ProfileForm
     },
     data() {
         return {
@@ -114,7 +130,9 @@ export default {
                 'images': [],
                 'products': [],
             },
-            totalReturn: 0
+            totalReturn: 0,
+            accountProfile: {},
+            modalUpdate: false,
         };
     },
     methods: {
@@ -132,17 +150,32 @@ export default {
                 }
             })
 
-            try {
-                await ReturnService.create(this.returns).then(res => {
-                    Toast.fire({
-                        icon: res.success,
-                        title: res.message
-                    });
+            if(this.returns.products.length==0) {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Vui lòng chọn sản phẩm cần Trả hàng/Hoàn tiền.'
                 });
+            } else if(!this.accountProfile.bank_account) {
+                console.log('aaa')
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Vui lòng cung cấp số tài khoản của bạn.'
+                });
+            } else {
+                try {
+                    await ReturnService.create(this.returns).then(res => {
+                        Toast.fire({
+                            icon: res.success,
+                            title: res.message
+                        });
+                    });
+    
+                    this.closeModal();
+                    this.$router.push({ name: "return" });
 
-                this.closeModal();
-            } catch (error) {
-                console.log(error);
+                } catch (error) {
+                    console.log(error);
+                }
             }
         },
         closeModal() {
@@ -158,7 +191,33 @@ export default {
                 this.returns.products.splice(index, 1);
             }
         },
+        async retrieveAccount() {
+            try {
+                this.accountProfile = await UserService.getInfoAccount(this.getUser.id);
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async updateProfile(data) {
+            try {
+                await UserService.updateProfile(this.getUser.id, data).then(async (response) => {
+                    if (response.success == 'success') {
+                        showAlert(response);
+                        this.retrieveAccount();
+                    }
+                    this.modalUpdate = false;
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
+    mounted() {
+        this.retrieveAccount();
+    },
+    computed: {
+        ...mapGetters(['getUser']),
+    }
 };
 </script>
 

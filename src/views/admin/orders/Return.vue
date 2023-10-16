@@ -12,6 +12,7 @@
                         <ReturnList v-if="filteredReturnsCount > 0" :returns="filteredReturns" :selectedIds="selectedIds"
                             :showModal="showModal" @update-modal="updateShowModal" :returnID="returnID"
                             @update-returnID="updateReturn" />
+                        <p v-else class="mt-5">Chưa có Yêu cầu Trả hàng/Hoàn tiền nào.</p>
                     </div>
                 </div>
             </div>
@@ -21,9 +22,9 @@
 <script>
 import $ from 'jquery'
 import { initializeDataTable } from '../../../utils';
-import ReturnList from "@/components/admin/returns/ReturnList.vue";
+import ReturnList from "@/components/admin/orders/ReturnList.vue";
+import ReturnModal from "@/components/admin/orders/ReturnModal.vue";
 import ReturnService from "@/services/admin/return.service";
-import ReturnModal from "@/components/admin/returns/ReturnModal.vue";
 import StatisticalPicker from "@/components/admin/statisticals/StatisticalPicker.vue";
 
 export default {
@@ -32,7 +33,7 @@ export default {
         ReturnModal,
         StatisticalPicker
     },
-    name: 'return.adim',
+    name: 'return.admin',
     data() {
         return {
             returns: [],
@@ -75,6 +76,7 @@ export default {
                     startDate: this.startDateFormatted,
                     endDate: this.endDateFormatted
                 };
+                console.log(data)
                 this.returns = await ReturnService.getAll(data);
                 if ($.fn.DataTable.isDataTable('.example1')) {
                     $('.example1').DataTable().destroy();

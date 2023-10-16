@@ -16,6 +16,18 @@
             <ErrorMessage name="name" class="error-feedback" />
         </div>
         <div class="form-group">
+            <label for="phone">Số điện thoại
+                <span class="error-feedback">*</span>
+            </label>
+            <Field 
+                name="phone"
+                type="text"
+                class="form-control"
+                v-model="form.phone"
+            />
+            <ErrorMessage name="phone" class="error-feedback" />
+        </div>
+        <div class="form-group">
             <label for="email">Email
                 <span class="error-feedback">*</span>
             </label>
@@ -78,6 +90,7 @@
         setup() {
           let form = reactive({
             name: '',
+            phone: '',
             email: '',
             password: '',
             password_confirmation: ''
@@ -94,6 +107,10 @@
                 .required("Họ tên phải có giá trị.")
                 .min(6, "Họ tên phải ít nhất 6 ký tự.")
                 .max(30, "Họ tên có nhiều nhất 30 ký tự."),
+                phone: yup
+                .string()
+                .required("Vui lòng nhập số điện thoại.")
+                .matches(/^\d{10}$/, "Số điện thoại không hợp lệ."),
                 email: yup
                 .string()
                 .required("Email phải có giá trị.")

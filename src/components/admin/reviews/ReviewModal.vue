@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="" class="mb-2">Khách hàng đánh giá:</label>
-                                    <textarea :value="review.content" cols="94" rows="6" disabled></textarea>
+                                    <textarea :value="review.content" cols="94" rows="6" disabled class="p-2"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <div v-if="review.images" class="text-center mt-3">
@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="">Phản hồi đánh giá:</label>
-                                    <textarea v-model="review.reply" cols="94" rows="6"></textarea>
+                                    <textarea v-model="review.reply" cols="94" rows="6" class="p-2"></textarea>
                                 </div>
                                 <div class="form-group mt-4">
                                     <button type="button" class="btnAdd" @click="submitReview">
