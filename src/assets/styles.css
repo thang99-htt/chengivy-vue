@@ -2419,7 +2419,6 @@ hr {
 .import-product .search-input {
   width: 400px;
   position: relative;
-  float: right;
 }
 .product-sale {
   width: 400px;
@@ -2477,7 +2476,7 @@ hr {
 
 .import-product .import-product__search {
   position: relative;
-  width: 390px;
+  width: 100%;
   float: left;
   margin-bottom: 6px;
   margin-left: 10px;
@@ -2488,8 +2487,8 @@ hr {
 .checkout-voucher .menu-voucher {
   position: absolute;
   top: 40px;
-  right: 0;
-  width: 100%;
+  left: 0;
+  width: 400px;
   background-color: #fff;
   z-index: 20;
   -webkit-box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.1);

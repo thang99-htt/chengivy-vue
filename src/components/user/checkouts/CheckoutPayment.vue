@@ -712,7 +712,7 @@
 
     .checkout-voucher .menu-voucher .navbar-nav {
         width: 100%;
-        padding: 0 20px;
+        padding: 0 12px;
         margin-top: 0;
         max-width: unset;
     }
@@ -835,7 +835,7 @@
         line-height: 10px;
     }
     .nav-item__button button {
-        padding: 6px 16px;
+        padding: 6px 14px;
         border: 0;
         background-color: #337ab7;
         color: #fff;

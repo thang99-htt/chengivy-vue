@@ -6,6 +6,9 @@ class OrderService {
     async getAll(data) {
         return (await this.api.post("/", data)).data;
     }
+    async soldAtStore(data) {
+        return (await this.api.post("sold-at-store", data)).data;
+    }
     async deleteAll() {
         return (await this.api.delete("/")).data;
     }

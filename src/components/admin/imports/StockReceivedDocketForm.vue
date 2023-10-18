@@ -35,7 +35,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <table class="example1 table dataTable">
+                        <table class="table dataTable">
                             <thead>
                                 <tr role="row">
                                     <th width="4%">#</th>
@@ -503,7 +503,6 @@ export default {
                     price_purchase: 0,
                     quantity: 0,
                 });
-
             }
         },
         removeProduct(product) {
@@ -568,6 +567,7 @@ export default {
     overflow: hidden;
 }
 .import .import-product {
+    overflow: hidden;
     overflow-y: scroll;
     height: 480px;
     scrollbar-width: none;                                                                                          
