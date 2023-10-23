@@ -18,7 +18,7 @@
                         </a>
                         <a @click="selectedOption = 10" :class="{ active: selectedOption == 10 }"> Đã hủy ({{ orderCanceled }})
                         </a>
-                        <a @click="selectedOption = 11" :class="{ active: selectedOption == 11 }"> Bán tại cửa hàng
+                        <a @click="selectedOption = 11" :class="{ active: selectedOption == 11 }"> Bán tại cửa hàng ({{ orderSoldAtStore }})
                         </a>
                     </div>
                     <button type="button" class="btnDelete option-cancel" @click="cancelOrder">
@@ -52,6 +52,7 @@ export default {
             orderShipping: 0,
             orderCompleted: 0,
             orderCanceled: 0,
+            orderSoldAtStore: 0,
             startDateFormatted: "",
             endDateFormatted: "",
             datesUpdated: false,
@@ -96,12 +97,14 @@ export default {
                 this.orderShipping = 0;
                 this.orderCompleted = 0;
                 this.orderCanceled = 0;
+                this.orderSoldAtStore = 0;
                 this.orders = await OrderService.getAll(data);
                 this.orders.forEach(order => {
                     if (order.status.id == 1) this.orderWaiting = this.orderWaiting + 1;
                     if (order.status.id == 6) this.orderShipping = this.orderShipping + 1;
                     if (order.status.id == 9) this.orderCompleted = this.orderCompleted + 1;
                     if (order.status.id == 10) this.orderCanceled = this.orderCanceled + 1;
+                    if (order.status.id == 11) this.orderSoldAtStore = this.orderSoldAtStore + 1;
                 });
                 if ($.fn.DataTable.isDataTable('.example1')) {
                     $('.example1').DataTable().destroy();

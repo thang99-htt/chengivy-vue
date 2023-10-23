@@ -2,15 +2,15 @@
     <ProductModal v-if="modalProduct" :showModal="showModal" @closeModal="closeModal" />
     <CustomerModal v-if="modalCustomer" :showModal="showModal" @closeModal="closeModal" />
 
-    <Form>
+    <Form id="contentHtml">
         <div class="row import">
-            <div class="col-7">
+            <div class="col-8">
                 <div class="form-group">
                     <div class="import-product">
                         <div class="import-product__search">
                             <div class="search-input" @click="viewSearch">
                                 <a class="search-btn"><i class="bi bi-search"></i></a>
-                                <input type="text" v-model="keyword" placeholder="Tìm kiếm sản phẩm" />
+                                <input type="text" v-model="keyword" placeholder="Tìm kiếm sản phẩm theo tên hoặc mã" />
                                 <a class="search-btn"><i class="bi bi-plus" @click="openModalProduct"></i></a>
                             </div>
                             <div class="sub-menu-search">
@@ -106,12 +106,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-5">
+            <div class="col-4">
                 <div class="import-product import-customer">
                     <div class="import-product__search">
                         <div class="search-input" @click="viewSearch1">
                             <a class="search-btn"><i class="bi bi-search"></i></a>
-                            <input type="text" v-model="keyword1" placeholder="Tìm kiếm khách hàng" />
+                            <input type="text" v-model="keyword1" placeholder="Tìm khách hàng theo tên hoặc số điện thoại" />
                             <a class="search-btn"><i class="bi bi-plus" @click="openModalCustomer"></i></a>
                         </div>
                         <div class="sub-menu-search customer">
@@ -130,58 +130,44 @@
                     </div>
                     <div>
                         <div class="form-group">
-                            <div class="form-group__container">
-                                <div class="form-group__label">
-                                    <label for="date">Khách hàng:</label>
-                                </div>
-                                <div class="form-group__input">
-                                    <span class="mt-2 text-customer">{{ customerSelected }}</span>
-                                </div>
+                            <div class="form-group__container border-round">
+                                <label for="date">Khách hàng:</label>
+                                <span class="text-customer">{{ customerSelected }}</span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="form-group__container">
-                                <div class="form-group__label">
-                                    <label for="date">Ngày bán
-                                        <span class="error-feedback">*</span>
-                                    </label>
-                                </div>
-                                <div class="form-group__input">
-                                    <input name="date" type="datetime-local" class="datepicker d-block" disabled
-                                        v-model="soldAtStoreLocal.receipted_at">
-                                    <ErrorMessage name="date" class="error-feedback" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-group__container">
-                                <div class="form-group__label">
-                                    <label for="form">Tổng tiền
-                                        <span class="error-feedback">*</span>
-                                    </label>
-                                </div>
-                                <div class="form-group__input">
-                                    <input type="text" class="form-control" v-model="formattedTotalPrice"
-                                        @keypress="validateKeyPress" />
-                                    <ErrorMessage name="total_price" class="error-feedback" />
+                        <div class="border-round mb-3">
+                            <div class="form-group">
+                                <div class="option-filter">
+                                    <div>
+                                        <a @click="optionPaymentMethod('Tiền mặt')"
+                                            :class="{ active: this.soldAtStoreLocal.payment_method == 'Tiền mặt' }">
+                                            Tiền mặt
+                                        </a>
+                                        <a @click="optionPaymentMethod('Chuyển khoản')"
+                                            :class="{ active: this.soldAtStoreLocal.payment_method == 'Chuyển khoản' }">
+                                            Chuyển khoản
+                                        </a>
+                                        <a class="form-group__date">
+                                            <input name="date" type="datetime-local" class="datepicker d-block" disabled
+                                                    v-model="soldAtStoreLocal.receipted_at">
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-group__container">
-                                <div class="form-group__label">
-                                    <label for="form">Sản phẩm giảm giá
-                                        <span class="error-feedback">*</span>
-                                    </label>
-                                </div>
-                                <div class="form-group__input">
-                                    <input type="text" class="form-control" :value="computedTotalDiscountProduct.toLocaleString()" />
+                            <div class="form-group">
+                                <div class="form-group__container">
+                                    <label for="form">Tổng tiền:</label>
+                                    <span>{{ formattedTotalPrice }}</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-group__container">
-                                <div class="form-group__label">
+                            <div class="form-group">
+                                <div class="form-group__container">
+                                    <label for="form">Sản phẩm giảm giá:</label>
+                                    <span>{{ computedTotalDiscountProduct.toLocaleString() }}</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-group__container">
                                     <div class="checkout-voucher">
                                         <label for="form" @click="viewVoucher">
                                             <img src="/images/icon/uudai.svg" alt="" width="25" class="me-1">
@@ -235,33 +221,37 @@
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group__input">
-                                    <input type="text" class="form-control" :value="discountVoucher.toLocaleString()" />
+                                    <span>{{ discountVoucher.toLocaleString() }}</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-group__container">
-                                <div class="form-group__label">
-                                    <label for="form">Tổng giảm giá
-                                        <span class="error-feedback">*</span>
-                                    </label>
-                                </div>
-                                <div class="form-group__input">
-                                    <input type="text" class="form-control" :value="computedTotalDiscount.toLocaleString()" />
+                            <div class="form-group">
+                                <div class="form-group__container">
+                                    <label for="form">Tổng giảm giá:</label>
+                                    <span class="text-danger">{{ computedTotalDiscount.toLocaleString() }}</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-group__container">
-                                <div class="form-group__label">
-                                    <label for="form">Tổng giá trị
-                                        <span class="error-feedback">*</span>
-                                    </label>
+                            <div class="form-group">
+                                <div class="form-group__container">
+                                    <label for="form">Tổng giá trị:</label>
+                                    <span class="into-money">{{ formattedTotalValue }}</span>
                                 </div>
-                                <div class="form-group__input">
-                                    <input type="text" class="form-control" v-model="formattedTotalValue" />
+                            </div>
+                            <div class="form-group" v-if="soldAtStoreLocal.payment_method=='Tiền mặt'">
+                                <div class="form-group__container">
+                                    <div class="form-group__label">
+                                        <label for="form">Thanh toán:</label>
+                                    </div>
+                                    <div class="form-group__input">
+                                        <input type="text" class="form-control pay" v-model="formattedPay"
+                                            @keypress="validateKeyPress" />
+                                        <ErrorMessage name="pay" class="error-feedback" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" v-if="soldAtStoreLocal.payment_method=='Tiền mặt'">
+                                <div class="form-group__container">
+                                    <label for="form">Tiền thừa:</label>
+                                    <span class="text-success">{{ computedRemain.toLocaleString() }}</span>
                                 </div>
                             </div>
                         </div>
@@ -286,7 +276,6 @@ import CustomerService from "@/services/admin/customer.service";
 import ProductModal from "@/components/admin/products/ProductModal.vue";
 import CustomerModal from "@/components/admin/customers/CustomerModal.vue";
 import VoucherService from "@/services/admin/voucher.service";
-
 import { formatPrice } from '../../../utils';
 
 export default {
@@ -350,6 +339,14 @@ export default {
             let total_discount = this.computedTotalDiscountProduct + this.discountVoucher;
             return total_discount;
         },
+        computedRemain() {
+            let remain = this.soldAtStoreLocal.pay - this.soldAtStoreLocal.total_value;
+            if(remain>0) {
+                return remain;
+            } else {
+                return this.soldAtStoreLocal.remain;
+            }
+        },
         formattedTotalPrice: {
             get() {
                 // Format the number using commas as thousands separators
@@ -368,6 +365,16 @@ export default {
             set(newValue) {
                 // Remove commas from the input and update the raw numeric value
                 this.soldAtStoreLocal.total_value = parseFloat(newValue.replace(/,/g, ""));
+            },
+        },
+        formattedPay: {
+            get() {
+                // Format the number using commas as thousands separators
+                return this.soldAtStoreLocal.pay.toLocaleString();
+            },
+            set(newValue) {
+                // Remove commas from the input and update the raw numeric value
+                this.soldAtStoreLocal.pay = parseFloat(newValue.replace(/,/g, ""));
             },
         },
         calculatedTotalQuantity() {
@@ -485,9 +492,10 @@ export default {
             if(currentUserId) {
                 this.soldAtStoreLocal.user_id = currentUserId;
             } else {
-                this.soldAtStoreLocal.name_receiver = customer.name;
-                this.soldAtStoreLocal.phone_receiver = customer.phone;
+                this.discountVoucher = 0;
             }
+            this.soldAtStoreLocal.name_receiver = customer.name;
+            this.soldAtStoreLocal.phone_receiver = customer.phone;
             this.retrieveVoucher(currentUserId);
         },
         optionClassify(index, item) {
@@ -549,6 +557,7 @@ export default {
             } else {
                 this.selectedVoucher = null;
                 this.soldAtStoreLocal.voucher_id = 0;
+                this.discountVoucher = 0;
             }
 
             this.discountVoucher = 
@@ -556,6 +565,9 @@ export default {
                 *(this.selectedVoucher.discount/100);
             
             this.updateIntoMoney();
+        },
+        optionPaymentMethod(paymentMethod) {
+            this.soldAtStoreLocal.payment_method = paymentMethod;
         }
     },
     mounted() {
@@ -601,9 +613,11 @@ export default {
     background-color: #ececec !important;
 }
 
+.import-customer .import-product__search {
+    margin-left: 0;
+}
 .import-customer .search-input {
-    width: 90%;
-    margin-left: 20px;
+    width: 100%;
 }
 
 .import-customer .sub-menu-search.customer {
@@ -652,6 +666,7 @@ export default {
 .checkout-voucher .menu-voucher {
     top: unset;
     background-color: #fffef8;
+    width: 360px;
 }
 
 .checkout-voucher .menu-voucher h4 {
@@ -795,5 +810,53 @@ export default {
         color: #fff;
         border-radius: 2px;
         font-size: 13px;
+    }
+
+    .form-group__date input {
+        width: 140px;
+        font-size: 14px;
+    }
+    .content .option-filter .form-group__date {
+        padding: 0;
+    }
+
+    .content .option-filter {
+        margin: 0 -30px;
+    }
+
+    .form-group__container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+    }
+    .form-group__container>span {
+        font-weight: bold;
+        color: #000;
+        font-size: 16px;
+    }
+    .form-group__container .into-money {
+        color: #0000c7;
+        font-size: 24px;
+    }
+    .border-round {
+        background-color: #ecf2fc;
+        height: auto;
+        padding: 10px 30px;
+        border-radius: 10px;
+        border: 1px solid #e0e5ea;
+    }
+    .border-round:nth-child(2) {
+        padding-top: 0;
+    }
+    .import-customer .search-input input {
+        margin-bottom: 8px;
+    }
+
+    .form-group__container .pay {
+        text-align: right;
+        font-weight: bold;
+        color: #000;
+        font-size: 15px;
     }
 </style>

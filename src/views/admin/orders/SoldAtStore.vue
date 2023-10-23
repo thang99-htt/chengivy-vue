@@ -4,18 +4,90 @@
             <div class="liveAlert"></div>
             <SoldAtStoreForm :soldAtStore="soldAtStore" @submit:soldAtStore="submitSoldAtStore" :reset="reset"/>
         </div>
+        <div id="bill" class="bill">
+            <div class="d-flex align-items-center">
+                <div>
+                    <h3>CHENGIVY STORE</h3>
+                    <p>Địa chỉ: 123 Đường 3/2, Xuân Khánh, Ninh Kiều, Cần Thơ</p>
+                    <p>Điện thoại: (+84) 222 666 8888</p>
+                </div>
+                <div class="bill-sale">
+                    <h2>HÓA ĐƠN BÁN HÀNG</h2>
+                </div>
+            </div>
+            <div class="bill-customer">
+                <p>Tên khách hàng: {{ soldAtStore.name_receiver }}</p>
+                <p>Số điện thoại: {{ soldAtStore.phone_receiver }}</p>
+            </div>
+            <div class="bill-product">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Phân loại</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in soldAtStore.items" :key="item">
+                            <td>{{ index+1 }}</td>
+                            <td>{{ item.product_name }}</td>
+                            <td>{{ item.color }}, {{ item.size }}</td>
+                            <td>
+                                <span v-if="item.price_final < item.price" class="text-decoration-line-through">{{ formatPrice(item.price) }}</span>
+                                <span :class="{'text-danger ms-3': item.price_final < item.price}">{{ formatPrice(item.price_final) }}</span>
+                            </td>
+                            <td>{{ (item.quantity).toLocaleString() }}</td>
+                            <td>{{ formatPrice(item.price_final * item.quantity) }}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="4" class="text-center text-bold">Tổng cộng</th>
+                            <th>{{ computedTotalQuantity.toLocaleString() }}</th>
+                            <th>{{ computedTotalValue.toLocaleString() }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="bill-summary">
+                <p class="fst-italic">Thành tiền (viết bằng chữ): {{ convertNumberToWords(soldAtStore.total_value) }}</p>
+            </div>
+            <div class="d-flex justify-content-between mt-5">
+                <div>
+                    <p>KHÁCH HÀNG</p>
+                </div>
+                <div class="bill-admin">
+                    <p class="fst-italic">{{ currentDate }}</p>
+                    <p>NGƯỜI BÁN HÀNG</p>
+                    <p>{{ getAdmin.name }}</p>
+                </div>
+            </div>
+        </div>
     </section>
 </template>
 <script>
 import SoldAtStoreForm from "@/components/admin/orders/SoldAtStoreForm.vue";
 import OrderService from "@/services/admin/order.service";
 import { mapGetters } from "vuex";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import html2pdf from 'html2pdf.js';
+import { formatPrice } from '../../../utils';
 
 export default { 
     components: {
         SoldAtStoreForm,
     },
     data() {
+        const today = new Date();
+        const day = today.getDate();
+        const month = today.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
+        const year = today.getFullYear();
+
         return {
             soldAtStore: {
                 'staff_id': "",
@@ -27,15 +99,20 @@ export default {
                 'total_price': 0,
                 'total_discount': 0,
                 'total_value': 0,
+                'pay': "",
+                'remain': "",
                 'payment_method': "",
                 'items': [],
+                'bill': null
             },
+            currentDate: `Ngày ${day} tháng ${month} năm ${year}`,
         };
     },
     methods: {
+        formatPrice,
         async submitSoldAtStore(data) {
             this.soldAtStore.staff_id = this.getAdmin.id;
-            
+
             const Toast = this.$swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -47,20 +124,76 @@ export default {
                     toast.addEventListener('mouseleave', this.$swal.resumeTimer)
                 }
             })
-            
-            try {
-                await OrderService.soldAtStore(data)
-                .then(res => {
-                        Toast.fire({
-                            icon: res.success,
-                            title: res.message
-                        });
-                    });
 
-            } catch (error) {
-                console.log(error);
+            if(this.soldAtStore.items.length == 0) {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Chưa có thông tin sản phẩm.',
+                });
+            } else if(this.soldAtStore.items.some(item => !item.color)) {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Sản phẩm chưa được chọn phân loại.',
+                });
+            } else if(this.soldAtStore.items.some(item => !item.quantity)) {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Sản phẩm chưa được nhập số lượng.',
+                });
+            } else if(this.soldAtStore.name_receiver == '') {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Chưa có thông tin khách hàng.',
+                });
+            } else if(this.soldAtStore.payment_method == '') {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Chưa chọn hình thức thanh toán.',
+                });
+            } else {
+                try {
+                    const pdf = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'mm',
+                        format: 'a4',
+                    });
+    
+                    const pageWidth = pdf.internal.pageSize.getWidth();
+                    const pageHeight = pdf.internal.pageSize.getHeight();
+    
+                    const element = document.getElementById('bill');
+    
+                    const html2canvasConfig = {
+                        scale: 2,
+                    };
+    
+                    const canvas = await html2canvas(element, html2canvasConfig);
+                    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+    
+                    // Generate the PDF blob
+                    const pdfBlob = pdf.output('blob');
+                    
+                    const reader = new FileReader();
+                    
+                    reader.onload = (event) => {
+                        const pdfBase64 = event.target.result;
+                        this.soldAtStore.bill = pdfBase64;
+                    };
+                    reader.readAsDataURL(pdfBlob);
+    
+    
+                    const response = await OrderService.soldAtStore(data);
+                    Toast.fire({
+                        icon: response.success,
+                        title: response.message,
+                    });
+    
+                    window.open(`http://127.0.0.1:8000/storage/uploads/orders/${response.bill}`, '_blank');
+                } catch (error) {
+                    console.error(error);
+                }
             }
-            // this.reset();
         },
         reset () {
             this.soldAtStore.staff_id = "";
@@ -75,10 +208,97 @@ export default {
             this.soldAtStore.total_value = 0;
             this.soldAtStore.payment_method = "";
             this.soldAtStore.items = [];
+            this.soldAtStore.bill = null;
+        },
+        convertNumberToWords(number) {
+
+            // Mảng chứa các đơn vị cơ bản
+            const units = ["", " nghìn", " triệu", " tỷ"];
+
+            let result = " đồng";
+
+            for (let i = 0; i < units.length && number > 0; i++) {
+                const threeDigits = number % 1000;
+                if (threeDigits > 0) {
+                result = this.convertThreeDigitsToWords(threeDigits) + units[i] + " " + result;
+                }
+                number = Math.floor(number / 1000);
+            }
+
+            return result.trim();
+        },
+        convertThreeDigitsToWords(number) {
+            // Mảng chứa các số từ 0 đến 9
+            const numbers = ["", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+
+            const hundreds = Math.floor(number / 100);
+            const remainder = number % 100;
+            let result = "";
+
+            if (hundreds > 0) {
+                result += numbers[hundreds] + " trăm ";
+            }
+
+            if (remainder > 0) {
+                if (remainder < 10) {
+                result += numbers[remainder];
+                } else if (remainder < 20) {
+                result += "mười " + numbers[remainder - 10];
+                } else {
+                result += numbers[Math.floor(remainder / 10)] + " mươi " + numbers[remainder % 10];
+                }
+            }
+
+            return result;
         },
     },
     computed: {
-        ...mapGetters(['getAdmin'])
+        ...mapGetters(['getAdmin']),
+        computedTotalQuantity() {
+            let total = 0;
+            for (const item of this.soldAtStore.items) {
+                total += item.quantity;
+            }
+            return total;
+        },
+        computedTotalValue() {
+            let total = 0;
+            for (const item of this.soldAtStore.items) {
+                total += item.price_final * item.quantity;
+            }
+            return total;
+        },
     }
 };
 </script>
+<style scoped>
+.bill {
+    margin: 10px auto 0;
+    width: 940px;
+    padding: 20px;
+}
+.bill h3 {
+    margin-bottom: 10px;
+}
+.bill .bill-sale {
+    margin-left: 100px;
+}
+.bill .bill-customer {
+    margin-top: 20px;
+}
+.bill .bill-customer p {
+    color: #000;
+    font-size: 16px;
+}
+.bill .bill-admin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.table-bordered>thead>tr>th,
+.table-bordered>tfoot>tr>th,
+.table-bordered>tbody>tr>td {
+    border: 1px solid #000 !important;
+}
+</style>

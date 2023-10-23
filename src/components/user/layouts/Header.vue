@@ -132,7 +132,7 @@
                                 </div>
                                 <ul class="sub-user" v-if="getUser">
                                     <li>
-                                        <a href="" class="text-bold">{{ getUser.name }}</a>
+                                        <a href="" class="text-bold">{{ getUser.profiles[0].name }}</a>
                                     </li>
                                     <li>
                                         <a href="/customer/profiles">Tài khoản</a>
@@ -415,7 +415,7 @@
                         </div>
                         <ul class="sub-user" v-if="getUser">
                             <li>
-                                <a href="" class="text-bold">{{ getUser.name }}</a>
+                                <a href="" class="text-bold">{{ getUser.profiles[0].name }}</a>
                             </li>
                             <li>
                                 <a href="/customer/profiles">Tài khoản</a>

@@ -21,7 +21,10 @@
                 <td>{{ order.name_receiver }}</td>
                 <td>{{ order.ordered_at }}</td>
                 <td>{{ formatPrice(order.total_value) }}</td>
-                <td>{{ order.user_address_detail }}, {{ order.user_address }}</td>
+                <td>
+                    <span v-if="order.user_address_detail">{{ order.user_address_detail }}, {{ order.user_address }}</span>
+                    <span v-else>Tại cửa hàng</span>
+                </td>
                 <td>
                     <div class="dropdown">
                         <button 

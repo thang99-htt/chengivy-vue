@@ -398,7 +398,7 @@
                         const order = await actions.order.capture();
                         this.orderLocal.paid = 1;
                         this.paymentStatus = 'paid';
-                        console.log(order);
+                        this.$parent.createOrder(this.orderLocal);
                     },
                     onError: err => {
                         console.log(err);
