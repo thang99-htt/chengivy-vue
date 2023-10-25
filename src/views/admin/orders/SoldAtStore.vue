@@ -75,7 +75,6 @@ import OrderService from "@/services/admin/order.service";
 import { mapGetters } from "vuex";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import html2pdf from 'html2pdf.js';
 import { formatPrice } from '../../../utils';
 
 export default { 
@@ -112,7 +111,7 @@ export default {
         formatPrice,
         async submitSoldAtStore(data) {
             this.soldAtStore.staff_id = this.getAdmin.id;
-
+            
             const Toast = this.$swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -152,37 +151,6 @@ export default {
                 });
             } else {
                 try {
-                    const pdf = new jsPDF({
-                        orientation: 'landscape',
-                        unit: 'mm',
-                        format: 'a4',
-                    });
-    
-                    const pageWidth = pdf.internal.pageSize.getWidth();
-                    const pageHeight = pdf.internal.pageSize.getHeight();
-    
-                    const element = document.getElementById('bill');
-    
-                    const html2canvasConfig = {
-                        scale: 2,
-                    };
-    
-                    const canvas = await html2canvas(element, html2canvasConfig);
-                    const imgData = canvas.toDataURL('image/jpeg', 0.98);
-                    pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
-    
-                    // Generate the PDF blob
-                    const pdfBlob = pdf.output('blob');
-                    
-                    const reader = new FileReader();
-                    
-                    reader.onload = (event) => {
-                        const pdfBase64 = event.target.result;
-                        this.soldAtStore.bill = pdfBase64;
-                    };
-                    reader.readAsDataURL(pdfBlob);
-    
-    
                     const response = await OrderService.soldAtStore(data);
                     Toast.fire({
                         icon: response.success,
@@ -194,6 +162,37 @@ export default {
                     console.error(error);
                 }
             }
+        },
+        async generatePDF() {
+            const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4',
+                });
+
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+
+                const element = document.getElementById('bill');
+
+                const html2canvasConfig = {
+                    scale: 2,
+                };
+
+                const canvas = await html2canvas(element, html2canvasConfig);
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+
+                // Generate the PDF blob
+                const pdfBlob = pdf.output('blob');
+                
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    const pdfBase64 = event.target.result;
+                    this.soldAtStore.bill = pdfBase64;
+                };
+                reader.readAsDataURL(pdfBlob);
         },
         reset () {
             this.soldAtStore.staff_id = "";
@@ -251,6 +250,22 @@ export default {
 
             return result;
         },
+    },
+    mounted() {
+        // Tạo một trình theo dõi cho phần tử có id là "bill"
+        const billElement = document.getElementById('bill');
+        if(billElement) {
+            const observer = new MutationObserver((mutationsList, observer) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'childList' || mutation.type === 'subtree') {
+                        // Gọi lại hàm generatePDF khi có thay đổi trong phần tử "bill"
+                        this.generatePDF();
+                    }
+                }
+            });
+            
+            observer.observe(billElement, { childList: true, subtree: true });
+        }
     },
     computed: {
         ...mapGetters(['getAdmin']),

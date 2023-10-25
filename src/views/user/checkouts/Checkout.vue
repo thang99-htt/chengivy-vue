@@ -38,6 +38,7 @@
                     :addressOrder="addressOrder"
                     :carts="carts"
                     :order="order"
+                    
                 />
                 <CheckoutComplete v-if="stepCheck == 2"/>
                 <div class="button-container">
@@ -74,7 +75,8 @@
                     'total_price': 0,
                     'total_discount': 0,
                     'total_value': 0,
-                    'point': ""
+                    'point': "",
+                    'bill': ""
                 },
                 addressOrder: null
             }
@@ -92,18 +94,20 @@
             async createOrder(data) {
                 if(this.productBuyNow) {
                     try {
-                        await OrderService.addBuyNow(this.getUser.id, Object.assign({}, data, this.productBuyNow));
+                        const response = await OrderService.addBuyNow(this.getUser.id, Object.assign({}, data, this.productBuyNow));
                         this.$store.dispatch('removeProductBuyNow');
                         this.stepCheck = 2;
                         this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
+                        window.open(`http://127.0.0.1:8000/storage/uploads/orders/${response.bill}`, '_blank');
                     } catch (error) {
                         console.log(error.response);
                     }
                 } else {
                     try {
-                        await OrderService.create(this.getUser.id, data);
+                        const response = await OrderService.create(this.getUser.id, data);
                         this.stepCheck = 2;
                         this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
+                        window.open(`http://127.0.0.1:8000/storage/uploads/orders/${response.bill}`, '_blank');
                     } catch (error) {
                         console.log(error);
                     }

@@ -4,7 +4,7 @@
             <div class="dash_head">
                 <h3>KIỂM TRA VÀ THANH TOÁN</h3>
             </div>
-            <Form>
+            <Form id="bill1">
                 <div class="checkout-payment">
                     <div class="payment-item">
                         <div class="list_cont">
@@ -182,13 +182,18 @@
                                             </span>
                                         </div>
                                         <div class="total">
-                                            <span>Mã giảm giá <span class="voucher" v-if="selectedVoucher">{{ selectedVoucher.name }}</span></span>
+                                            <span>Mã giảm giá 
+                                                <span class="voucher" v-if="selectedVoucher">{{ selectedVoucher.name }}</span>
+                                            </span>
                                             <span class="total-amount sale">
                                                 -{{ formatPrice(discountVoucher) }}
                                             </span>
                                         </div>
                                         <div class="total">
-                                            <span>Tổng giảm giá</span>
+                                            <span>Tổng giảm giá
+                                                <span class="voucher" v-if="account && (account.level=='SILVER' || account.level=='GOLD')">Giảm 5% tổng hóa đơn</span>
+                                                <span class="voucher" v-if="account && (account.level=='PLATINUM' || account.level=='DIAMOND')">Giảm 10% tổng hóa đơn</span>
+                                            </span>
                                             <span class="total-amount sale">
                                                 -{{ formatPrice(discountTotal) }}
                                             </span>
@@ -323,6 +328,8 @@
     import { formatPrice } from '@/utils';
     import {mapGetters} from 'vuex';
     import axios from 'axios';
+    import html2canvas from 'html2canvas';
+    import jsPDF from 'jspdf';
 
     export default {
         name: 'Header',
@@ -372,6 +379,21 @@
             script.src = "https://www.paypal.com/sdk/js?client-id=AT5pO4SLjEoDt65gg6gzPGMAp4Ml1XpOkoeWr7_G-qa3moiSJJFkdqDIBxh1ytFYbCLXHRoT1MsJSur1";
             script.addEventListener("load", this.setLoaded);
             document.body.appendChild(script);
+
+            // Tạo một trình theo dõi cho phần tử có id là "bill"
+            const billElement = document.getElementById('bill1');
+            if(billElement) {
+                const observer = new MutationObserver((mutationsList, observer) => {
+                    for (const mutation of mutationsList) {
+                        if (mutation.type === 'childList' || mutation.type === 'subtree') {
+                            // Gọi lại hàm generatePDF khi có thay đổi trong phần tử "bill"
+                            this.generatePDF();
+                        }
+                    }
+                });
+                
+                observer.observe(billElement, { childList: true, subtree: true });
+            }
         },
         methods: {
             formatPrice,
@@ -465,7 +487,13 @@
                     this.orderLocal.total_discount = this.discountTotal;
                     this.orderLocal.total_value = this.totalValue;
                 }
-                let money = this.cartLocal.into_money - this.discountProduct - this.discountVoucher;
+                let totalPrice = this.cartLocal.total_price;
+                if(this.account && (this.account.level == 'SILVER' || this.account.level == 'GOLD')) {
+                    totalPrice = totalPrice*0.05;
+                } else if(this.account && (this.account.level == 'PLATINUM' || this.account.level == 'DIAMOND')) {
+                    totalPrice = totalPrice*0.1;
+                }
+                let money = totalPrice - this.discountProduct - this.discountVoucher;
                 if(this.totalValue<0) {
                     this.orderLocal.point = parseInt(money/1000);
                 }
@@ -499,11 +527,48 @@
                 if (checkPoit) {
                     this.orderLocal.point = this.account.point;
                 }
-                let money = this.cartLocal.into_money - this.discountProduct - this.discountVoucher;
+                let totalPrice = this.cartLocal.total_price;
+                if(this.account && (this.account.level == 'SILVER' || this.account.level == 'GOLD')) {
+                    totalPrice = totalPrice*0.05;
+                } else if(this.account && (this.account.level == 'PLATINUM' || this.account.level == 'DIAMOND')) {
+                    totalPrice = totalPrice*0.1;
+                }
+                let money = totalPrice - this.discountProduct - this.discountVoucher;
                 if(this.totalValue<0) {
                     this.orderLocal.point = parseInt(money/1000);
                 }
             },
+            async generatePDF() {
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4',
+                });
+
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+
+                const element = document.getElementById('bill1');
+
+                const html2canvasConfig = {
+                    scale: 2,
+                };
+
+                const canvas = await html2canvas(element, html2canvasConfig);
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+
+                // Generate the PDF blob
+                const pdfBlob = pdf.output('blob');
+                
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    const pdfBase64 = event.target.result;
+                    this.orderLocal.bill = pdfBase64;
+                };
+                reader.readAsDataURL(pdfBlob);
+            }
         }, 
         computed: {
             ...mapGetters(['productBuyNow', 'getUser']),
@@ -511,15 +576,15 @@
                 return this.cartLocal.getCartItems.filter(cart => cart.inventory.total_final > 0);
             },
             discountVoucher() {
+                let totalDiscount = 0;
                 if(this.selectedVoucher) {
                     if(this.productBuyNow) {
-                        return this.productBuyNow.price_final*(this.selectedVoucher.discount/100);
+                        totalDiscount = this.productBuyNow.price_final*(this.selectedVoucher.discount/100);
                     } else {
-                        return this.cartLocal.into_money*(this.selectedVoucher.discount/100);
+                        totalDiscount = this.cartLocal.into_money*(this.selectedVoucher.discount/100);
                     }
-                } else {
-                    return 0;
-                }
+                } 
+                return totalDiscount;
             },
             discountPoint() {
                 if(this.orderLocal.point) 
@@ -534,15 +599,31 @@
                 }
             },
             discountTotal() {
-                if(this.selectedVoucher) {
+                let totalDiscount = 0;
+                if(this.account && (this.account.level == 'GOLD' || this.account.level == 'SILVER')) {
                     if(this.productBuyNow) {
-                        return this.productBuyNow.price_final*(this.selectedVoucher.discount/100) + this.discountProduct + this.discountPoint;
+                        if(this.selectedVoucher)
+                            totalDiscount = this.productBuyNow.price_final*(this.selectedVoucher.discount/100) + this.productBuyNow.price_final*0.05 + this.discountProduct + this.discountPoint;
+                        else 
+                            totalDiscount = this.productBuyNow.price_final*0.05 + this.discountProduct + this.discountPoint;
                     } else {
-                        return this.cartLocal.into_money*(this.selectedVoucher.discount/100) + this.discountProduct + this.discountPoint;
+                        if(this.selectedVoucher) 
+                            totalDiscount = this.cartLocal.total_price*(this.selectedVoucher.discount/100) + this.cartLocal.total_price*0.05 + this.discountProduct + this.discountPoint;
+                        else totalDiscount = this.cartLocal.total_price*0.05 + this.discountProduct + this.discountPoint;
                     }
-                } else {
-                    return this.discountProduct + this.discountPoint;;
+                } else if(this.account && (this.account.level == 'PLATINUM' || this.account.level == 'DIAMOND')) {
+                    if(this.productBuyNow) {
+                        if(this.selectedVoucher)
+                            totalDiscount = this.productBuyNow.price_final*(this.selectedVoucher.discount/100) + this.productBuyNow.price_final*0.1 + this.discountProduct + this.discountPoint;
+                        else 
+                            totalDiscount = this.productBuyNow.price_final*0.1 + this.discountProduct + this.discountPoint;
+                    } else {
+                        if(this.selectedVoucher) 
+                            totalDiscount = this.cartLocal.total_price*(this.selectedVoucher.discount/100) + this.cartLocal.total_price*0.1 + this.discountProduct + this.discountPoint;
+                        else totalDiscount = this.cartLocal.total_price*0.1 + this.discountProduct + this.discountPoint;
+                    }
                 }
+                return totalDiscount;
             },
             totalValue() {
                 if(this.productBuyNow) {
@@ -837,6 +918,7 @@
     }
     .nav-item__info p:nth-child(3) {
         color: #666;
+        font-size: 13px;
     }
     .nav-item__info p:nth-child(4) {
         width: 100%;
