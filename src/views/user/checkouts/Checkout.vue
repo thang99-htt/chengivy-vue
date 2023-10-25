@@ -73,7 +73,8 @@
                     'paid': 0,
                     'total_price': 0,
                     'total_discount': 0,
-                    'total_value': 0
+                    'total_value': 0,
+                    'point': ""
                 },
                 addressOrder: null
             }

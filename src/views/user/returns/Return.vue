@@ -2,7 +2,7 @@
     <div class="profile-info">
         <div class="liveAlert"></div>
         <div class="return-guide">
-            <h3>Yêu cầu Trả hàng / Hoàn tiền</h3>
+            <h3 class="mt-0">Yêu cầu Trả hàng / Hoàn tiền</h3>
             <a href="returns/guide">Hướng dẫn chi tiết</a>
         </div>
 

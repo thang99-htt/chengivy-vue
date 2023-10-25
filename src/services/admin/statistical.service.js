@@ -23,6 +23,10 @@ class StatisticalService {
         return (await this.api.post("/get-products", data)).data;
     }
 
+    async getProductsSoldOut(data) {
+        return (await this.api.post("/get-products-sold-out", data)).data;
+    }
+
     async getTopProducts(data) {
         return (await this.api.get("/get-top-products", data)).data;
     }

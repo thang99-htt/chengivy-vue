@@ -25,17 +25,32 @@
         </li>
         <li>
           <a href="/admin/staffs/roles">
-            <i class="fa fa-user"></i>Quản lý phân quyền
+            <i class="fa fa-user-plus"></i>Quản lý phân quyền
           </a>
         </li>
       </ul>
     </li>
     <li class="treeview pageLink" v-if="getAdmin.permissionIDs.includes(27)"
       :class="{ active: $route.path.includes('/admin/customers') }">
-      <a href="/admin/customers">
+      <a href="/admin/customers/customer-list">
         <i class="fa fa-users"></i>
         <span class="treeview-title">Khách hàng</span>
+        <span class="pull-right-container pull-right">
+          <i class="fa fa-angle-left fa-fw"></i>
+        </span>
       </a>
+      <ul class="treeview-menu">
+        <li>
+          <a href="/admin/customers/customer-list">
+            <i class="fa fa-info-circle"></i>Quản lý thông tin
+          </a>
+        </li>
+        <li>
+          <a href="/admin/customers/customer-level">
+            <i class="fa fa-id-card"></i>Quản lý hạng mức
+          </a>
+        </li>
+      </ul>
     </li>
     <li class="pageLink" v-if="getAdmin.permissionIDs.includes(40)"
       :class="{ active: $route.path.includes('/admin/products') }">

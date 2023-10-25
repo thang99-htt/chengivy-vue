@@ -14,5 +14,12 @@ class UserService {
     async updatePassword(id, data) {
         return (await this.api.put(`/update-password/${id}`, data)).data;
     }
+
+    async getReviews(id, data) {
+        return (await this.api.get(`/reviews/${id}`, data)).data;
+    }
+    async deleteReview(id) {
+        return (await this.api.delete(`/reviews/${id}`)).data;
+    }
 }
 export default new UserService();

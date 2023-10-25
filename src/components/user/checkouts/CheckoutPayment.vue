@@ -111,6 +111,29 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="list_cont">
+                            <p>Sử dụng điểm tích lũy</p>
+                        </div>
+                        <div v-if="account"
+                            class="dash_main ps-5" 
+                        >
+                            <div class="checkout-voucher">
+                                <p>Hạng thành viên: <span class="level">{{ account.level }}</span></p>
+                                <p>Tổng số điểm tích lũy của bạn: <span class="point">{{ (account.point).toLocaleString() }}</span> điểm</p>
+                                <p class="text-point">1 ĐIỂM = 1.000 VNĐ</p>
+                                <img src="/images/icon/tichdiem.svg" alt="" width="50">
+                                <input v-model="orderLocal.point" type="number" class="input-point" placeholder="Nhập số điểm" @input="limitInputValue">
+                                <div class="voucher">
+                                    <span class="border-left">
+                                        <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 1 5 35" style="fill: #da4343;"><path d="M0 0v2.27a2 2 0 010 3.46v2.54a2 2 0 010 3.46v2.54a2 2 0 010 3.46V19h2v-1h-.76A2.99 2.99 0 001 13.76v-1.52a3 3 0 000-4.48V6.24a3 3 0 000-4.48V1h1V0H0z"></path></svg>
+                                    </span>
+                                    <span>-{{ formatPrice(discountPoint) }}</span>
+                                    <span class="border-right">
+                                        <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 1 5 35" style="fill: #da4343;"><path d="M0 0v2.27a2 2 0 010 3.46v2.54a2 2 0 010 3.46v2.54a2 2 0 010 3.46V19h2v-1h-.76A2.99 2.99 0 001 13.76v-1.52a3 3 0 000-4.48V6.24a3 3 0 000-4.48V1h1V0H0z"></path></svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="payment-item">
                         <div class="view-product">
@@ -183,8 +206,13 @@
                                     <div class="bottom mt-4">
                                         <div class="total">
                                             <span class="payment">
-                                                <span>Cần thanh toán</span>
-                                                <span>({{ cartAvailable.length }} sản phẩm)</span>
+                                                <span>Cần thanh toán ({{ cartAvailable.length }} sản phẩm)</span>
+                                                <span v-if="account">
+                                                    <span v-if="account.level == 'DIAMOND'">Điểm tích lũy: {{ (parseInt(totalValue/100000)*10).toLocaleString() }}</span>
+                                                    <span v-else-if="account.level == 'PLATINUM'">Điểm tích lũy: {{ (parseInt(totalValue/100000)*5).toLocaleString() }}</span>
+                                                    <span v-else-if="account.level == 'GOLD'">Điểm tích lũy: {{ (parseInt(totalValue/100000)*3).toLocaleString() }}</span>
+                                                    <span v-else>Điểm tích lũy: {{ parseInt(totalValue/100000).toLocaleString() }}</span>
+                                                </span>
                                             </span>
                                             <span class="total-amount bold">{{ formatPrice(totalValue) }}</span>
                                         </div>
@@ -290,11 +318,11 @@
 
 <script>
     import VoucherService from "@/services/admin/voucher.service";
+    import UserService from "@/services/user/user.service";
     import { Form, Field, ErrorMessage } from "vee-validate";
     import { formatPrice } from '@/utils';
     import {mapGetters} from 'vuex';
     import axios from 'axios';
-    import VNPayService from "../../../services/user/vnpay.service";
 
     export default {
         name: 'Header',
@@ -333,11 +361,13 @@
                 cartAvailable: [],
                 nextThreeDaysString: nextThreeDaysVietnamese,
                 selectedVoucher: null,
+                account: null,
             };
         },
         mounted: function() {
             this.refreshList();
             this.submitOrder();
+            this.retrieveAccount();
             const script = document.createElement("script");
             script.src = "https://www.paypal.com/sdk/js?client-id=AT5pO4SLjEoDt65gg6gzPGMAp4Ml1XpOkoeWr7_G-qa3moiSJJFkdqDIBxh1ytFYbCLXHRoT1MsJSur1";
             script.addEventListener("load", this.setLoaded);
@@ -435,19 +465,9 @@
                     this.orderLocal.total_discount = this.discountTotal;
                     this.orderLocal.total_value = this.totalValue;
                 }
-            },
-            async initiatePayment() {
-                // Make an API request to Laravel to create a payment
-                // You can use Axios or another HTTP library
-                try {
-                    await VNPayService.create()
-                        .then((response) => {
-                            console.log(response)
-                        // Redirect the user to the VNPAY payment page
-                        window.location.href = response.data.redirect_url;
-                        })
-                } catch (error) {
-                    console.error(error);
+                let money = this.cartLocal.into_money - this.discountProduct - this.discountVoucher;
+                if(this.totalValue<0) {
+                    this.orderLocal.point = parseInt(money/1000);
                 }
             },
             async makePayment() {
@@ -467,6 +487,23 @@
                     console.log(error);
                 }
             },
+            async retrieveAccount() {
+                try {
+                    this.account = await UserService.getInfoAccount(this.getUser.id);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            limitInputValue() {
+                let checkPoit = this.orderLocal.point > this.account.point;
+                if (checkPoit) {
+                    this.orderLocal.point = this.account.point;
+                }
+                let money = this.cartLocal.into_money - this.discountProduct - this.discountVoucher;
+                if(this.totalValue<0) {
+                    this.orderLocal.point = parseInt(money/1000);
+                }
+            },
         }, 
         computed: {
             ...mapGetters(['productBuyNow', 'getUser']),
@@ -484,6 +521,11 @@
                     return 0;
                 }
             },
+            discountPoint() {
+                if(this.orderLocal.point) 
+                    return this.orderLocal.point*1000;
+                else return 0;
+            },
             discountProduct() {
                 if(this.productBuyNow) {
                     return this.productBuyNow.price - this.productBuyNow.price_final;
@@ -494,12 +536,12 @@
             discountTotal() {
                 if(this.selectedVoucher) {
                     if(this.productBuyNow) {
-                        return this.productBuyNow.price_final*(this.selectedVoucher.discount/100) + this.discountProduct;
+                        return this.productBuyNow.price_final*(this.selectedVoucher.discount/100) + this.discountProduct + this.discountPoint;
                     } else {
-                        return this.cartLocal.into_money*(this.selectedVoucher.discount/100) + this.discountProduct;
+                        return this.cartLocal.into_money*(this.selectedVoucher.discount/100) + this.discountProduct + this.discountPoint;
                     }
                 } else {
-                    return this.discountProduct;
+                    return this.discountProduct + this.discountPoint;;
                 }
             },
             totalValue() {
@@ -840,5 +882,33 @@
         background-color: #337ab7;
         color: #fff;
         border-radius: 2px;
+    }
+    .point {
+        font-weight: bold;
+        color: #97243c !important;
+        font-size: 18px;
+    }
+    .input-point {
+        margin-left: 10px;
+        width: 140px;
+        padding: 0 6px;
+    }
+    .checkout-voucher>a {
+        width: 150px;
+    }
+    .level {
+        display: inline-block;
+        width: 100px;
+        height: 30px;
+        color: #000;
+        background-color: #f1cc25;
+        padding: 3px 10px;
+        border-radius: 16px;
+        font-weight: 600;
+        text-align: center;
+    }
+    .text-point {
+        margin-left: 60px;
+        font-weight: bold;
     }
 </style>

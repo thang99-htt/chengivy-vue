@@ -205,12 +205,26 @@ const routes = [
             },
             {
                 path: "customers",
-                name: "customer",
-                component: () => import("../views/admin/customers/Customer.vue"),
-                meta: {
-                    description: 'Khách hàng',
-                    permissionID: 27
-                }
+                children: [
+                    {
+                        path: "customer-list",
+                        name: "customer",
+                        component: () => import("../views/admin/customers/Customer.vue"),
+                        meta: {
+                            description: 'Khách hàng',
+                            permissionID: 27
+                        },
+                    },
+                    {
+                        path: "customer-level",
+                        name: "customer-level",
+                        component: () => import("../views/admin/customers/CustomerLevel.vue"),
+                        meta: {
+                            description: 'Hạng mức thành viên',
+                            permissionID: 27
+                        },
+                    },
+                ],
             },
             {
                 path: "reviews",
@@ -426,6 +440,11 @@ const routes = [
                         path: "returns/guide",
                         name: "return.guide",
                         component: () => import("@/views/user/returns/ReturnGuide.vue"),
+                    },
+                    {
+                        path: "reviews",
+                        name: "review.customer",
+                        component: () => import("@/views/user/reviews/Review.vue"),
                     },
                 ]
             },

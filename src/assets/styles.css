@@ -467,13 +467,14 @@ label {
 
 .profiles .profile-info .rating span {
   display: inline-block;
-  width: 90px;
-  height: 26px;
+  width: 100px;
+  height: 30px;
   color: #000;
   background-color: #f1cc25;
-  padding: 1px 10px;
-  border-radius: 20px;
+  padding: 3px 10px;
+  border-radius: 16px;
   font-weight: 600;
+  text-align: center;
 }
 
 .profiles .profile-item {

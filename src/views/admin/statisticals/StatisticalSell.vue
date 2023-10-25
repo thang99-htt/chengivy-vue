@@ -47,19 +47,8 @@
                     </div>
                     <div class="report-item">
                         <h4>Sản phẩm</h4>
-                        <div class="report-quantity">
-                            <p>
-                                <span>Tổng số sản phẩm</span>
-                                <span v-if="products">{{ products.products }}</span>
-                            </p>
-                            <p>
-                                <span>Số sản phẩm mỗi đơn (Avg)</span>
-                                <span v-if="products">{{ products.averageQuantityPerOrder }}</span>
-                            </p>
-                        </div>
                         <apexchart type="bar" height="350" :options="productsChartData.chartOptions"
                             :series="productsChartData.chartSeries" />
-                        <p>Sản phẩm chưa bán được</p>
                     </div>
                 </div>
             </div>
@@ -164,6 +153,8 @@ export default {
                 chartOptions: {
                     chart: {
                         id: "sales",
+                        type: "bar", 
+                        stacked: true,
                     },
                     xaxis: {
                         categories: [], 
@@ -175,24 +166,22 @@ export default {
                             },
                         },
                     },
-                    colors: ["#6a4c91"],
                     plotOptions: {
                         bar: {
                             horizontal: false,
                             columnWidth: "90%",
                             endingShape: "rounded",
+                            // distributed: true
                         },
                     },
                     dataLabels: {
                         enabled: false,
                     },
                 },
-                chartSeries: [
-                    {
-                        name: "Số sản phẩm bán ra",
-                        data: [], 
-                    },
-                ],
+                chartSeries: [{
+                    name: [],
+                    data: []
+                }],
             },
         };
     },
@@ -325,14 +314,13 @@ export default {
                     let dates = [];
                     this.sales = res;
                     dates = res.dates;
-                    // Thiết lập các nhãn ngày trên trục x
 
+                    // Thiết lập các nhãn ngày trên trục x
                     this.salesChartData.chartOptions.xaxis.categories.splice(0);
 
                     dates.map((date) => {
                         this.salesChartData.chartOptions.xaxis.categories.push(date);
                     });
-
                     
                     // Tạo dữ liệu cho biểu đồ cột
                     const revenuessData = dates.map((date) => {
@@ -362,37 +350,46 @@ export default {
                 startDate: this.startDateFormatted,
                 endDate: this.endDateFormatted
             };
-            
+
             try {
-                await StatisticalService.getProducts(data).then(res => {
+                await StatisticalService.getProductsSoldOut(data).then(res => {
                     let dates = [];
                     this.products = res;
+
                     dates = res.dates;
-                    // Thiết lập các nhãn ngày trên trục x
-
                     this.productsChartData.chartOptions.xaxis.categories.splice(0);
-
                     dates.map((date) => {
                         this.productsChartData.chartOptions.xaxis.categories.push(date);
                     });
 
-                    
-                    // Tạo dữ liệu cho biểu đồ cột
-                    const productsSellData = dates.map((date) => {
-                        const totalSells = res.products_sell
+                    const productsData = dates.map((date) => {
+                        const totalQuantity = res.products
                             .filter((item) => item.date === date)
                             .reduce((sum, item) => sum + parseInt(item.total), 0);
-                        return totalSells;
+                        return totalQuantity;
                     });
-    
                     
-                    this.productsChartData.chartSeries[0].data = productsSellData; // Dữ liệu số đơn thành công
-    
+                    // this.productsChartData.chartSeries[0].data = productsData;
+                    this.productsChartData.chartSeries = [{
+          name: 'PRODUCT A',
+          data: [44, 55, 41, 67, 22, 43]
+        }, {
+          name: 'PRODUCT B',
+          data: [13, 23, 20, 8, 13, 27]
+        }, {
+          name: 'PRODUCT C',
+          data: [11, 17, 15, 15, 21, 14]
+        }, {
+          name: 'PRODUCT D',
+          data: [21, 7, 25, 13, 22, 8]
+        }]
+                    
                 });
             } catch (error) {
                 console.log(error);
             }
-        },
+        }
+
     },
     mounted() {
         this.handleDatesChange();
