@@ -527,7 +527,7 @@
                 if (checkPoit) {
                     this.orderLocal.point = this.account.point;
                 }
-                let totalPrice = this.cartLocal.total_price;
+                let totalPrice = this.cartLocal.total_price - this.discountProduct;
                 if(this.account && (this.account.level == 'SILVER' || this.account.level == 'GOLD')) {
                     totalPrice = totalPrice*0.05;
                 } else if(this.account && (this.account.level == 'PLATINUM' || this.account.level == 'DIAMOND')) {
@@ -603,24 +603,24 @@
                 if(this.account && (this.account.level == 'GOLD' || this.account.level == 'SILVER')) {
                     if(this.productBuyNow) {
                         if(this.selectedVoucher)
-                            totalDiscount = this.productBuyNow.price_final*(this.selectedVoucher.discount/100) + this.productBuyNow.price_final*0.05 + this.discountProduct + this.discountPoint;
+                            totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*(this.selectedVoucher.discount/100) + (this.productBuyNow.price_final-this.discountProduct)*0.05 + this.discountProduct + this.discountPoint;
                         else 
-                            totalDiscount = this.productBuyNow.price_final*0.05 + this.discountProduct + this.discountPoint;
+                            totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*0.05 + this.discountProduct + this.discountPoint;
                     } else {
                         if(this.selectedVoucher) 
-                            totalDiscount = this.cartLocal.total_price*(this.selectedVoucher.discount/100) + this.cartLocal.total_price*0.05 + this.discountProduct + this.discountPoint;
-                        else totalDiscount = this.cartLocal.total_price*0.05 + this.discountProduct + this.discountPoint;
+                            totalDiscount = (this.cartLocal.total_price-this.discountProduct)*(this.selectedVoucher.discount/100) + (this.cartLocal.total_price-this.discountProduct)*0.05 + this.discountProduct + this.discountPoint;
+                        else totalDiscount = (this.cartLocal.total_price-this.discountProduct)*0.05 + this.discountProduct + this.discountPoint;
                     }
                 } else if(this.account && (this.account.level == 'PLATINUM' || this.account.level == 'DIAMOND')) {
                     if(this.productBuyNow) {
                         if(this.selectedVoucher)
-                            totalDiscount = this.productBuyNow.price_final*(this.selectedVoucher.discount/100) + this.productBuyNow.price_final*0.1 + this.discountProduct + this.discountPoint;
+                            totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*(this.selectedVoucher.discount/100) + (this.productBuyNow.price_final-this.discountProduct)*0.1 + this.discountProduct + this.discountPoint;
                         else 
-                            totalDiscount = this.productBuyNow.price_final*0.1 + this.discountProduct + this.discountPoint;
+                            totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*0.1 + this.discountProduct + this.discountPoint;
                     } else {
                         if(this.selectedVoucher) 
-                            totalDiscount = this.cartLocal.total_price*(this.selectedVoucher.discount/100) + this.cartLocal.total_price*0.1 + this.discountProduct + this.discountPoint;
-                        else totalDiscount = this.cartLocal.total_price*0.1 + this.discountProduct + this.discountPoint;
+                            totalDiscount = (this.cartLocal.total_price-this.discountProduct)*(this.selectedVoucher.discount/100) + (this.cartLocal.total_price-this.discountProduct)*0.1 + this.discountProduct + this.discountPoint;
+                        else totalDiscount = (this.cartLocal.total_price-this.discountProduct)*0.1 + this.discountProduct + this.discountPoint;
                     }
                 }
                 return totalDiscount;

@@ -106,13 +106,12 @@ export default {
                 for (let i = 0; i < this.inventories.length; i++) {
                     const inventory = { ...this.inventories[i], visible: false }; // Thay đổi visible thành false cho mỗi item của inventories
                     this.combinedData.push(inventory);
-
+                    
                     if (this.selectedProductIndex[i]) {
                         const selectedProducts = this.selectedProductIndex[i].map(product => ({ ...product, visible: false })); // Thay đổi visible thành true cho mỗi item của selectedProductIndex
                         this.combinedData.push(...selectedProducts);
                     }   
                 }
-                // console.log(this.combinedData)
                 this.$nextTick(() => {
                     initializeDataTable();
                 });

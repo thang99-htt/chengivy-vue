@@ -4,9 +4,8 @@
             <tr role="row">
                 <th width="4%">ID</th>
                 <th width="12%">Ngày nhập</th>
-                <th width="10%">Hình thức</th>
-                <th width="14%">Nhà cung cấp</th>
-                <th width="16%">Phiếu chi</th>
+                <th width="18%">Nhà cung cấp</th>
+                <th width="22%">Phiếu chi</th>
                 <th width="12%">Tổng giá trị</th>
                 <th width="10%">Nhân viên</th>
                 <th width="8%">Tùy chọn</th>
@@ -17,7 +16,6 @@
             <tr role="row" v-for="(stockReceivedDocket, index) in stockReceivedDocketsList" :key="stockReceivedDocket">
                 <td>{{ stockReceivedDocket.id }}</td>
                 <td>{{ stockReceivedDocket.date }}</td>
-                <td>{{ stockReceivedDocket.form }}</td>
                 <td>{{ stockReceivedDocket.supplier.name }}</td>
                 <td>
                     Phiếu chi {{ stockReceivedDocket.payment_voucher.id }}, <br>
@@ -55,7 +53,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="8" class="text-center text-bold">Chọn tất cả</th>
+                <th colspan="7" class="text-center text-bold">Chọn tất cả</th>
                 <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
             </tr>
         </tfoot>

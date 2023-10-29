@@ -132,7 +132,13 @@
                         <div class="form-group">
                             <div class="form-group__container border-round">
                                 <label for="date">Khách hàng:</label>
-                                <span class="text-customer">{{ customerSelected }}</span>
+                                <div class="customer-level">
+                                    <span class="text-customer">{{ customerSelected.name }} - {{ customerSelected.phone }} </span>
+                                    <span v-if="customerSelected">
+                                        <span class="point">{{ (customerSelected.user.point).toLocaleString() }} điểm</span> 
+                                        <span class="level">{{ customerSelected.user.level }}</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="border-round mb-3">
@@ -162,16 +168,17 @@
                             </div>
                             <div class="form-group">
                                 <div class="form-group__container">
-                                    <label for="form">Sản phẩm giảm giá:</label>
+                                    <label for="form">Sản phẩm giảm giá</label>
                                     <span>{{ computedTotalDiscountProduct.toLocaleString() }}</span>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" v-if="customerSelected.user">
                                 <div class="form-group__container">
                                     <div class="checkout-voucher">
                                         <label for="form" @click="viewVoucher">
                                             <img src="/images/icon/uudai.svg" alt="" width="25" class="me-1">
                                             Chọn Voucher
+                                            <span class="voucher" v-if="selectedVoucher">{{ selectedVoucher.name }}</span>
                                         </label>
                                         <div class="menu-voucher">
                                             <h4>Chengivy Voucher</h4>
@@ -224,22 +231,48 @@
                                     <span>{{ discountVoucher.toLocaleString() }}</span>
                                 </div>
                             </div>
+                            <div class="form-group" v-if="customerSelected.user">
+                                <div class="form-group__container">
+                                    <div class="">
+                                        <label for="form" @click="viewVoucher">
+                                            <img src="/images/icon/tichdiem.svg" alt="" width="25" class="me-1">
+                                            Sử dụng điểm
+                                            <div class="discount-point">
+                                                <span>-{{ formatPrice(computedDiscountPoint) }}</span>
+                                                <span class="border-left">
+                                                    <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 1 5 35" style="fill: #da4343;"><path d="M0 0v2.27a2 2 0 010 3.46v2.54a2 2 0 010 3.46v2.54a2 2 0 010 3.46V19h2v-1h-.76A2.99 2.99 0 001 13.76v-1.52a3 3 0 000-4.48V6.24a3 3 0 000-4.48V1h1V0H0z"></path></svg>
+                                                </span>
+                                                <span class="border-right">
+                                                    <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 1 5 35" style="fill: #da4343;"><path d="M0 0v2.27a2 2 0 010 3.46v2.54a2 2 0 010 3.46v2.54a2 2 0 010 3.46V19h2v-1h-.76A2.99 2.99 0 001 13.76v-1.52a3 3 0 000-4.48V6.24a3 3 0 000-4.48V1h1V0H0z"></path></svg>
+                                                </span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="form-group__input">
+                                        <input type="text" class="form-control point-input" v-model="formattedPoint"
+                                            placeholder="Nhập số điểm" @input="limitInputValue"/>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <div class="form-group__container">
-                                    <label for="form">Tổng giảm giá:</label>
+                                    <label for="form">Tổng giảm giá
+                                        <span class="voucher" v-if="customerSelected && (customerSelected.user.level=='SILVER' || customerSelected.user.level=='GOLD')">Giảm 5% tổng hóa đơn</span>
+                                        <span class="voucher" v-if="customerSelected && (customerSelected.user.level=='PLATINUM' || customerSelected.user.level=='DIAMOND')">Giảm 10% tổng hóa đơn</span>
+                                    </label>
                                     <span class="text-danger">{{ computedTotalDiscount.toLocaleString() }}</span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="form-group__container">
-                                    <label for="form">Tổng giá trị:</label>
+                                    <label for="form">Tổng giá trị</label>
                                     <span class="into-money">{{ formattedTotalValue }}</span>
                                 </div>
                             </div>
                             <div class="form-group" v-if="soldAtStoreLocal.payment_method=='Tiền mặt'">
                                 <div class="form-group__container">
                                     <div class="form-group__label">
-                                        <label for="form">Thanh toán:</label>
+                                        <label for="form">Thanh toán</label>
                                     </div>
                                     <div class="form-group__input">
                                         <input type="text" class="form-control pay" v-model="formattedPay"
@@ -250,7 +283,7 @@
                             </div>
                             <div class="form-group" v-if="soldAtStoreLocal.payment_method=='Tiền mặt'">
                                 <div class="form-group__container">
-                                    <label for="form">Tiền thừa:</label>
+                                    <label for="form">Tiền thừa</label>
                                     <span class="text-success">{{ computedRemain.toLocaleString() }}</span>
                                 </div>
                             </div>
@@ -304,6 +337,7 @@ export default {
             customerSelected: "",
             vouchers: [],
             discountVoucher: 0,
+            discountPoint: 0,
             selectedVoucher: null,
         };
     },
@@ -336,8 +370,17 @@ export default {
             return total;
         },
         computedTotalDiscount() {
-            let total_discount = this.computedTotalDiscountProduct + this.discountVoucher;
-            return total_discount;
+            let totalDiscount = 0;
+            if(this.customerSelected && (this.customerSelected.user.level == 'GOLD' || this.customerSelected.user.level == 'SILVER')) {
+                if(this.selectedVoucher) 
+                    totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.05 + this.computedTotalDiscountProduct + this.computedDiscountPoint + this.discountVoucher;
+                else totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.05 + this.computedTotalDiscountProduct + this.computedDiscountPoint;
+            } else if(this.customerSelected && (this.customerSelected.user.level == 'PLATINUM' || this.customerSelected.user.level == 'DIAMOND')) {
+                if(this.selectedVoucher) 
+                    totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.1 + this.computedTotalDiscountProduct + this.computedDiscountPoint + this.discountVoucher;
+                else totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.1 + this.computedTotalDiscountProduct + this.computedDiscountPoint;
+            }
+            return totalDiscount;
         },
         computedRemain() {
             let remain = this.soldAtStoreLocal.pay - this.soldAtStoreLocal.total_value;
@@ -377,6 +420,16 @@ export default {
                 this.soldAtStoreLocal.pay = parseFloat(newValue.replace(/,/g, ""));
             },
         },
+        formattedPoint: {
+            get() {
+                // Format the number using commas as thousands separators
+                return this.discountPoint.toLocaleString();
+            },
+            set(newValue) {
+                // Remove commas from the input and update the raw numeric value
+                this.discountPoint = parseFloat(newValue.replace(/,/g, ""));
+            },
+        },
         calculatedTotalQuantity() {
             let total = 0;
             for (const item of this.soldAtStoreLocal.items) {
@@ -390,6 +443,11 @@ export default {
                 total += item.quantity * item.price;
             }
             return total.toLocaleString();
+        },
+        computedDiscountPoint() {
+            if(this.discountPoint) 
+                return this.discountPoint*1000;
+            else return 0;
         },
     },
     methods: {
@@ -487,7 +545,7 @@ export default {
             }
         },
         chooseCustomer(customer) {
-            this.customerSelected = customer.name + " - " + customer.phone;
+            this.customerSelected = customer;
             let currentUserId = customer.user_id;
             if(currentUserId) {
                 this.soldAtStoreLocal.user_id = currentUserId;
@@ -568,7 +626,24 @@ export default {
         },
         optionPaymentMethod(paymentMethod) {
             this.soldAtStoreLocal.payment_method = paymentMethod;
-        }
+        },
+        limitInputValue() {
+            let checkPoit = this.discountPoint > this.customerSelected.user.point;
+            if (checkPoit) {
+                this.discountPoint = this.customerSelected.user.poin;
+            }
+            let totalPrice = this.soldAtStore.total_price - this.computedTotalDiscountProduct;
+            if(this.customerSelected && (this.customerSelected.user.point == 'SILVER' || this.customerSelected.user.point == 'GOLD')) {
+                totalPrice = totalPrice*0.05;
+            } else if(this.customerSelected && (this.customerSelected.user.point == 'PLATINUM' || this.customerSelected.user.point == 'DIAMOND')) {
+                totalPrice = totalPrice*0.1;
+            }
+            let money = totalPrice - this.discountProduct - this.discountVoucher;
+            if(this.totalValue<0) {
+                this.discountPoint = parseInt(money/1000);
+            }
+        },
+            
     },
     mounted() {
         this.getProductAll();
@@ -643,6 +718,7 @@ export default {
 .text-customer {
     font-weight: bold;
     color: #3d3d3d;
+    font-size: 17px;
 }
 
 .import-customer .sub-menu-search {
@@ -858,5 +934,72 @@ export default {
         font-weight: bold;
         color: #000;
         font-size: 15px;
+    }
+    .form-group .point-input {
+        text-align: right;
+        color: #000;
+        width: 120px;
+        float: right;
+    }
+    .voucher {
+        margin-left: 10px;
+        color: #da4343;
+        border: 1px solid #da4343;
+        height: 30px;
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+    .level {
+        display: inline-block;
+        width: 100px;
+        height: 24px;
+        color: #000;
+        background-color: #f1cc25;
+        padding: 3px 10px;
+        border-radius: 16px;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 10px;
+    }
+    .customer-level {
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+    }
+    .point {
+        font-weight: bold;
+        color: #97243c !important;
+        font-size: 17px;
+        margin-right: 10px;
+    }
+    .discount-point {
+        color: #da4343;
+        border-top: 1px solid #da4343;
+        border-bottom: 1px solid #da4343;
+        position: relative;
+        height: 30px;
+        padding: 3px 10px 0 10px;
+        display: inline-block;
+    }
+    .discount-point svg {
+        width: 10px;
+        height: 55px
+    }
+    .discount-point .border-left,
+    .discount-point .border-right {
+        position: absolute;
+        content: "";
+        top: 0;
+        height: 100%;
+    }
+    .discount-point .border-left {
+        left: 0;
+    }
+    .discount-point .border-right {
+        right: -9px;
+    }
+    .form-group .form-group__container .form-group__input {
+        width: auto;
     }
 </style>
