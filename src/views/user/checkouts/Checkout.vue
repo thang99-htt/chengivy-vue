@@ -107,7 +107,7 @@
                         const response = await OrderService.create(this.getUser.id, data);
                         this.stepCheck = 2;
                         this.$store.commit('addToCart', await CartService.getCart(this.getUser.id));
-                        window.open(`http://127.0.0.1:8000/storage/uploads/orders/${response.bill}`, '_blank');
+                        // window.open(`http://127.0.0.1:8000/storage/uploads/orders/${response.bill}`, '_blank');
                     } catch (error) {
                         console.log(error);
                     }

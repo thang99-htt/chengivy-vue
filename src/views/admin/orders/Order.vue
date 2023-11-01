@@ -5,7 +5,7 @@
                 <StatisticalPicker :startDateFormatted="startDateFormatted" :endDateFormatted="endDateFormatted"
                     @update:startDateFormatted="updateStartDate" @update:endDateFormatted="updateEndDate" />
 
-                <div class="option-filter">
+                <div class="option-filter" v-if="!hasRole6">
                     <div>
                         <a @click="selectedOption = 0" :class="{ active: selectedOption == 0 }"> Tất cả
                         </a>
@@ -25,7 +25,7 @@
                         <i class="fa fa-close"></i>Hủy đơn
                     </button>
                 </div>
-                <OrderList v-if="filteredOrders" :orders="filteredOrders" :selectedIds="selectedIds" />
+                <OrderList v-if="filteredOrders" :orders="filteredOrders" :selectedIds="selectedIds" :getAdmin="getAdmin"/>
             </div>
         </div>
     </section>
@@ -36,6 +36,7 @@ import { initializeDataTable } from '../../../utils';
 import OrderList from "@/components/admin/orders/OrderList.vue";
 import OrderService from "@/services/admin/order.service";
 import StatisticalPicker from "@/components/admin/statisticals/StatisticalPicker.vue";
+import {mapGetters} from 'vuex';
 
 export default {
     components: {
@@ -59,6 +60,10 @@ export default {
         };
     },
     computed: {
+        ...mapGetters(['getAdmin']),
+        hasRole6() {
+            return this.getAdmin.roleIDs && this.getAdmin.roleIDs.some(id => id === 6);
+        },
         filteredOrders() {
             let filtered = [...this.orders];
             if (this.selectedOption != 0) {

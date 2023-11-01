@@ -991,10 +991,6 @@ button[data-toggle="collapse"] {
     border-radius: 100% 100%;
 }
 
-.user_info {
-    margin: 0 0 0 35px;
-}
-
 .online_animation {
     width: 12px;
     height: 12px;
@@ -3606,7 +3602,7 @@ table.projects tr td:first-child {
 .user-panel {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .btn-show {

@@ -38,7 +38,7 @@
                     <div class="purchase-item" v-for="product in ret.return_product" :key="product.id">
                         <div class="purchase-info">
                             <div class="d-flex">
-                                <img class="d-block me-3" width="100" :src="product.product.product_image[0].image" alt="">
+                                <img class="d-block me-3" width="100" :src="product.image" alt="">
                                 <div>
                                     <router-link :to="{
                                         name: 'product.detail',

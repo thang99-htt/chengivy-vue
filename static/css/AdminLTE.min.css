@@ -451,7 +451,6 @@ a:focus {
 .user-panel {
   position: relative;
   width: 100%;
-  padding: 0 10px 20px 30px;
   overflow: hidden;
 }
 
@@ -462,8 +461,7 @@ a:focus {
 }
 .user-panel > .info {
   line-height: 1;
-  position: absolute;
-  left: 55px;
+  margin-left: 6px;
 }
 .user-panel > .info > p {
   font-weight: 600;

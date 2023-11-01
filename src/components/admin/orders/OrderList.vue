@@ -3,12 +3,13 @@
         <thead>
             <tr role="row">
                 <th width="6%">ID</th>
-                <th width="8%">Khách hàng</th>
+                <th width="10%">Khách hàng</th>
                 <th width="12%">Ngày đặt</th>
                 <th width="10%">Tổng giá trị</th>
-                <th width="21%">Địa chỉ</th>
+                <th width="15%">Nhân viên giao hàng</th>
+                <th width="12%" v-if="!hasRole6">Nhân viên duyệt đơn</th>
+                <th width="12%" v-else></th>
                 <th width="10%">Trạng thái</th>
-                <th width="8%">Nhân viên</th>
                 <th width="7%">Tùy chọn</th>
                 <th width="5%">Chọn</th>
             </tr>
@@ -22,8 +23,22 @@
                 <td>{{ order.ordered_at }}</td>
                 <td>{{ formatPrice(order.total_value) }}</td>
                 <td>
-                    <span v-if="order.user_address_detail">{{ order.user_address_detail }}, {{ order.user_address }}</span>
-                    <span v-else>Tại cửa hàng</span>
+                    <span v-if="order.staff_delivery">{{ order.staff_delivery.name }} - {{ order.staff_delivery.phone }}</span>
+                </td>
+                <td class="text-center">
+                    <span v-if="order.staff && !hasRole6">{{ order.staff.name }}</span>
+                    <button v-if="hasRole6 && !order.staff_delivery" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
+                        Nhận đơn
+                    </button>
+                    <button v-if="hasRole6 && order.status.id==3" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
+                        Đã lấy hàng
+                    </button>
+                    <button v-if="hasRole6 && order.status.id==4" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
+                        Đang giao hàng
+                    </button>
+                    <button v-if="hasRole6 && order.status.id==6" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
+                        Đã giao
+                    </button>
                 </td>
                 <td>
                     <div class="dropdown">
@@ -34,7 +49,6 @@
                                 'order-status2': order.status.id==2,
                                 'order-status3': order.status.id==3,
                                 'order-status4': order.status.id==4,
-                                'order-status5': order.status.id==5,
                                 'order-status6': order.status.id==6,
                                 'order-status7': order.status.id==7,
                                 'order-status8': order.status.id==8,
@@ -42,8 +56,9 @@
                                 'order-status10': order.status.id==10,
                                 'order-status11': order.status.id==11,
                             }"
-                            id="dropdownMenuButton1" data-bs-toggle="dropdown" 
-                            aria-expanded="false"
+                            id="dropdownMenuButton1" 
+                            :data-bs-toggle="!hasRole6 ? 'dropdown' : ''"
+                            :aria-expanded="!hasRole6 ? 'false' : ''"
                         >
                             {{ order.status.name }}
                         </button>
@@ -56,9 +71,8 @@
                         </ul>
                     </div>
                 </td>
-                <td>{{ order.staff.name }}</td>
                 <td class="text-center">
-                    <button type="button" class="btn"  @click="showModalEdit(order.id)">                        
+                    <button type="button" class="btn" @click="showModalEdit(order.id)">                        
                         <img src="/images/icon/iconedit.png" alt="">
                     </button>
                     <button type="button" class="btn">                        
@@ -88,9 +102,7 @@
 
 <script>
 import OrderService from "@/services/admin/order.service";
-import StatusService from "@/services/admin/status.service";
 import { formatPrice } from "../../../utils";
-import {mapGetters} from 'vuex';
 
 export default {
     name: 'OrderList',
@@ -99,16 +111,31 @@ export default {
         selectedIds: { type: Array, default: [] },
         orderID: { type: Number, required: true },
         showModal: { type: Boolean, required: true },
+        getAdmin: { type: Object, required: true },
     },
     computed: {
-        ordersList() {
-            return this.orders;
+        hasRole6() {
+            return this.getAdmin.roleIDs && this.getAdmin.roleIDs.some(id => id === 6);
         },
-        ...mapGetters(['getAdmin'])
+        ordersList() {
+            if(this.hasRole6) {
+                return this.orders.filter(order => {
+                    return (order.status.id >= 2 && order.status.id<=8);
+                });
+            } else {
+                return this.orders;
+            }
+        },
     },
     data() {
         return {
-            statuses: []
+            statuses: [
+                {'id': 1, 'name': 'Chờ xử lý'},
+                {'id': 2, 'name': 'Đã được xử lý'},
+                {'id': 3, 'name': 'Đang chuẩn bị'},
+                {'id': 9, 'name': 'Hoàn thành'},
+                {'id': 12, 'name': 'Không nhận hàng'},
+            ]
         };
     },
     methods: {
@@ -142,13 +169,6 @@ export default {
                 console.log(error);
             }
         },
-        async retrieveStatus() {
-            try {
-                this.statuses = await StatusService.getAll();
-            } catch (error) {
-                console.log(error);
-            }
-        },
         idSelected(id) {
             const index = this.selectedIds.indexOf(id);
             if (index === -1) {
@@ -173,9 +193,36 @@ export default {
                 });
             }
         },
+        deliveryOrder(orderID) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            const data = {
+                staff_delivery_id: this.getAdmin.id,
+                orderId: orderID
+            }
+            try {
+                OrderService.deliveryOrder(data);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Cập nhật trạng thái thành công.'
+                });
+                this.$parent.refreshList();
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
     mounted() {
-        this.retrieveStatus();
+        
     }
 
 };
@@ -183,7 +230,7 @@ export default {
 
 <style>
     .btn-order-status {
-        width: 115px;
+        width: 145px;
         height: 30px;
         padding: 0 !important;
         font-size: 13px !important;
@@ -217,21 +264,15 @@ export default {
         background-color: #ffe3ea;
     }
 
-    .order-status5,
-    .dropdown-menu>li>.dropdown-item-5:hover {
+    .order-status6,
+    .dropdown-menu>li>.dropdown-item-6:hover {
         color: #006a87;
         background-color: #ddf8ff;
     }
 
-    .order-status6,
-    .dropdown-menu>li>.dropdown-item-6:hover {
-        color: #f000a4;
-        background-color: #ffe2f6;
-    }
-
     .order-status7,
     .dropdown-menu>li>.dropdown-item-7:hover {
-        color: #caa500;
+        color: #f5c800;
         background-color: #fff9dc;
     }
 
@@ -256,5 +297,11 @@ export default {
     .dropdown-menu>li>.dropdown-item-11:hover {
         color: #840000e7;
         background-color: #f7ffe0e7;
+    }
+    .btn-receipt {
+        height: 30px;
+        font-size: 14px;
+        min-width: 100px;
+        text-transform: none;
     }
 </style>

@@ -99,6 +99,7 @@ export default {
                 'total_discount': 0,
                 'total_value': 0,
                 'pay': "",
+                'point': 0,
                 'remain': "",
                 'payment_method': "",
                 'items': [],

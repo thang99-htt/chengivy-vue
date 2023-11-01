@@ -49,6 +49,31 @@
                         <h4>Sản phẩm</h4>
                         <apexchart type="bar" height="350" :options="productsChartData.chartOptions"
                             :series="productsChartData.chartSeries" />
+                        <h5 v-if="filteredProducts[0]">Số lượng sản phẩm bán ra ngày {{ filteredProducts[0].date }}</h5>
+                        <table v-if="filteredProducts[0]" class="example1 table dataTable table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng bán ra</th>
+                                    <th>Tổng giá trị</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr role="row" v-for="(product, index) in filteredProducts[0].productQuantities" :key="product">
+                                    <td>{{ index+1 }}</td>
+                                    <td>
+                                        <img :src="product.image" alt="Hình ảnh" width="80">
+                                        {{ product.name }}
+                                    </td>
+                                    <td>{{ formatPrice(product.price) }}</td>
+                                    <td>{{ (product.quantity).toLocaleString() }}</td>
+                                    <td>{{ formatPrice(product.price*product.quantity) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                            
                     </div>
                 </div>
             </div>
@@ -60,7 +85,9 @@
 import StatisticalPicker from "@/components/admin/statisticals/StatisticalPicker.vue";
 import StatisticalService from "@/services/admin/statistical.service";
 import { formatPrice } from '../../../utils';
-
+import { initializeDataTable } from '../../../utils';
+import $ from 'jquery';
+import 'datatables.net';
 export default {
     components: {
         StatisticalPicker,
@@ -72,7 +99,56 @@ export default {
             orders: [],
             sales: [],
             products: [],
+            filteredProducts: [],
             datesUpdated: false,
+            productsChartData: {
+                chartOptions: {
+                    chart: {
+                        id: "product",
+                        type: "bar", 
+                        stacked: true,
+                        events: {
+                            xAxisLabelClick: (event, chartContext, config) => {
+                                const vm = this; // Capture the reference to the Vue component
+                                let selectedDate = config.config.xaxis.categories[config.labelIndex];
+                                // Filter the products array based on the selected date
+                                this.filteredProducts = vm.products.products.filter(product => product.date === selectedDate);   
+                                if ($.fn.DataTable.isDataTable('.example1')) {
+                                    $('.example1').DataTable().destroy();
+                                }
+                                this.$nextTick(() => {
+                                    initializeDataTable();
+                                });
+                            }
+                        }
+                    },
+                    xaxis: {
+                        categories: [], 
+                    },
+                    yaxis: {
+                        labels: {
+                            formatter: function (value) {
+                                return value.toLocaleString();
+                            },
+                        },
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: false,
+                            columnWidth: "90%",
+                            endingShape: "rounded",
+                            distributed: true
+                        },
+                    },
+                    dataLabels: {
+                        enabled: false,
+                    },
+                },
+                chartSeries: [{
+                    name: "Số lượng bán ra",
+                    data: []
+                }],
+            },
             ordersChartData: {
                 chartOptions: {
                     chart: {
@@ -148,40 +224,6 @@ export default {
                         data: [], 
                     },
                 ],
-            },
-            productsChartData: {
-                chartOptions: {
-                    chart: {
-                        id: "sales",
-                        type: "bar", 
-                        stacked: true,
-                    },
-                    xaxis: {
-                        categories: [], 
-                    },
-                    yaxis: {
-                        labels: {
-                            formatter: function (value) {
-                                return value.toLocaleString();
-                            },
-                        },
-                    },
-                    plotOptions: {
-                        bar: {
-                            horizontal: false,
-                            columnWidth: "90%",
-                            endingShape: "rounded",
-                            // distributed: true
-                        },
-                    },
-                    dataLabels: {
-                        enabled: false,
-                    },
-                },
-                chartSeries: [{
-                    name: [],
-                    data: []
-                }],
             },
         };
     },
@@ -368,27 +410,8 @@ export default {
                             .reduce((sum, item) => sum + parseInt(item.total), 0);
                         return totalQuantity;
                     });
-                    
-                    let thang = res.products[0].productQuantities;
-                    for(const item in thang) {
-                        this.productsChartData.chartSeries.name.push(item.name);
-                        this.productsChartData.chartSeries.data.push(item.quantity);
-                    }
-                    // this.productsChartData.chartSeries[0].data = productsData;
-                    // this.productsChartData.chartSeries = [{
-                    //     name: 'PRODUCT A',
-                    //     data: [44, 55, 41, 67, 22, 43]
-                    //     }, {
-                    //     name: 'PRODUCT B',
-                    //     data: [13, 23, 20, 8, 13, 27]
-                    //     }, {
-                    //     name: 'PRODUCT C',
-                    //     data: [11, 17, 15, 15, 21, 14]
-                    //     }, {
-                    //     name: 'PRODUCT D',
-                    //     data: [21, 7, 25, 13, 22, 8]
-                    // }]
-                    
+
+                    this.productsChartData.chartSeries[0].data = productsData; // Dữ liệu số đơn thành công
                 });
             } catch (error) {
                 console.log(error);

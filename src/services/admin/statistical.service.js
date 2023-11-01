@@ -35,6 +35,14 @@ class StatisticalService {
         return (await this.api.get("/get-inventories", data)).data;
     }
 
+    async getReturns(data) {
+        return (await this.api.post("/get-returns", data)).data;
+    }
+
+    async reImportInventory(data) {
+        return (await this.api.post("/re-import-into-inventory", data)).data;
+    }
+
     async getNotifications() {
         return (await this.api.get("/get-notification")).data;
     }

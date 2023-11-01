@@ -119,10 +119,9 @@
                                 <li class="nav-item" v-for="customer in filteredCutomers" :key="customer"
                                     @click="chooseCustomer(customer)">
                                     <div class="d-flex justify-content-between">
-                                        <span>Khách hàng:
-                                            <span class="text-customer"> {{ customer.name }} - {{ customer.phone }}</span>
-                                        </span>
-                                        <span class="type-price">Giá thường</span>
+                                        <span class="text-customer"> {{ customer.name }} - {{ customer.phone }}</span>
+                                        <span class="type-price" v-if="customer && (customer.user.level=='SILVER' || customer.user.level=='GOLD')">Giảm 50%</span>
+                                        <span class="type-price" v-if="customer && (customer.user.level=='PLATINUM' || customer.user.level=='DIAMOND')">Giảm 10%</span>
                                     </div>
                                 </li>
                             </ul>
@@ -337,7 +336,6 @@ export default {
             customerSelected: "",
             vouchers: [],
             discountVoucher: 0,
-            discountPoint: 0,
             selectedVoucher: null,
         };
     },
@@ -380,6 +378,7 @@ export default {
                     totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.1 + this.computedTotalDiscountProduct + this.computedDiscountPoint + this.discountVoucher;
                 else totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.1 + this.computedTotalDiscountProduct + this.computedDiscountPoint;
             }
+            this.soldAtStore.total_discount = totalDiscount;
             return totalDiscount;
         },
         computedRemain() {
@@ -423,11 +422,11 @@ export default {
         formattedPoint: {
             get() {
                 // Format the number using commas as thousands separators
-                return this.discountPoint.toLocaleString();
+                return this.soldAtStore.point.toLocaleString();
             },
             set(newValue) {
                 // Remove commas from the input and update the raw numeric value
-                this.discountPoint = parseFloat(newValue.replace(/,/g, ""));
+                this.soldAtStore.point = parseFloat(newValue.replace(/,/g, ""));
             },
         },
         calculatedTotalQuantity() {
@@ -445,8 +444,8 @@ export default {
             return total.toLocaleString();
         },
         computedDiscountPoint() {
-            if(this.discountPoint) 
-                return this.discountPoint*1000;
+            if(this.soldAtStore.point) 
+                return this.soldAtStore.point*1000;
             else return 0;
         },
     },
@@ -628,9 +627,9 @@ export default {
             this.soldAtStoreLocal.payment_method = paymentMethod;
         },
         limitInputValue() {
-            let checkPoit = this.discountPoint > this.customerSelected.user.point;
+            let checkPoit = this.soldAtStore.point > this.customerSelected.user.point;
             if (checkPoit) {
-                this.discountPoint = this.customerSelected.user.poin;
+                this.soldAtStore.point = this.customerSelected.user.poin;
             }
             let totalPrice = this.soldAtStore.total_price - this.computedTotalDiscountProduct;
             if(this.customerSelected && (this.customerSelected.user.point == 'SILVER' || this.customerSelected.user.point == 'GOLD')) {
@@ -640,7 +639,7 @@ export default {
             }
             let money = totalPrice - this.discountProduct - this.discountVoucher;
             if(this.totalValue<0) {
-                this.discountPoint = parseInt(money/1000);
+                this.soldAtStore.point = parseInt(money/1000);
             }
         },
             

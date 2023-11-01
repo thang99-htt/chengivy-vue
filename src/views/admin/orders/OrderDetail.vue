@@ -33,7 +33,7 @@
                                <h4>Khách hàng: </h4>
                             </div>  
                             <div class="item-content">
-                                <p>{{ order.user_account_detail.name }}</p>
+                                <p>{{ order.user_name }}</p>
                                 <p>{{ order.user_account_detail.email }}</p>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                                     <span class="pe-3 me-3 border-end">{{ order.name_receiver }}</span>
                                     <span>{{ order.phone_receiver }}</span>
                                 </p>
-                                <p>{{ order.user_address_detail }}, {{ order.user_address }}</p>
+                                <p v-if="order.user_address_detail">{{ order.user_address_detail }}, {{ order.user_address }}</p>
                             </div>
                         </div>
                     </div>
@@ -80,9 +80,17 @@
                                 <span>Phí vận chuyển</span>
                                 <span>{{ formatPrice(order.fee) }}</span>
                             </p>
+                            <p>
+                                <span>Sản phẩm giảm giá</span>
+                                <span class="sale">{{ formatPrice(calculatedDiscountProduct) }}</span>
+                            </p>
                             <p v-if="order.voucher">
                                 <span>Mã giảm giá <span class="voucher">{{ order.voucher.name }}</span></span>
-                                <span class="sale">{{ formatPrice(order.voucher.price_discount) }}</span>
+                                <span class="sale">{{ formatPrice(calculatedDiscountVoucher) }}</span>
+                            </p>
+                            <p>
+                                <span>Số điểm sử dụng <span class="voucher">{{ (order.point).toLocaleString() }}</span></span>
+                                <span class="sale">{{ formatPrice(order.point*1000) }}</span>
                             </p>
                             <p>
                                 <span>Tổng giảm giá</span>
@@ -102,9 +110,6 @@
                                 </p>
                             </p>
                         </div>
-                    </div>
-                    <div class="order-button">
-
                     </div>
                 </div>
             </div>
@@ -150,6 +155,20 @@
         created() {
             this.getOrder(this.id);
         },
+        computed: {
+            calculatedDiscountProduct() {
+                let total = 0;
+                for (const item of this.order.items) {
+                    total += item.quantity*item.price_discount;
+                }
+                return total;
+            },
+            calculatedDiscountVoucher() {
+                let total = 0;
+                total = (this.order.total_price - this.calculatedDiscountProduct)*(this.order.voucher.discount)/100;
+                return total;
+            },
+        }
     };
 </script>
 <style>
@@ -212,10 +231,10 @@
     }
 
     .order-detail .item-header .order-status {
-        width: 85px;
+        width: auto;
         color: #fff;
         background-color: #00c911;
-        padding: 1px 10px;
+        padding: 6px 10px;
         border-radius: 6px;
         position: absolute;
         content: "";

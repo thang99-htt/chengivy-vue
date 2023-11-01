@@ -180,7 +180,7 @@ const routes = [
                         props: true,
                         meta: {
                             description: 'Chi tiết đơn hàng',
-                            permissionID: 22
+                            permissionID: 55
                         }
                     },
                     {
