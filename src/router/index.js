@@ -302,11 +302,11 @@ const routes = [
                         },
                     },
                     {
-                        path: "invoice",
-                        name: "statistical.invoice",
-                        component: () => import("../views/admin/statisticals/StatisticalInvoice.vue"),
+                        path: "customer",
+                        name: "statistical.customer",
+                        component: () => import("../views/admin/statisticals/StatisticalCustomer.vue"),
                         meta: {
-                            description: 'Lịch sử hóa đơn',
+                            description: 'Báo cáo khách hàng',
                             permissionID: 69
                         },
                     },
@@ -316,15 +316,6 @@ const routes = [
                         component: () => import("../views/admin/statisticals/StatisticalReturn.vue"),
                         meta: {
                             description: 'Lịch sử hoàn trả',
-                            permissionID: 69
-                        },
-                    },
-                    {
-                        path: "trend",
-                        name: "statistical.trend",
-                        component: () => import("../views/admin/statisticals/StatisticalTrend.vue"),
-                        meta: {
-                            description: 'Xu hướng bán hàng',
                             permissionID: 69
                         },
                     },

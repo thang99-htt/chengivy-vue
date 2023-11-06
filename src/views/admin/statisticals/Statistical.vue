@@ -25,23 +25,16 @@
             <p>Báo cáo tình trạng kho hiện có cùng với dự đoán về tình hình tồn kho trong tương lai.</p>
         </router-link>
         <router-link class="statistical-item" :to="{
-            name: 'statistical.finance',
-        }">
-            <p>Lịch sử hóa đơn</p>
-            <p>Báo cáo các chi tiết liên quan đến các giao dịch mua bán hoặc dịch vụ cụ thể.</p>
-        </router-link>
-        <router-link class="statistical-item" :to="{
             name: 'statistical.return',
         }">
             <p>Lịch sử hoàn trả</p>
             <p>Báo cáo các chi tiết liên quan đến các giao dịch hoàn trả hoặc đổi trả sản phẩm hoặc dịch vụ.</p>
         </router-link>
         <router-link class="statistical-item" :to="{
-            name: 'statistical.trend',
+            name: 'statistical.customer',
         }">
-            <p>Xu hướng bán hàng</p>
-            <p>Báo cáo trình bày và phân tích các dấu hiệu và biểu đồ về sự biến đổi trong hoạt động bán hàng của một
-                    doanh nghiệp theo thời gian.</p>
+            <p>Báo cáo khách hàng</p>
+            <p>Báo cáo các chi tiết liên quan đến khách hàng đang là thành viên của cửa hàng.</p>
         </router-link>
     </div>
 </template>

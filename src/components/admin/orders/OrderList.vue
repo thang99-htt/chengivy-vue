@@ -23,21 +23,48 @@
                 <td>{{ order.ordered_at }}</td>
                 <td>{{ formatPrice(order.total_value) }}</td>
                 <td>
-                    <span v-if="order.staff_delivery">{{ order.staff_delivery.name }} - {{ order.staff_delivery.phone }}</span>
+                    <span v-if="order.staff_delivery">
+                        <span>{{ order.staff_delivery.name }} - {{ order.staff_delivery.phone }}</span>
+                        <span class="shipper" v-if="order.status.id>=3 && order.status.id<=6 ">Đã nhận đơn</span>
+                    </span>
+                    <span v-if="!hasRole6 && order.status.id==2" class="d-flex justify-content-center">
+                        <button 
+                            class="dropdown-toggle btn-order-shipper" type="button" 
+                            id="dropdownMenuButton2" 
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            Chọn Shipper
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                            <li v-for="shipper in shippers" :key="shipper">
+                                <a href="#" @click="selectedShipper(order.id, shipper.id)">
+                                    {{ shipper.name }} - {{ shipper.phone }}
+                                    <br><span class="current_order">Số đơn hiện tại: {{ shipper.current_orders.length }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </span>
                 </td>
                 <td class="text-center">
                     <span v-if="order.staff && !hasRole6">{{ order.staff.name }}</span>
-                    <button v-if="hasRole6 && !order.staff_delivery" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
+                    <button v-if="hasRole6 && order.status.id==2" type="button" class="btnAdd btn-receipt" @click="deliveryOrder2(order.id)">
                         Nhận đơn
                     </button>
-                    <button v-if="hasRole6 && order.status.id==3" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
-                        Đã lấy hàng
+                    <button v-if="hasRole6 && order.status.id==2 && order.staff_delivery" type="button" class="btnAdd btn-receipt mt-2" @click="deliveryOrder3(order.id)">
+                        Từ chối đơn
                     </button>
                     <button v-if="hasRole6 && order.status.id==4" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
+                        Đã lấy hàng
+                    </button>
+                    <button v-if="hasRole6 && order.status.id==5" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
                         Đang giao hàng
                     </button>
                     <button v-if="hasRole6 && order.status.id==6" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
                         Đã giao
+                    </button>
+                    <button v-if="hasRole6 && order.status.id==6" type="button" class="btnAdd btn-receipt mt-2 btn-danger" @click="deliveryOrder1(order.id)">
+                        Khách không nhận
                     </button>
                 </td>
                 <td>
@@ -49,12 +76,14 @@
                                 'order-status2': order.status.id==2,
                                 'order-status3': order.status.id==3,
                                 'order-status4': order.status.id==4,
+                                'order-status5': order.status.id==5,
                                 'order-status6': order.status.id==6,
                                 'order-status7': order.status.id==7,
                                 'order-status8': order.status.id==8,
                                 'order-status9': order.status.id==9,
                                 'order-status10': order.status.id==10,
                                 'order-status11': order.status.id==11,
+                                'order-status12': order.status.id==12,
                             }"
                             id="dropdownMenuButton1" 
                             :data-bs-toggle="!hasRole6 ? 'dropdown' : ''"
@@ -120,7 +149,7 @@ export default {
         ordersList() {
             if(this.hasRole6) {
                 return this.orders.filter(order => {
-                    return (order.status.id >= 2 && order.status.id<=8);
+                    return (order.status.id >= 2 && order.status.id<=8 || order.status.id == 12);
                 });
             } else {
                 return this.orders;
@@ -132,15 +161,15 @@ export default {
             statuses: [
                 {'id': 1, 'name': 'Chờ xử lý'},
                 {'id': 2, 'name': 'Đã được xử lý'},
-                {'id': 3, 'name': 'Đang chuẩn bị'},
+                {'id': 4, 'name': 'Đang chuẩn bị'},
                 {'id': 9, 'name': 'Hoàn thành'},
-                {'id': 12, 'name': 'Không nhận hàng'},
-            ]
+            ],
+            shippers: []
         };
     },
     methods: {
         formatPrice,
-        statusUpdate(order, status) {
+        async statusUpdate(order, status) {
             const Toast = this.$swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -159,12 +188,19 @@ export default {
                 staffId: this.getAdmin.id
             };
             try {
-                OrderService.updateStatus(data);
+                await OrderService.updateStatus(data);
                 Toast.fire({
                     icon: 'success',
                     title: 'Cập nhật trạng thái thành công.'
                 });
                 this.$parent.refreshList();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async retreiveShippers() {
+            try {
+                this.shippers = await OrderService.getAllShippers();
             } catch (error) {
                 console.log(error);
             }
@@ -193,7 +229,7 @@ export default {
                 });
             }
         },
-        deliveryOrder(orderID) {
+        async deliveryOrder(orderID) {
             const Toast = this.$swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -210,7 +246,7 @@ export default {
                 orderId: orderID
             }
             try {
-                OrderService.deliveryOrder(data);
+                await OrderService.deliveryOrder(data);
                 Toast.fire({
                     icon: 'success',
                     title: 'Cập nhật trạng thái thành công.'
@@ -220,16 +256,128 @@ export default {
                 console.log(error);
             }
         },
+        async deliveryOrder1(orderID) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            const data = {
+                staff_delivery_id: this.getAdmin.id,
+                orderId: orderID,
+                unreceipt: true
+            }
+            try { 
+                await OrderService.deliveryOrder(data);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Cập nhật trạng thái thành công.'
+                });
+                this.$parent.refreshList();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async deliveryOrder2(orderID) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            const data = {
+                staff_delivery_id: this.getAdmin.id,
+                orderId: orderID,
+                receiveOrder: true
+            }
+            try { 
+                await OrderService.deliveryOrder(data);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Bạn vừa nhận đơn hàng ' + orderID + "."
+                });
+                this.$parent.refreshList();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async deliveryOrder3(orderID) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            const data = {
+                staff_delivery_id: this.getAdmin.id,
+                orderId: orderID,
+                refuseOrder: false
+            }
+            try { 
+                await OrderService.deliveryOrder(data);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Bạn đã không nhận đơn hàng ' + orderID + "."
+                });
+                this.$parent.refreshList();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async selectedShipper(orderId, shipperId) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            const data = {
+                orderId: orderId,
+                staff_delivery_id: shipperId
+            }
+            try { 
+                await OrderService.asignmentShipper(data);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Chọn nhân viên giao hàng thành công.'
+                });
+                this.$parent.refreshList();
+            } catch (error) {
+                console.log(error);
+            }
+        }
     },
     mounted() {
-        
+        this.retreiveShippers();   
     }
 
 };
 </script>
 
 <style>
-    .btn-order-status {
+    .btn-order-status,
+    .btn-order-shipper {
         width: 145px;
         height: 30px;
         padding: 0 !important;
@@ -238,6 +386,10 @@ export default {
         border: none;
         border-radius: 4px;
         font-weight: bold;
+    }
+
+    .btn-order-shipper {
+        background: #3d859e;
     }
     
     .order-status1,
@@ -264,6 +416,11 @@ export default {
         background-color: #ffe3ea;
     }
 
+    .order-status5,
+    .dropdown-menu>li>.dropdown-item-5:hover {
+        color: #c13a00;
+        background-color: #ffebdd;
+    }
     .order-status6,
     .dropdown-menu>li>.dropdown-item-6:hover {
         color: #006a87;
@@ -298,10 +455,32 @@ export default {
         color: #840000e7;
         background-color: #f7ffe0e7;
     }
+    .order-status12,
+    .dropdown-menu>li>.dropdown-item-12:hover {
+        color: #842100e7;
+        background-color: #ffe6e2e7;
+    }
     .btn-receipt {
         height: 30px;
         font-size: 14px;
         min-width: 100px;
         text-transform: none;
+    }
+    .btn-danger {
+        background-color: #bd0101;
+        border: 1px solid red !important;
+    }
+    .shipper {
+        color: #ff0000;
+        font-weight: bold;
+        text-align: center;
+        display: block;
+    }
+    .current_order {
+        color: #ff0000;
+        font-weight: bold;
+    }
+    .dropdown-menu>li>a:hover {
+        background-color: #fffee5;
     }
 </style>
