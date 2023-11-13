@@ -21,20 +21,20 @@
         <router-link class="statistical-item" :to="{
             name: 'statistical.inventory',
         }">
-            <p>Lịch sử tồn kho</p>
+            <p>Báo cáo tồn kho</p>
             <p>Báo cáo tình trạng kho hiện có cùng với dự đoán về tình hình tồn kho trong tương lai.</p>
-        </router-link>
-        <router-link class="statistical-item" :to="{
-            name: 'statistical.return',
-        }">
-            <p>Lịch sử hoàn trả</p>
-            <p>Báo cáo các chi tiết liên quan đến các giao dịch hoàn trả hoặc đổi trả sản phẩm hoặc dịch vụ.</p>
         </router-link>
         <router-link class="statistical-item" :to="{
             name: 'statistical.customer',
         }">
             <p>Báo cáo khách hàng</p>
             <p>Báo cáo các chi tiết liên quan đến khách hàng đang là thành viên của cửa hàng.</p>
+        </router-link>
+        <router-link class="statistical-item" :to="{
+            name: 'statistical.staff',
+        }">
+            <p>Báo cáo nhân viên</p>
+            <p>Báo cáo các chi tiết liên quan đến nhân viên đang là thành viên của cửa hàng.</p>
         </router-link>
     </div>
 </template>

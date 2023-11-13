@@ -297,7 +297,7 @@ const routes = [
                         name: "statistical.inventory",
                         component: () => import("../views/admin/statisticals/StatisticalInventory.vue"),
                         meta: {
-                            description: 'Lịch sử tồn kho',
+                            description: 'Báo cáo tồn kho',
                             permissionID: 69
                         },
                     },
@@ -311,11 +311,11 @@ const routes = [
                         },
                     },
                     {
-                        path: "return",
-                        name: "statistical.return",
-                        component: () => import("../views/admin/statisticals/StatisticalReturn.vue"),
+                        path: "staff",
+                        name: "statistical.staff",
+                        component: () => import("../views/admin/statisticals/StatisticalStaff.vue"),
                         meta: {
-                            description: 'Lịch sử hoàn trả',
+                            description: 'Báo cáo nhân viên',
                             permissionID: 69
                         },
                     },

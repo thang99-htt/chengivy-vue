@@ -57,7 +57,8 @@
                                     <td>
                                         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1"
                                             data-bs-toggle="dropdown" aria-expanded="false">
-                                            {{ product.classifySelected }}
+                                            <span v-if="product.classifySelected">{{ product.classifySelected.color_name }} , {{ product.classifySelected.size }}</span>
+                                            <span v-else>Chọn phân loại</span>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                             <li v-for="item in product.classify" :key="item">
@@ -77,7 +78,7 @@
                                         <input type="text" :value="formattedPrice(product.price_final)" disabled>
                                     </td>
                                     <td class="bg-import">
-                                        <input type="text" :value="formattedPrice(product.quantity)"
+                                        <input type="text" :value="product.quantity"
                                             @input="updateQuantity(index, $event)" @keypress="validateKeyPress">
                                     </td>
                                     <td>
@@ -458,8 +459,30 @@ export default {
             }
         },
         updateQuantity(index, event) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            const newQuantity = event.target.value;
             const newValue = event.target.value.replace(/,/g, "");
-            this.soldAtStoreLocal.items[index].quantity = parseFloat(newValue);
+            const totalFinal = this.soldAtStoreLocal.items[index].classifySelected.total_final; // Assuming total_final is a property of the item
+            if (newQuantity <= totalFinal) {
+                this.soldAtStoreLocal.items[index].quantity = parseFloat(newValue);
+            } else {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Số lượng sản phẩm tối đa là ' + totalFinal,
+                });
+                // this.soldAtStoreLocal.items[index].quantity = parseFloat(totalFinal.replace(/,/g, ""));
+            }
+
             this.updateIntoMoney();
         },
         updateIntoMoney() {
@@ -538,7 +561,7 @@ export default {
                     price_final: product.price_final,
                     quantity: 0,
                     classify: classify,
-                    classifySelected: "Chọn phân loại"
+                    classifySelected: null
                 });
 
             }
@@ -556,7 +579,7 @@ export default {
             this.retrieveVoucher(currentUserId);
         },
         optionClassify(index, item) {
-            this.soldAtStoreLocal.items[index].classifySelected = item.color_name + ", " + item.size;
+            this.soldAtStoreLocal.items[index].classifySelected = item;
             this.soldAtStoreLocal.items[index].color = item.color_name;
             this.soldAtStoreLocal.items[index].color_id = item.color_id;
             this.soldAtStoreLocal.items[index].size = item.size;

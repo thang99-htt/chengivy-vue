@@ -97,6 +97,7 @@
 <script>
 import ReturnService from "@/services/user/return.service";
 import { formatPrice } from '@/utils';
+import {mapGetters} from 'vuex';
 
 export default {
     components: {
@@ -111,7 +112,7 @@ export default {
         formatPrice,
         async retrieveReturns() {
             try {
-                this.returns = await ReturnService.getAll();
+                this.returns = await ReturnService.get(this.getUser.id);
             } catch (error) {
                 console.log(error);
             }
@@ -139,6 +140,9 @@ export default {
     mounted() {
         this.retrieveReturns();
     },
+    computed: {
+        ...mapGetters(['getUser'])
+    }
 };
 </script>
 

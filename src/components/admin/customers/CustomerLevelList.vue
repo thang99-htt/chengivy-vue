@@ -127,9 +127,9 @@ export default {
     background-color: #005eff;
 }
 .level4 {
-    background-color: #ff0000;
+    background-color: #da0101;
 }
 .level5 {
-    background-color: #efcb00;
+    background-color: #e0be00;
 }
 </style>

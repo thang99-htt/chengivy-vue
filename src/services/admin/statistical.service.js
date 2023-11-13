@@ -46,5 +46,13 @@ class StatisticalService {
     async getNotifications() {
         return (await this.api.get("/get-notification")).data;
     }
+
+    async getCustomers(data) {
+        return (await this.api.post("/get-customers", data)).data;
+    }
+
+    async getStaffs(data) {
+        return (await this.api.post("/get-staffs", data)).data;
+    }
 }
 export default new StatisticalService();

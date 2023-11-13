@@ -73,7 +73,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                            
                     </div>
                 </div>
             </div>
@@ -88,6 +87,7 @@ import { formatPrice } from '../../../utils';
 import { initializeDataTable } from '../../../utils';
 import $ from 'jquery';
 import 'datatables.net';
+
 export default {
     components: {
         StatisticalPicker,

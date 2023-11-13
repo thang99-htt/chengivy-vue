@@ -40,7 +40,7 @@
                                 <span v-if="item.price_final < item.price" class="text-decoration-line-through">{{ formatPrice(item.price) }}</span>
                                 <span :class="{'text-danger ms-3': item.price_final < item.price}">{{ formatPrice(item.price_final) }}</span>
                             </td>
-                            <td>{{ (item.quantity).toLocaleString() }}</td>
+                            <td>{{ item.quantity }}</td>
                             <td>{{ formatPrice(item.price_final * item.quantity) }}</td>
                         </tr>
                     </tbody>
