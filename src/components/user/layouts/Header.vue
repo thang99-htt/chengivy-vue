@@ -132,7 +132,7 @@
                                 </div>
                                 <ul class="sub-user" v-if="getUser">
                                     <li>
-                                        <a href="" class="text-bold">{{ getUser.profiles[0].name }}</a>
+                                        <a  v-if="getUser.profiles" href="" class="text-bold">{{ getUser.profiles[0].name }}</a>
                                     </li>
                                     <li>
                                         <a href="/customer/profiles">Tài khoản</a>
@@ -415,7 +415,7 @@
                         </div>
                         <ul class="sub-user" v-if="getUser">
                             <li>
-                                <a href="" class="text-bold">{{ getUser.profiles[0].name }}</a>
+                                <a v-if="getUser.profiles" href="" class="text-bold">{{ getUser.profiles[0].name }}</a>
                             </li>
                             <li>
                                 <a href="/customer/profiles">Tài khoản</a>
@@ -634,7 +634,7 @@
                         </div>
                         <div class="search-image__pred">
                             <div class="row">
-                                <div class="col-2 image-pred"  v-for="product in searchImages.pred" >
+                                <div class="col-2 image-pred"  v-for="product in searchImages.result" >
                                     <router-link :to="{
                                         name: 'product.detail',
                                         params: { id: product.id },
@@ -892,7 +892,7 @@ export default {
                         'image_path': this.keywordImage, 
                     }; 
                 const response = await axios.post('http://127.0.0.1:5000/search-image-similar', postData);
-                this.searchImages = response.data.result;
+                this.searchImages = response.data;
                 this.checkSearchImage = true;
                 this.keywordImage = ""
             } catch (error) {

@@ -53,15 +53,6 @@ const routes = [
                         }
                     },
                     {
-                        path: "inventory",
-                        name: "inventory",
-                        component: () => import("../components/admin/products/ProductInventory.vue"),
-                        meta: {
-                            description: 'Tồn kho',
-                            permissionID: 40
-                        }
-                    },
-                    {
                         path: "sale",
                         name: "sale",
                         component: () => import("../components/admin/products/ProductSale.vue"),
@@ -102,6 +93,15 @@ const routes = [
             {
                 path: "import",
                 children: [
+                    {
+                        path: "inventory",
+                        name: "inventory",
+                        component: () => import("../components/admin/imports/ProductInventory.vue"),
+                        meta: {
+                            description: 'Tồn kho',
+                            permissionID: 40
+                        }
+                    },
                     {
                         path: "supplier",
                         name: "supplier",

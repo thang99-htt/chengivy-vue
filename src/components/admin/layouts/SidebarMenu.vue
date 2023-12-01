@@ -47,7 +47,7 @@
         </li>
         <li>
           <a href="/admin/customers/customer-level">
-            <i class="fa fa-id-card"></i>Quản lý hạng mức
+            <i class="fa fa-id-card"></i><span class="member">Quản lý hạng thành viên</span>
           </a>
         </li>
       </ul>
@@ -65,11 +65,6 @@
         <li>
           <a href="/admin/products/overview">
             <i class="fa fa-info-circle"></i>Tổng quan
-          </a>
-        </li>
-        <li>
-          <a href="/admin/products/inventory">
-            <i class="fa fa-archive"></i>Tồn kho
           </a>
         </li>
         <li>
@@ -105,6 +100,11 @@
       </a>
       <ul class="treeview-menu">
         <li>
+          <a href="/admin/import/inventory">
+            <i class="fa fa-archive"></i>Tồn kho
+          </a>
+        </li>
+        <li>
           <a href="/admin/import/supplier">
             <i class="fa fa-handshake"></i>Nhà cung cấp
           </a>
@@ -117,11 +117,6 @@
         <li>
           <a href="/admin/import/stock-received-docket">
             <i class="fa fa-paste"></i>Phiếu nhập
-          </a>
-        </li>
-        <li>
-          <a href="/admin/import/stock-received-docket">
-            <i class="fa fa-file-text"></i>Phiếu xuất
           </a>
         </li>
       </ul>
@@ -284,5 +279,9 @@ export default {
   100% {
     transform: rotate(-90deg);
   }
+}
+
+.member {
+  font-size: 15px;
 }
 </style>

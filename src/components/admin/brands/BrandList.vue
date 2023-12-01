@@ -16,7 +16,7 @@
                     {{ index + 1 }}
                 </td>
                 <td>{{ brand.name }}</td>
-                <td>{{ brand.description }}</td>
+                <td>{{ brand.description.slice(0, 160) }}......</td>
                 <td>
                     <img v-if="brand.image" :src="(brand.image)" alt="Image"
                         class="img-responsive center-block">

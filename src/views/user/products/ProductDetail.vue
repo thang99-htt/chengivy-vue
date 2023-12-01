@@ -29,12 +29,12 @@
                         </div>
                     </div>
                     <div class="row">
-                        <ProductDetailReview
+                        <ProductDetailSuggest
                             :product="product"
                         />
                     </div>
                     <div class="row">
-                        <ProductDetailSuggest
+                        <ProductDetailReview
                             :product="product"
                         />
                     </div>

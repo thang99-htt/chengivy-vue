@@ -2,6 +2,16 @@
     <section class="content">
         <div class="box">
             <div class="box-body">
+                <div class="group-btn">
+                    <div class="d-flex align-items-center justify-content-end mb-4">
+                        <div>
+                            <button type="button" class="btnAdd" @click="openModal">
+                                <i class="fa fa-eye"></i>Đăng bán
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="row">
                     <div class="col-sm-12 table-responsive">
                         <table class="example1 table dataTable">

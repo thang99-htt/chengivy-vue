@@ -7,14 +7,6 @@
                 <div class="box">
                     <div class="box-body">
                         <div class="group-btn">
-                            <div class="d-flex align-items-center justify-content-end mb-3">
-                                <input type="button" name="btnBack" value="Làm mới" @click="refreshList()">
-                                <input type="button" name="btnAdd" value="Thêm mới" @click="showModal = !showModal">
-                                <input type="button" name="btnAdd" value="Thêm từ file">
-                                <input type="button" name="btnDelete" value="Xóa" @click="deleteCategory()">
-                                <input type="button" id="exportPrintBtn" name="btnPrint" value="In">
-                                <input type="button" id="exportExcelBtn" name="btnExcel" value="Xuất Excel">
-                            </div>
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <div>
                                     <button type="button" class="btnAdd" @click="showModal = !showModal">

@@ -96,8 +96,8 @@ export default {
                             </div>
                         </div>
                     </router-link>
-                    <div class="product-item__sale">
-                        <span v-if="product.discount_percent > 0">GIẢM {{ product.discount_percent }}%</span>
+                    <div class="product-item__sale" v-if="product.discount_percent > 0">
+                        <span >GIẢM {{ product.discount_percent }}%</span>
                     </div>
                 </div>
             </div>

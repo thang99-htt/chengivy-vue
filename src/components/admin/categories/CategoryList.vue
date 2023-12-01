@@ -29,7 +29,7 @@
                 <td>{{ category.name }}</td>
                 <td>
                     <img v-if="category.image" :src="category.image" alt="Image"
-                        class="img-responsive center-block">
+                        class="img-responsive" width="120">
 
                 </td>
                 <td>{{ category.description }}</td>

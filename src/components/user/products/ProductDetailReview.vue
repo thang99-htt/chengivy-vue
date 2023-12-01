@@ -1,6 +1,6 @@
 <template>
     <div class="product-review">
-        <h3>Khách Hàng Đánh Giá ( {{ totalReviews }} )</h3>
+        <h3>Khách hàng đánh giá ( {{ totalReviews }} )</h3>
         <div class="review-overview" v-if="productLocal.reviews.items.length>0">
             <div class="review-item review">
                 <p>Đánh giá trung bình</p>

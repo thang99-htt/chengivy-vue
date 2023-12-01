@@ -17,12 +17,18 @@
                 </span>
             </div>
             <ul class="review">
-                <li><i class="fa fa-star"></i></li>
-                <li><i class="fa fa-star"></i></li>
-                <li><i class="fa fa-star"></i></li>
-                <li><i class="fa fa-star"></i></li>
-                <li><i class="fa fa-star"></i></li>
-                <li><span>(123)</span></li>
+                <li>
+                    <template v-for="n in Math.min(Math.floor(product.reviews.average_star_rating), 5)">
+                        <i class="bi bi-star-fill"></i>
+                    </template>
+                    <template v-if="product.reviews.average_star_rating - Math.floor(product.reviews.average_star_rating) >= 0.5 && Math.floor(product.reviews.average_star_rating) < 5">
+                        <i class="bi bi-star-half"></i>
+                    </template>
+                    <template v-if="product.reviews.average_star_rating - Math.floor(product.reviews.average_star_rating) < 0.5 && Math.floor(product.reviews.average_star_rating) < 5">
+                        <i class="bi bi-star"></i>
+                    </template>
+                </li>
+                <li><span>({{ product.reviews.items.length }})</span></li>
             </ul>
         </div>
         <div class="info-color">
