@@ -84,7 +84,7 @@ const routes = [
                         name: "brand",
                         component: () => import("../views/admin/products/Brand.vue"),
                         meta: {
-                            description: 'Danh mục',
+                            description: 'Thương hiệu',
                             permissionID: 32
                         }
                     },

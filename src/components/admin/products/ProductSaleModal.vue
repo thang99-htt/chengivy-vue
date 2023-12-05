@@ -67,11 +67,11 @@
                                                 @input="updatePrice(index, $event)" @keypress="validateKeyPress1">
                                             </td>
                                             <td>
-                                                <input type="text" :value="formatPercentage(product.discount_percent)"
+                                                <input type="text" :value="formatPercentage(product.discount_percent)"  class="bg-input"
                                                     @input="updateDisount(index, $event)" @keypress="validateKeyPress">
                                             </td>
                                             <td>
-                                                <span class="text-danger">{{ formatPrice(product.price_final) }}</span>
+                                                <span class="text-danger fw-bold">{{ formatPrice(product.price_final) }}</span>
                                             </td>
                                             <td class="remove-option" @click="removeProduct(product)">Xóa</td>
                                         </tr>
@@ -238,5 +238,8 @@ export default {
 }
 .product-sale__button {
     float: right;
+}
+.bg-input {
+    background-color: rgb(214, 214, 214);
 }
 </style>

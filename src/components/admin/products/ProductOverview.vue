@@ -4,12 +4,12 @@
             <tr role="row">
                 <th width="6%" data-orderable="false">ID</th>
                 <th width="20%">Sản phẩm</th>
-                <th width="7%">Giá nhập</th>
-                <th width="7%">Giá bán</th>
+                <th width="8%">Giá nhập</th>
+                <th width="8%">Giá bán</th>
                 <th width="7%">Đã bán</th>
                 <th width="7%">Lượt thích</th>
                 <th width="7%">Trạng thái</th>
-                <th width="7%">Tùy chọn</th>
+                <th width="5%">Sửa</th>
                 <th width="5%">Chọn</th>
             </tr>
         </thead>
@@ -91,9 +91,25 @@ export default {
     methods: {
         formatPrice,
         statusUpdate(product) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            });
+            this.selectedIds.push(product.id);
             try {
-                ProductService.updateStatus(product.id, product.status).then(() => {
+                ProductService.updateHiddens(this.selectedIds).then(() => {
                     this.$parent.refreshList();
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Cập nhật thành công.'
+                    });
                 })
             } catch (error) {
                 console.log(error);

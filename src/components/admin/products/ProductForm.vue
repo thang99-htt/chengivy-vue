@@ -197,7 +197,9 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a class="remove-option" @click="removeColor(item.color_id)">Xóa</a>
+                                    <a class="remove-option" @click="removeColor(item.color_id)">
+                                        <img src="/images/icon/btndelete.png" alt="">
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>

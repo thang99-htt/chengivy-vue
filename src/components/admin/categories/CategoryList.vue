@@ -14,7 +14,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr role="row" v-for="(category, index) in categoriesList" :key="category">
+            <tr role="row" v-for="(category, index) in categoriesList" :key="category"
+                :class="{ 'disabled': category.deleted_at }">
                 <td class="sorting_1">
                     {{ index + 1 }}
                 </td>

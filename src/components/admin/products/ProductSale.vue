@@ -97,6 +97,9 @@ export default {
         async retrieveProducts() {
             try {
                 this.products = await ProductService.getSales();
+                if ($.fn.DataTable.isDataTable('.example1')) {
+                    $('.example1').DataTable().destroy();
+                }
                 this.$nextTick(() => {
                     initializeDataTable();
                 });
@@ -113,7 +116,7 @@ export default {
             }
         },
         idAllSelected() {
-            if(this.selectedProducts.length == this.productsList.length) {
+            if(this.selectedProducts.length == this.products.length) {
                 this.selectedProducts.splice(0, this.selectedProducts.length); // Bỏ hết các phần tử trong selectedProducts
             } else if(this.selectedProducts.length) {
                 this.selectedProducts.splice(0, this.selectedProducts.length);

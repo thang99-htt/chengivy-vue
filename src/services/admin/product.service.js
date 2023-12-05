@@ -14,7 +14,7 @@ class ProductService {
     }
     async getHiddens() {
         return (await this.api.get("/hiddens")).data;
-    }
+    }z
     async getInventories() {
         return (await this.api.get("/inventories")).data;
     }
@@ -39,8 +39,8 @@ class ProductService {
     async updateProductsSale(data) {
         return (await this.api.put("/update-product-sale", data)).data;
     }
-    async hidden(selectedIds) {
-        return (await this.api.put("/hidden", { data: selectedIds })).data;
+    async updateHiddens(selectedIds) {
+        return (await this.api.put("/update-hidden", { data: selectedIds })).data;
     }
     async delete(selectedIds) {
         return (await this.api.put("/delete", { data: selectedIds })).data;

@@ -72,18 +72,55 @@
         <div class="form-group">
             <div class="form-group__container">
                 <div class="form-group__label">
-                    <label for="bank_account">Số tài khoản
+                    <label for="reason">Ngân hàng:
+                        <span class="error-feedback">*</span>
+                    </label>
+                </div>
+                <div class="form-group__input">
+                    <div class="input-group">
+                        <div class="aselect" :data-value="value" :data-list="banks">
+                            <div class="selector" @click="visible = !visible">
+                                <div class="label">
+                                    <span v-if="profileLocal.bank_account">{{ profileLocal.bank_account }}</span>
+                                    <span v-else>{{ selectedBank }}</span>
+                                </div>
+                                <div class="arrow" :class="{ expanded : visible }"></div>
+                                <div :class="{ hidden : !visible, visible }">
+                                    <div class="selector-container">
+                                        <ul>
+                                            <li 
+                                                :class="{ current : bank === selectedReason }" 
+                                                v-for="(bank) in banks" 
+                                                :key="bank" :value="bank" 
+                                                @click.stop="selectOptionBank(bank)"
+                                            >
+                                                {{ bank }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+                    <ErrorMessage name="reason" class="error-feedback" />       
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-group__container">
+                <div class="form-group__label">
+                    <label for="bank_number">Số tài khoản
                         <span class="error-feedback">*</span>
                     </label>
                 </div>
                 <div class="form-group__input">  
                     <Field 
-                        name="bank_account"
+                        name="bank_number"
                         type="text"
                         class="form-control"
-                        v-model="profileLocal.bank_account"
+                        v-model="profileLocal.bank_number"
                     />
-                    <ErrorMessage name="bank_account" class="error-feedback" />
+                    <ErrorMessage name="bank_number" class="error-feedback" />
                 </div>
             </div>
         </div>
@@ -129,15 +166,35 @@
             return {
                 profileFormSchema,
                 profileLocal: this.accountProfile,
+                banks: [
+                    'Ngân hàng ngoại thương Việt Nam(VietcomBank)', 
+                    'Ngân hàng Đầu tư và Phát triển Việt Nam (BIDV)', 
+                    'Ngân hàng Công thương Việt Nam (Vietinbank)', 
+                    'Ngân hàng Ngoại thương Việt Nam (Vietcombank)',
+                    'Ngân hàng Việt Nam Thịnh Vượng (VPBank)',
+                    'Ngân hàng Kỹ Thương Việt Nam (Techcombank)',
+                    'Ngân hàng Nông nghiệp & Phát triển Nông thôn (Agribank)',
+                    'Ngân hàng TMCP Sài gòn Thương Tín (Sacombank)', 
+                    'Ngân hàng TMCP phát triển Tp HCM (HD Bank)'
+                ],
+                visible: false,
+                selectedBank: "---Chọn ngân hàng---",
             };
         },
         methods: {
             submitProfile() {
                 this.$emit("submit:accountProfile", this.profileLocal);
             },
+            selectOptionBank(bank) {
+                this.profileLocal.bank_account = bank;
+                this.selectedBank = bank;
+                this.visible = false;
+            },
             reset () {
                 this.profileLocal.phone = "";
                 this.profileLocal.name = "";
+                this.profileLocal.bank_number = "";
+                this.profileLocal.bank_account = "";
             },
         },
     };

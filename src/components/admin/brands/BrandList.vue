@@ -11,15 +11,15 @@
             </tr>
         </thead>
         <tbody>
-            <tr role="row" v-for="(brand, index) in brandsList" :key="brand">
+            <tr role="row" v-for="(brand, index) in brandsList" :key="brand"
+            :class="{ 'disabled': brand.deleted_at }">
                 <td class="sorting_1">
                     {{ index + 1 }}
                 </td>
                 <td>{{ brand.name }}</td>
                 <td>{{ brand.description.slice(0, 160) }}......</td>
                 <td>
-                    <img v-if="brand.image" :src="(brand.image)" alt="Image"
-                        class="img-responsive center-block">
+                    <img v-if="brand.image" :src="(brand.image)" alt="Image" width="150">
 
                 </td>
                 <td class="text-center">

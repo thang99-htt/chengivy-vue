@@ -5,7 +5,7 @@
                 <div class="group-btn">
                     <div class="d-flex align-items-center justify-content-end mb-4">
                         <div>
-                            <button type="button" class="btnAdd" @click="openModal">
+                            <button type="button" class="btnAdd" @click="statusUpdate">
                                 <i class="fa fa-eye"></i>Đăng bán
                             </button>
                         </div>
@@ -40,13 +40,13 @@
                                     <td>
                                         <button class="btn-sm"
                                             :class="[product.status == 1 ? 'btn-show' : 'btn-hide']"
-                                            @click="statusUpdate(product)">
+                                            @click="statusUpdate1(product)">
                                             {{ product.status == 1 ? 'Đăng bán' : 'Ẩn' }}
                                         </button>
                                     </td>
                                     <td class="text-center">
                                         <input type="checkbox" @change="idSelected(product)"
-                                            :checked="selectedProducts.includes(product)">
+                                            :checked="selectedIds.includes(product.id)">
                                     </td>
                                 </tr>
                             </tbody>
@@ -75,8 +75,8 @@ export default {
     data() {
         return {
             products: [],
-            selectedProducts: [],
-            productsSale: []
+            productsSale: [],
+            selectedIds: [],
         };
     },
     methods: {
@@ -84,6 +84,9 @@ export default {
         async retrieveProducts() {
             try {
                 this.products = await ProductService.getHiddens();
+                if ($.fn.DataTable.isDataTable('.example1')) {
+                    $('.example1').DataTable().destroy();
+                }
                 this.$nextTick(() => {
                     initializeDataTable();
                 });
@@ -91,39 +94,83 @@ export default {
                 console.log(error);
             }
         },
-        async statusUpdate(product) {
+        refreshList() {
+            this.retrieveProducts();
+            this.selectedIds = [];
+        },
+        async statusUpdate() {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            });
             try {
-                ProductService.updateStatus(product.id, product.status);
-                this.products = await ProductService.getHiddens();
+                ProductService.updateHiddens(this.selectedIds);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Cập nhật thành công.'
+                });
+                this.refreshList();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async statusUpdate1(product) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            });
+            this.selectedIds.push(product.id);
+            try {
+                ProductService.updateHiddens(this.selectedIds);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Cập nhật thành công.'
+                });
+                this.refreshList();
             } catch (error) {
                 console.log(error);
             }
         },
         idSelected(product) {
-            const index = this.selectedProducts.indexOf(product);
+            const index = this.selectedIds.indexOf(product.id);
             if (index === -1) {
-                this.selectedProducts.push(product);
+                this.selectedIds.push(product.id);
             } else {
-                this.selectedProducts.splice(index, 1);
+                this.selectedIds.splice(index, 1);
             }
         },
         idAllSelected() {
-            if (this.selectedProducts.length == this.productsList.length) {
-                this.selectedProducts.splice(0, this.selectedProducts.length); // Bỏ hết các phần tử trong selectedProducts
-            } else if (this.selectedProducts.length) {
-                this.selectedProducts.splice(0, this.selectedProducts.length);
+            if (this.selectedIds.length == this.products.length) {
+                this.selectedIds.splice(0, this.selectedIds.length); // Bỏ hết các phần tử trong selectedIds
+            } else if (this.selectedIds.length) {
+                this.selectedIds.splice(0, this.selectedIds.length);
                 this.products.forEach(product => {
-                    this.selectedProducts.push(product);
+                    this.selectedIds.push(product.id);
                 });
+                console.log(this.selectedIds)
             } else {
                 this.products.forEach(product => {
-                    this.selectedProducts.push(product);
+                    this.selectedIds.push(product.id);
                 });
             }
         },
     },
     mounted() {
-        this.retrieveProducts();
+        this.refreshList();
     },
 };
 </script>

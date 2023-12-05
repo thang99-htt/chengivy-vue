@@ -19,7 +19,7 @@
                                     <div class="selector-container">
                                         <ul>
                                             <li 
-                                                :class="{ current : reason.name === selectedReason }" 
+                                                :class="{ current : reason === selectedReason }" 
                                                 v-for="(reason) in reasons" 
                                                 :key="reason" :value="reason" 
                                                 @click.stop="selectOptionReason(reason)"

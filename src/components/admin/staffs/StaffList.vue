@@ -28,7 +28,7 @@
                     </div>    
                 </td>
                 <td>
-                    <button class="btn-sm" :class="[staff.actived == 1 ? 'btn-show' : 'btn-hide']"
+                    <button v-if="!staff.roles.some(role => role.id == 1)" class="btn-sm" :class="[staff.actived == 1 ? 'btn-show' : 'btn-hide']"
                         @click="statusUpdate(staff)">
                         {{ staff.actived == 1 ? 'Kích hoạt' : 'Tạm khóa' }}
                     </button>
@@ -75,9 +75,26 @@ export default {
     },
     methods: {
         statusUpdate(staff) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            console.log(staff)
             try {
-                StaffService.updateStatus(staff.id, staff.status).then(() => {
+                StaffService.updateStatus(staff.id, staff.actived).then((res) => {
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Cập nhật trạng thái tài khoản thành công.'
+                    });
                     this.$parent.refreshList();
+                    console.log(res)
                 })
 
             } catch (error) {

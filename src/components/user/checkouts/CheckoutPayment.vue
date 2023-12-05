@@ -381,19 +381,19 @@
             document.body.appendChild(script);
 
             // Tạo một trình theo dõi cho phần tử có id là "bill"
-            const billElement = document.getElementById('bill1');
-            if(billElement) {
-                const observer = new MutationObserver((mutationsList, observer) => {
-                    for (const mutation of mutationsList) {
-                        if (mutation.type === 'childList' || mutation.type === 'subtree') {
-                            // Gọi lại hàm generatePDF khi có thay đổi trong phần tử "bill"
-                            this.generatePDF();
-                        }
-                    }
-                });
+            // const billElement = document.getElementById('bill1');
+            // if(billElement) {
+            //     const observer = new MutationObserver((mutationsList, observer) => {
+            //         for (const mutation of mutationsList) {
+            //             if (mutation.type === 'childList' || mutation.type === 'subtree') {
+            //                 // Gọi lại hàm generatePDF khi có thay đổi trong phần tử "bill"
+            //                 this.generatePDF();
+            //             }
+            //         }
+            //     });
                 
-                observer.observe(billElement, { childList: true, subtree: true });
-            }
+            //     observer.observe(billElement, { childList: true, subtree: true });
+            // }
         },
         methods: {
             formatPrice,
@@ -538,37 +538,37 @@
                     this.orderLocal.point = parseInt(money/1000);
                 }
             },
-            async generatePDF() {
-                const pdf = new jsPDF({
-                    orientation: 'landscape',
-                    unit: 'mm',
-                    format: 'a4',
-                });
+            // async generatePDF() {
+            //     const pdf = new jsPDF({
+            //         orientation: 'landscape',
+            //         unit: 'mm',
+            //         format: 'a4',
+            //     });
 
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
+            //     const pageWidth = pdf.internal.pageSize.getWidth();
+            //     const pageHeight = pdf.internal.pageSize.getHeight();
 
-                const element = document.getElementById('bill1');
+            //     const element = document.getElementById('bill1');
 
-                const html2canvasConfig = {
-                    scale: 2,
-                };
+            //     const html2canvasConfig = {
+            //         scale: 2,
+            //     };
 
-                const canvas = await html2canvas(element, html2canvasConfig);
-                const imgData = canvas.toDataURL('image/jpeg', 0.98);
-                pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+            //     const canvas = await html2canvas(element, html2canvasConfig);
+            //     const imgData = canvas.toDataURL('image/jpeg', 0.98);
+            //     pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
 
-                // Generate the PDF blob
-                const pdfBlob = pdf.output('blob');
+            //     // Generate the PDF blob
+            //     const pdfBlob = pdf.output('blob');
                 
-                const reader = new FileReader();
+            //     const reader = new FileReader();
                 
-                reader.onload = (event) => {
-                    const pdfBase64 = event.target.result;
-                    this.orderLocal.bill = pdfBase64;
-                };
-                reader.readAsDataURL(pdfBlob);
-            }
+            //     reader.onload = (event) => {
+            //         const pdfBase64 = event.target.result;
+            //         this.orderLocal.bill = pdfBase64;
+            //     };
+            //     reader.readAsDataURL(pdfBlob);
+            // }
         }, 
         computed: {
             ...mapGetters(['productBuyNow', 'getUser']),

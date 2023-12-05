@@ -361,8 +361,7 @@ import ProfileForm from "@/components/user/profiles/ProfileForm.vue";
 import PasswordForm from "@/components/user/profiles/PasswordForm.vue";
 import { mapGetters } from 'vuex';
 import axios from 'axios';
-import { showAlert } from '@/utils';
-import { formatPrice } from '../../../utils';
+import { showAlert, formatPrice } from '../../../utils';
 
 export default {
     components: {
@@ -401,10 +400,8 @@ export default {
         async updateProfile(data) {
             try {
                 await UserService.updateProfile(this.getUser.id, data).then(async (response) => {
-                    if (response.success == 'success') {
-                        showAlert(response);
-                        this.retrieveAccount();
-                    }
+                    showAlert(response);
+                    this.retrieveAccount();
                     this.modalUpdate = false;
                 });
             } catch (error) {

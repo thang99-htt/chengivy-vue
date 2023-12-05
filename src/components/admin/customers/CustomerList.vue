@@ -4,14 +4,14 @@
             <tr role="row">
                 <th width="2%">#</th>
                 <th width="4%">ID</th>
-                <th width="14%">Họ tên</th>
+                <th width="10%">Họ tên</th>
                 <th width="4%">Email</th>
                 <th width="8%">Số điện thoại</th>
                 <th width="6%">Giới tính</th>
-                <th width="16%">Địa chỉ</th>
-                <th width="10%">Tài khoản</th>
+                <th width="12%">Địa chỉ</th>
+                <th width="13%">Ngân hàng</th>
+                <th width="9%">Tài khoản</th>
                 <th width="8%">Trạng thái</th>
-                <th width="4%">Sửa</th>
                 <th width="4%">Chọn</th>
             </tr>
         </thead>
@@ -25,6 +25,7 @@
                 <td>{{ customer.gender }}</td>
                 <td>{{ customer.address?.address }}</td>
                 <td>{{ customer.bank_account }}</td>
+                <td>{{ customer.bank_number }}</td>
                 <td>
                     <button v-if="customer.user" class="btn-sm" :class="[customer.user.actived == 1 ? 'btn-show' : 'btn-hide']"
                         @click="statusUpdate(customer)">
@@ -32,11 +33,6 @@
                     </button>
                     <button v-else class="btn-sm btn-hide">
                         Chưa có TK
-                    </button>
-                </td>
-                <td class="text-center">
-                    <button type="button" class="btn" @click="showModalEdit(customer.id)">
-                        <img src="/images/icon/iconedit.png" alt="">
                     </button>
                 </td>
                 <td class="text-center">
@@ -76,8 +72,23 @@ export default {
     },
     methods: {
         statusUpdate(customer) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
             try {
-                CustomerService.updateStatus(customer.id, customer.status).then(() => {
+                CustomerService.updateStatus(customer.id, customer.user.actived).then(() => {
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Cập nhật trạng thái tài khoản thành công.'
+                    });
                     this.$parent.refreshList();
                 })
 

@@ -42,7 +42,7 @@
     </aside>
 </template>
 <script>
-  import SidebarMenu from './SidebarMenu.vue';
+  import SidebarMenu from '@/components/admin/layouts/SidebarMenu.vue';
   import {mapGetters} from 'vuex';
 
   export default {

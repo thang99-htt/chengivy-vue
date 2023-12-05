@@ -24,7 +24,7 @@
                     v-model="brandLocal.image" id="my-file" />
             </div>
             <div>
-                <img src="brandLocal.image" alt="Hình ảnh" class="img-edit img-responsive center-block">
+                <img :src="brandLocal.image" alt="Hình ảnh" class="img-edit img-responsive center-block">
             </div>
             <ErrorMessage name="image" class="error-feedback" />
         </div>

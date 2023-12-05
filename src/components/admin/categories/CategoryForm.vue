@@ -10,14 +10,14 @@
             <div class="aselect" :data-value="value" :data-list="categories">
                 <div class="selector" @click="visible = !visible">
                     <div class="label">
-                            <span>{{ valueSelect }}</span>
+                        <span>{{ valueSelect }}</span>
                     </div>
                     <div class="arrow" :class="{ expanded : visible }"></div>
                     <div :class="{ hidden : !visible, visible }">
                         <div class="selector-container">
                             <ul>
                                 <li 
-                                    :class="{ current : category.name === valueSelect }" 
+                                    :class="{ current : category.id == valueSelect }" 
                                     v-for="(category, index) in categories" 
                                     :key="category.id" :value="category.id" 
                                     @click.stop="selectOption(category)"
@@ -44,8 +44,7 @@
                     v-model="categoryLocal.image" id="my-file" />
             </div>
             <div>
-                <img v-if="this.category.image" :src="getImage(this.category.image)" alt="Hình ảnh" class="img-edit img-responsive center-block">
-                <img v-else :src="categoryLocal.image" alt="Hình ảnh" class="img-edit img-responsive center-block">
+                <img :src="(this.category.image)" alt="Hình ảnh" class="img-edit img-responsive center-block">
             </div>
             <ErrorMessage name="image" class="error-feedback" />
         </div>
@@ -57,9 +56,12 @@
             <ErrorMessage name="description" class="error-feedback" />
         </div>
         <div class="form-group">
-            <input type="submit" name="btnSave" value="Thực hiện">
-            <input type="button" name="btnDelete" value="Xóa" v-if="categoryLocal.id">
-            <input type="button" name="btnBack" value="Hủy" v-else @click="reset">
+            <button type="button" class="btnAdd" @click="submitCategory">
+                <i class="fa fa-plus"></i>Thực hiện
+            </button>
+            <button type="button" class="btnBack ms-2" @click="reset">
+                <i class="fa fa-refresh"></i>Hủy
+            </button>
         </div>
     </Form>
 </template>
@@ -77,11 +79,6 @@ export default {
     emits: ["submit:category", "delete:category"],
     props: {
         category: { type: Object, required: true },
-    },
-    mounted() {
-        CategoryService.getAdd().then((response) => {
-            this.categories = response;
-        });
     },
     data() {
         const categoryFormSchema = yup.object().shape({
@@ -107,7 +104,18 @@ export default {
     watch: {
         'category'(newValue) {
             this.categoryLocal = newValue;
+            if (this.categoryLocal) {
+                const selectedCategory = this.categories.find(category => category.id == this.categoryLocal.parent_id);
+                this.valueSelect = selectedCategory ? selectedCategory.name : 'NULL';
+            }
         },
+    },
+    mounted() {
+        CategoryService.getAdd().then((response) => {
+            const nullCategory = { id: 0, name: 'NULL' };
+            this.categories = [nullCategory, ...response];
+            this.checkCategoryLocal();
+        });
     },
     methods: {
         onFileChange(event) {
@@ -116,7 +124,7 @@ export default {
             reader.onloadend = (file) => {
                 this.categoryLocal.image = reader.result;
             }
-            console.log(file);
+            // console.log(file);
             reader.readAsDataURL(file);
         },
         getImage(image) {
@@ -136,11 +144,8 @@ export default {
             this.categoryLocal.url = "";
         },
 		selectOption(category) {
-            if(category.name == 'NULL') this.categoryLocal.parent_id = 0;
-			else {
-                this.valueSelect = category.name;
-                this.categoryLocal.parent_id = category.id;
-            }
+            this.valueSelect = category.name;
+            this.categoryLocal.parent_id = category.id;
             this.visible = false;
 		}
     },

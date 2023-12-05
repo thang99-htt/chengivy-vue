@@ -2540,6 +2540,7 @@ table.dataTable tr td:first-child {
 }
 .remove-option {
     cursor: pointer;
+    color: rgb(224, 0, 0);
 }
 
 .product-view_plus {
