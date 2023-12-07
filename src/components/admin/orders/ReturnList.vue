@@ -91,9 +91,8 @@ export default {
             statuses: [
                 'Đã ghi nhận', 
                 'Đã duyệt',
-                'Đã gửi hướng dẫn hoàn trả',
                 'Đã nhận hàng trả lại',
-                'Đã xử lý hoàn trả',
+                'Hoàn thành',
                 'Đã từ chối hoàn trả'
             ],
         };

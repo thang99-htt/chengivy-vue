@@ -108,9 +108,7 @@ export default {
             }).then((result) => {
                 if (result.value) {
                     SupplierService.delete(this.selectedIds).then((res) => {
-                        if (res.success) {
-                            this.refreshList();
-                        }
+                        this.refreshList();
                     })
                     this.$swal.fire('Đã xóa thành công!', '', 'success')
                 }

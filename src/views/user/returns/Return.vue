@@ -13,6 +13,9 @@
                 <div class="button" v-if="ret.status == 'Đã ghi nhận'">
                     <button class="btn" @click="cancelReturn(ret.id)">Hủy yêu cầu</button>
                 </div>
+                <div class="button" v-if="ret.status == 'Đã duyệt'">
+                    <button class="btn success" @click="sendReturn(ret.id)">Đã gửi hàng trả lại</button>
+                </div>
             </div>
             <h4>Đơn hàng: #{{ ret.order_id }}</h4>
             <div class="return-head">
@@ -135,6 +138,25 @@ export default {
                     icon: 'success',
                     title: 'Hủy yêu cầu Trả hàng/Hoàn tiền thành công.'
                 });
+        },
+        async sendReturn(ret) {
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            await ReturnService.sendReturn(ret).then(res=>console.log(res));
+            this.retrieveReturns();
+            Toast.fire({
+                    icon: 'success',
+                    title: 'Cảm ơn bạn đã gửi hàng trả lại.'
+                });
         }
     },
     mounted() {
@@ -175,6 +197,9 @@ export default {
     background-color: #c70404 !important;
     padding: 10px 14px !important;
     border-radius: 6px !important;
+}
+.return-cancel .success {
+    background-color: #04c711 !important;
 }
 .return-guide {
     display: flex;

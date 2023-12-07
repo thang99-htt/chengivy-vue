@@ -13,7 +13,10 @@ class ReturnService {
         return (await this.api.post("/", data)).data;
     }
     async cancelReturn(id, data) {
-        return (await this.api.put(`/${id}`, data)).data;
+        return (await this.api.put(`/cancel-${id}`, data)).data;
+    }
+    async sendReturn(id, data) {
+        return (await this.api.put(`/send-${id}`, data)).data;
     }
 }
 export default new ReturnService();

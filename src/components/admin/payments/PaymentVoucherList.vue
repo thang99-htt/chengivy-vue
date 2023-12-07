@@ -3,12 +3,11 @@
         <thead>
             <tr role="row">
                 <th width="6%">ID</th>
-                <th width="20%">Ngày chi</th>
+                <th width="22%">Ngày chi</th>
                 <th width="16%">Tổng tiền</th>
                 <th width="30%">Nhà cung cấp</th>
                 <th width="18%">Người thực hiện</th>
-                <th width="6%">Sửa</th>
-                <th width="4%">Chọn</th>
+                <th width="8%">Sửa</th>
             </tr>
         </thead>
         <tbody>
@@ -23,17 +22,8 @@
                         <img src="/images/icon/iconedit.png" alt="">
                     </button>
                 </td>
-                <td class="text-center">
-                    <input type="checkbox" @change="idSelected(payment.id)" :checked="selectedIds.includes(payment.id)">
-                </td>
             </tr>
         </tbody>
-        <tfoot>
-            <tr>
-                <th colspan="6" class="text-center text-bold">Chọn tất cả</th>
-                <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
-            </tr>
-        </tfoot>
     </table>
 </template>
 
@@ -69,24 +59,6 @@ export default {
                 this.selectedIds.splice(index, 1);
             }
         },
-        idAllSelected() {
-            if(this.selectedIds.length == this.paymentsList.length) {
-                this.selectedIds.splice(0, this.selectedIds.length); // Bỏ hết các phần tử trong selectedIds
-            } else if(this.selectedIds.length) {
-                this.selectedIds.splice(0, this.selectedIds.length);
-                this.payments.forEach(payment => {
-                    this.selectedIds.push(payment.id);
-                });
-            } else {
-                this.payments.forEach(payment => {
-                    this.selectedIds.push(payment.id);
-                });
-            }
-        },
-        showModalEdit(paymentID) {
-            this.$emit('update-modal', true);
-            this.$emit('update-paymentID', paymentID);
-        }
     },
 
 };

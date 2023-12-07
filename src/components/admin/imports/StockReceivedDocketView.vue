@@ -14,19 +14,19 @@
                 </div>
                 <div class="import-view__container">
                     <div class="import-view__item">
+                        <label for="date">Phiếu chi:</label>
+                        <span>{{ stockReceivedDocket.payment_voucher.id }}</span>
+                    </div>
+                    <div class="import-view__item">
+                        <label for="date">Ngày chi:</label>
+                        <span>{{ stockReceivedDocket.payment_voucher.date }}</span>
+                    </div>
+                    <div class="import-view__item">
                         <label for="date">Nhà cung cấp:</label>
-                        <span>{{ stockReceivedDocket.supplier.name }}</span>
-                    </div>
-                    <div class="import-view__item">
-                        <label for="date">Mã nhà cung cấp:</label>
-                        <span>{{ stockReceivedDocket.supplier.id }}</span>
-                    </div>
-                    <div class="import-view__item">
-                        <label for="date">Mã số thuế:</label>
-                        <span>{{ stockReceivedDocket.supplier.tax_code }}</span>
+                        <span>{{ stockReceivedDocket.supplier }}</span>
                     </div>
                 </div>
-                <div class="import-view__container">
+                <!-- <div class="import-view__container">
                     <label for="date">Địa chỉ:</label>
                     <span>{{ stockReceivedDocket.supplier.address }}</span>
                 </div>
@@ -43,7 +43,7 @@
                         <label for="date">Số tài khoản:</label>
                         <span>{{ stockReceivedDocket.supplier.bank_account }}</span>
                     </div>
-                </div>
+                </div> -->
                 <div class="import-view__container">
                     <table class="example1 table dataTable">
                         <thead>

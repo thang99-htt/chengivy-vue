@@ -8,12 +8,11 @@
                             <thead>
                                 <tr role="row">
                                     <th width="6%" data-orderable="false">ID</th>
-                                    <td width="12%"></td>
-                                    <th width="31%">Sản phẩm</th>
+                                    <td width="20%"></td>
+                                    <th width="35%">Sản phẩm</th>
                                     <th width="14%">Tổng nhập</th>
                                     <th width="14%">Tổng xuất</th>
                                     <th width="14%">Có sẵn</th>
-                                    <th width="12%">Tùy chọn</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,21 +42,6 @@
                                     <td>
                                         <span v-if="product.total_final==0" class="text-danger">Hết hàng</span>
                                         <span v-else class="text-green">{{ (product.total_final).toLocaleString() }}</span>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <button type="button" class="btn">
-                                                <img src="/images/icon/iconedit.png" alt="">
-                                            </button>
-                                            <button type="button" class="btn">
-                                                <!-- <router-link
-                                                    v-if="!product.month_year"
-                                                    :to="{ name: 'product.view', params: { id: product.id } }"
-                                                >
-                                                    <img src="/images/icon/icondetail.png" alt="">
-                                                </router-link> -->
-                                            </button>
-                                        </div>
                                     </td>
                                 </tr>
                             </tbody>

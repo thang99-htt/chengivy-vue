@@ -2,24 +2,21 @@
     <table class="example1 table dataTable">
         <thead>
             <tr role="row">
-                <th width="4%">ID</th>
-                <th width="12%">Ngày nhập</th>
-                <th width="18%">Nhà cung cấp</th>
-                <th width="22%">Phiếu chi</th>
-                <th width="12%">Tổng giá trị</th>
-                <th width="10%">Nhân viên</th>
+                <th width="6%">ID</th>
+                <th width="15%">Ngày nhập</th>
+                <th width="32%">Phiếu chi</th>
+                <th width="15%">Tổng giá trị</th>
+                <th width="14%">Nhân viên</th>
                 <th width="8%">Tùy chọn</th>
-                <th width="4%">Chọn</th>
             </tr>
         </thead>
         <tbody>
             <tr role="row" v-for="(stockReceivedDocket, index) in stockReceivedDocketsList" :key="stockReceivedDocket">
                 <td>{{ stockReceivedDocket.id }}</td>
                 <td>{{ stockReceivedDocket.date }}</td>
-                <td>{{ stockReceivedDocket.supplier.name }}</td>
                 <td>
-                    Phiếu chi {{ stockReceivedDocket.payment_voucher.id }}, <br>
-                    {{ stockReceivedDocket.payment_voucher.date }}, <br>
+                    Phiếu chi {{ stockReceivedDocket.payment_voucher.id }},
+                    {{ stockReceivedDocket.payment_voucher.date }},
                     {{ formatPrice(stockReceivedDocket.payment_voucher.total_price) }}
                 </td>
                 <td>{{ formatPrice(stockReceivedDocket.total_value) }}</td>
@@ -46,17 +43,8 @@
                         </router-link>
                     </button>
                 </td>
-                <td class="text-center">
-                    <input type="checkbox" @change="idSelected(stockReceivedDocket.id)" :checked="selectedIds.includes(stockReceivedDocket.id)">
-                </td>
             </tr>
         </tbody>
-        <tfoot>
-            <tr>
-                <th colspan="7" class="text-center text-bold">Chọn tất cả</th>
-                <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
-            </tr>
-        </tfoot>
     </table>
 </template>
 
@@ -105,30 +93,6 @@ export default {
 
             } catch (error) {
                 console.log(error);
-            }
-        },
-        idSelected(id) {
-            const index = this.selectedIds.indexOf(id);
-            if (index === -1) {
-                // Nếu id chưa tồn tại trong mảng, thêm nó vào
-                this.selectedIds.push(id);
-            } else {
-                // Ngược lại, loại bỏ id khỏi mảng
-                this.selectedIds.splice(index, 1);
-            }
-        },
-        idAllSelected() {
-            if(this.selectedIds.length == this.stockReceivedDocketsList.length) {
-                this.selectedIds.splice(0, this.selectedIds.length); // Bỏ hết các phần tử trong selectedIds
-            } else if(this.selectedIds.length) {
-                this.selectedIds.splice(0, this.selectedIds.length);
-                this.stockReceivedDockets.forEach(stockReceivedDocket => {
-                    this.selectedIds.push(stockReceivedDocket.id);
-                });
-            } else {
-                this.stockReceivedDockets.forEach(stockReceivedDocket => {
-                    this.selectedIds.push(stockReceivedDocket.id);
-                });
             }
         },
     },

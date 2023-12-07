@@ -1,7 +1,7 @@
 <template>
     <div class="statistical-range">
         <div>
-            <span>Lần cập nhật cuối: <span>2023-09-06 10:00:29</span></span>
+            <span>Lần cập nhật cuối: <span>{{ lastUpdate }}</span></span>
             <span>Giữa các ngày: 
                 <span v-if="startDateFormatted && endDateFormatted">
                 {{ startDateFormatted }} - {{ endDateFormatted }}
@@ -24,6 +24,7 @@ export default {
     props: {
         startDateFormatted: { type: String, required: true },
         endDateFormatted: { type: String, required: true },
+        lastUpdate: { type: String, required: true },
     },
     data() {
         return {

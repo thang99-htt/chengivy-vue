@@ -3,22 +3,20 @@
         <thead>
             <tr role="row">
                 <th width="6%">ID</th>
-                <th width="20%">Tên nhà cung cấp</th>
-                <th width="22%">Địa chỉ</th>
-                <th width="6%">Số điện thoại</th>
-                <th width="10%">Email</th>
-                <th width="10%">Số tài khoản</th>
-                <th width="6%">Mã số thuế</th>
-                <th width="8%">Ngày hợp tác</th>
-                <th width="8%">Sửa</th>
-                <th width="4%">Chọn</th>
+                <th width="25%">Tên nhà cung cấp</th>
+                <th width="10%">Số điện thoại</th>
+                <th width="12%">Email</th>
+                <th width="12%">Số tài khoản</th>
+                <th width="11%">Mã số thuế</th>
+                <th width="12%">Ngày hợp tác</th>
+                <th width="6%">Sửa</th>
+                <th width="6%">Chọn</th>
             </tr>
         </thead>
         <tbody>
             <tr role="row" v-for="(supplier, index) in suppliersList" :key="supplier">
                 <td>{{ supplier.id }}</td>
                 <td>{{ supplier.name }}</td>
-                <td>{{ supplier.address }}</td>
                 <td>{{ supplier.phone }}</td>
                 <td>{{ supplier.email }}</td>
                 <td>{{ supplier.bank_account }}</td>
@@ -36,7 +34,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="9" class="text-center text-bold">Chọn tất cả</th>
+                <th colspan="8" class="text-center text-bold">Chọn tất cả</th>
                 <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
             </tr>
         </tfoot>

@@ -22,9 +22,6 @@
                             <button type="button" class="btnBack" @click="refreshList()">
                                 <i class="fa fa-refresh"></i>Làm mới
                             </button>
-                            <button type="button" class="btnDelete">
-                                <i class="fa fa-trash"></i>Xóa
-                            </button>
                         </div>
                     </div>
                 </div>

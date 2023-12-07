@@ -5,6 +5,7 @@
         <div class="box">
             <div class="box-body">
                 <StatisticalPicker :startDateFormatted="startDateFormatted" :endDateFormatted="endDateFormatted"
+                    :lastUpdate="lastUpdate"
                     @update:startDateFormatted="updateStartDate" @update:endDateFormatted="updateEndDate" />
 
                 <div class="row">
@@ -43,6 +44,7 @@ export default {
             startDateFormatted: "",
             endDateFormatted: "",
             datesUpdated: false,
+            lastUpdate: ""
         };
     },
     computed: {
@@ -76,8 +78,8 @@ export default {
                     startDate: this.startDateFormatted,
                     endDate: this.endDateFormatted
                 };
-                console.log(data)
                 this.returns = await ReturnService.getAll(data);
+                this.lastUpdate = this.returns[this.returns.length-1].requested_at;
                 if ($.fn.DataTable.isDataTable('.example1')) {
                     $('.example1').DataTable().destroy();
                 }

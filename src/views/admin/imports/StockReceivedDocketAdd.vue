@@ -38,7 +38,14 @@ export default {
             if (newValue !== "") {  // Kiểm tra nếu newValue không rỗng
                 this.stockReceivedDocket.total_value = parseFloat(this.stockReceivedDocket.total_price) + parseFloat(newValue);
             } else {
-                this.stockReceivedDocket.total_value = "";  // Nếu newValue rỗng, đặt total_value thành rỗng
+                this.stockReceivedDocket.total_value = parseFloat(this.stockReceivedDocket.total_price);  // Nếu newValue rỗng, đặt total_value thành rỗng
+            }
+        },
+        'stockReceivedDocket.total_price': function(newValue) {
+            if (newValue !== "") {  // Kiểm tra nếu newValue không rỗng
+                this.stockReceivedDocket.total_value = parseFloat(newValue);
+            } else {
+                this.stockReceivedDocket.total_value = 0;  // Nếu newValue rỗng, đặt total_value thành rỗng
             }
         },
     },

@@ -1,7 +1,6 @@
 <template>
     <PaymentVoucherModal v-if="modalPayment" :showModal="showModal" @closeModal="closeModal" />
-    <SupplierModal v-if="modalSupplier" :showModal="showModal" @closeModal="closeModal" />
-    <ClassifyModal v-if="modalClassify" :stockReceivedDocketLocal="stockReceivedDocketLocal"
+    <ClassifyModal v-if="modalClassify" :stockReceivedDocketLocal="stockReceivedDocketLocal" :closeModal="closeModal"
         :currentProduct="currentProduct" :showModal="showModal" @closeModal="closeModal" />
     <ProductModal v-if="modalProduct" :showModal="showModal" @closeModal="closeModal" />
 
@@ -39,8 +38,8 @@
                             <thead>
                                 <tr role="row">
                                     <th width="4%">#</th>
-                                    <th width="8%">ID</th>
-                                    <th width="25%">Tên sản phẩm</th>
+                                    <th width="6%">ID</th>
+                                    <th width="27%">Tên sản phẩm</th>
                                     <th width="12%">Giá bán</th>
                                     <th width="12%">Giá nhập</th>
                                     <th width="10%">Số lượng</th>
@@ -55,7 +54,12 @@
                                 >
                                     <td>{{ index + 1 }}</td>
                                     <td>{{ product.product_id }}</td>
-                                    <td>{{ product.product_name }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img :src="product.product_image" alt="" width="50">
+                                            <span class="ms-1">{{ product.product_name }}</span>
+                                        </div>
+                                    </td>
                                     <td>
                                         <input type="text" :value="formattedPrice(product.price)"
                                             @input="updatePrice(index, $event)" @keypress="validateKeyPress">
@@ -77,7 +81,9 @@
                                         </button>
                                     </td>
                                     <td>
-                                        <a class="remove-option" @click="removeProduct(product)">Xóa</a>
+                                        <a class="remove-option" @click="removeProduct(product)">
+                                            <img src="/images/icon/btndelete.png" alt="">
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -115,40 +121,6 @@
                 <div class="form-group">
                     <div class="form-group__container">
                         <div class="form-group__label">
-                            <label for="supplier_id">Nhà cung cấp
-                                <span class="error-feedback">*</span>
-                            </label>
-                        </div>
-                        <div class="form-group__input">
-                            <div class="aselect" :data-value="value" :data-list="suppliers">
-                                <div class="plus" @click="openModalSupplier">
-                                    <i class="fa fa-plus" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="Thêm danh mục"></i>
-                                </div>
-                                <div class="selector" @click="visible1 = !visible1">
-                                    <div class="label">
-                                        <span>{{ selectedSupplier }}</span>
-                                    </div>
-                                    <div class="arrow1" :class="{ expanded: visible1 }"></div>
-                                    <div :class="{ hidden: !visible1, visible1 }">
-                                        <div class="selector-container">
-                                            <ul>
-                                                <li :class="{ current: supplier.name === selectedSupplier }"
-                                                    v-for="(supplier, index) in suppliers" :key="supplier.id"
-                                                    :value="supplier.id" @click.stop="selectOptionSupplier(supplier)">
-                                                    {{ supplier.name }}
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-group__container">
-                        <div class="form-group__label">
                             <label for="form">Phiếu chi
                                 <span class="error-feedback">*</span>
                             </label>
@@ -170,8 +142,9 @@
                                                 <li :class="{ current: payment.name === selectedPayment }"
                                                     v-for="(payment, index) in payments" :key="payment.id"
                                                     :value="payment.id" @click.stop="selectOptionPayment(payment)">
-                                                    {{ payment.id }}, {{ payment.date }}, {{
-                                                        formatPrice(payment.total_price) }}, {{ payment.supplier.name }}
+                                                    Phiếu chi {{ payment.id }} - {{ formatPrice(payment.total_price) }}
+                                                    <br> {{ payment.date }}
+                                                    <br> {{ payment.supplier.name }}
                                                 </li>
                                             </ul>
                                         </div>
@@ -269,11 +242,9 @@
 <script>
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import SupplierService from "@/services/admin/supplier.service";
 import PaymentVoucherService from "@/services/admin/payment.service";
 import ProductService from "@/services/admin/product.service";
 import PaymentVoucherModal from "@/components/admin/payments/PaymentVoucherModal.vue";
-import SupplierModal from "@/components/admin/suppliers/SupplierModal.vue";
 import ClassifyModal from "@/components/admin/imports/ClassifyModal.vue";
 import ProductModal from "@/components/admin/products/ProductModal.vue";
 import { formatPrice } from '../../../utils';
@@ -284,7 +255,6 @@ export default {
         Field,
         ErrorMessage,
         PaymentVoucherModal,
-        SupplierModal,
         ClassifyModal,
         ProductModal
     },
@@ -300,16 +270,13 @@ export default {
     data() {
         return {
             stockReceivedDocketLocal: this.stockReceivedDocket,
-            suppliers: [],
             payments: [],
             visible: false,
             visible1: false,
             visible2: false,
-            selectedSupplier: "---Chọn nhà cung cấp---",
             selectedPayment: "---Chọn phiếu chi---",
             showModal: false,
             modalPayment: false,
-            modalSupplier: false,
             modalClassify: false,
             modalProduct: false,
             products: [],
@@ -414,8 +381,30 @@ export default {
         },
         formatPrice,
         submitStockReceivedDocket() {
-            this.$emit("submit:stockReceivedDocket", this.stockReceivedDocketLocal);
-            // this.selectedSupplier = "---Chọn nhà cung cấp---";
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                    toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+            })
+            if (this.stockReceivedDocketLocal.items.length === 0 || this.stockReceivedDocketLocal.items.some(item => item.quantity <= 0) || this.stockReceivedDocketLocal.items.some(item => item.price_purchase <= 0)) {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Số lượng hoặc giá sản phẩm không hợp lệ!'
+                });
+            } if (this.stockReceivedDocketLocal.items.length === 0 || this.stockReceivedDocketLocal.items.some(item => item.price < item.price_purchase) ) {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Giá bán ra hiện đang nhỏ hơn giá mua vào!'
+                });
+            } else {
+                this.$emit("submit:stockReceivedDocket", this.stockReceivedDocketLocal);
+            }
             //this.selectedPayment = "---Chọn phiếu chi---";
         },
         deleteStockReceivedDocket() {
@@ -429,28 +418,12 @@ export default {
             }
             reader.readAsDataURL(file);
         },
-        async retrieveSuppliers() {
-            try {
-                this.suppliers = await SupplierService.getAll();
-            } catch (error) {
-                console.log(error);
-            }
-        },
         async retrievePaymentVouchers() {
             try {
                 this.payments = await PaymentVoucherService.getAll();
             } catch (error) {
                 console.log(error);
             }
-        },
-        openModalSupplier() {
-            this.showModal = true;
-            this.modalSupplier = true;
-        },
-        selectOptionSupplier(supplier) {
-            this.selectedSupplier = supplier.name;
-            this.stockReceivedDocketLocal.supplier_id = supplier.id;
-
         },
         selectOptionPayment(payment) {
             this.selectedPayment = payment.id + ", " + payment.date + ", " + this.formatPrice(payment.total_price);
@@ -459,11 +432,9 @@ export default {
         },
         async closeModal() {
             this.showModal = false;
-            this.modalSupplier = false;
             this.modalPayment = false;
             this.modalClassify = false;
             this.modalProduct = false;
-            this.suppliers = await SupplierService.getAll();
             this.payments = await PaymentVoucherService.getAll();
             this.products = await ProductService.getAll();
         },
@@ -533,15 +504,12 @@ export default {
         }
     },
     mounted() {
-        this.retrieveSuppliers();
         this.retrievePaymentVouchers();
         this.getProductAll();
 
-        if(this.stockReceivedDocket.supplier && this.stockReceivedDocket.payment_voucher) {
-            this.selectedSupplier = this.stockReceivedDocket.supplier.name;
+        if(this.stockReceivedDocket.payment_voucher) {
             this.selectedPayment = this.stockReceivedDocket.payment_voucher.id + ", " +
             this.stockReceivedDocket.payment_voucher.date + ", " + this.stockReceivedDocket.payment_voucher.total_price
-            + ", " + this.stockReceivedDocket.supplier.name;
         }
     },
 };

@@ -3,6 +3,7 @@
         <div class="box">
             <div class="box-body">
                 <StatisticalPicker :startDateFormatted="startDateFormatted" :endDateFormatted="endDateFormatted"
+                    :lastUpdate="lastUpdate"
                     @update:startDateFormatted="updateStartDate" @update:endDateFormatted="updateEndDate" />
 
                 <div class="option-filter" v-if="!hasRole6">
@@ -57,6 +58,7 @@ export default {
             startDateFormatted: "",
             endDateFormatted: "",
             datesUpdated: false,
+            lastUpdate: ""
         };
     },
     computed: {
@@ -104,6 +106,7 @@ export default {
                 this.orderCanceled = 0;
                 this.orderSoldAtStore = 0;
                 this.orders = await OrderService.getAll(data);
+                this.lastUpdate = this.orders[this.orders.length-1].ordered_at;
                 this.orders.forEach(order => {
                     if (order.status.id == 1) this.orderWaiting = this.orderWaiting + 1;
                     if (order.status.id == 6) this.orderShipping = this.orderShipping + 1;

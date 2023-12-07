@@ -64,9 +64,12 @@
             <ErrorMessage name="description" class="error-feedback" />
         </div>
         <div class="form-group">
-            <input type="submit" name="btnSave" value="Thực hiện">
-            <input type="button" name="btnDelete" value="Xóa" v-if="paymentLocal.id">
-            <input type="button" name="btnBack" value="Hủy" v-else @click="reset">
+            <button type="button" class="btnAdd" @click="submitPayment">
+                <i class="fa fa-plus"></i>Thực hiện
+            </button>
+            <button type="button" class="btnBack ms-2" @click="reset">
+                <i class="fa fa-refresh"></i>Hủy
+            </button>
         </div>
     </Form>
     

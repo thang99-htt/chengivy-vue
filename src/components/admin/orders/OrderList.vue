@@ -3,11 +3,11 @@
         <thead>
             <tr role="row">
                 <th width="6%">ID</th>
-                <th width="10%">Khách hàng</th>
+                <th width="8%">Khách hàng</th>
                 <th width="12%">Ngày đặt</th>
                 <th width="10%">Tổng giá trị</th>
                 <th width="15%">Nhân viên giao hàng</th>
-                <th width="12%" v-if="!hasRole6">Nhân viên duyệt đơn</th>
+                <th width="14%" v-if="!hasRole5">Nhân viên duyệt đơn</th>
                 <th width="12%" v-else></th>
                 <th width="10%">Trạng thái</th>
                 <th width="7%">Tùy chọn</th>
@@ -24,10 +24,10 @@
                 <td>{{ formatPrice(order.total_value) }}</td>
                 <td>
                     <span v-if="order.staff_delivery">
-                        <span>{{ order.staff_delivery.name }} - {{ order.staff_delivery.phone }}</span>
+                        <span>{{ order.staff_delivery.name }} <br> {{ order.staff_delivery.phone }}</span>
                         <span class="shipper" v-if="order.status.id>=3 && order.status.id<=6 ">Đã nhận đơn</span>
                     </span>
-                    <span v-if="!hasRole6 && order.status.id==2" class="d-flex justify-content-center">
+                    <span v-if="!hasRole5 && order.status.id==2">
                         <button 
                             class="dropdown-toggle btn-order-shipper" type="button" 
                             id="dropdownMenuButton2" 
@@ -46,24 +46,24 @@
                         </ul>
                     </span>
                 </td>
-                <td class="text-center">
-                    <span v-if="order.staff && !hasRole6">{{ order.staff.name }}</span>
-                    <button v-if="hasRole6 && order.status.id==2" type="button" class="btnAdd btn-receipt" @click="deliveryOrder2(order.id)">
+                <td>
+                    <span v-if="order.staff && !hasRole5">{{ order.staff.name }}</span>
+                    <button v-if="hasRole5 && order.status.id==2" type="button" class="btnAdd btn-receipt" @click="deliveryOrder2(order.id)">
                         Nhận đơn
                     </button>
-                    <button v-if="hasRole6 && order.status.id==2 && order.staff_delivery" type="button" class="btnAdd btn-receipt mt-2" @click="deliveryOrder3(order.id)">
+                    <button v-if="hasRole5 && order.status.id==2 && order.staff_delivery" type="button" class="btnAdd btn-receipt mt-2" @click="deliveryOrder3(order.id)">
                         Từ chối đơn
                     </button>
-                    <button v-if="hasRole6 && order.status.id==4" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
+                    <button v-if="hasRole5 && order.status.id==4" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
                         Đã lấy hàng
                     </button>
-                    <button v-if="hasRole6 && order.status.id==5" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
+                    <button v-if="hasRole5 && order.status.id==5" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
                         Đang giao hàng
                     </button>
-                    <button v-if="hasRole6 && order.status.id==6" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
+                    <button v-if="hasRole5 && order.status.id==6" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
                         Đã giao
                     </button>
-                    <button v-if="hasRole6 && order.status.id==6" type="button" class="btnAdd btn-receipt mt-2 btn-danger" @click="deliveryOrder1(order.id)">
+                    <button v-if="hasRole5 && order.status.id==6" type="button" class="btnAdd btn-receipt mt-2 btn-danger" @click="deliveryOrder1(order.id)">
                         Khách không nhận
                     </button>
                 </td>
@@ -86,8 +86,8 @@
                                 'order-status12': order.status.id==12,
                             }"
                             id="dropdownMenuButton1" 
-                            :data-bs-toggle="!hasRole6 ? 'dropdown' : ''"
-                            :aria-expanded="!hasRole6 ? 'false' : ''"
+                            :data-bs-toggle="!hasRole5 ? 'dropdown' : ''"
+                            :aria-expanded="!hasRole5 ? 'false' : ''"
                         >
                             {{ order.status.name }}
                         </button>
@@ -101,9 +101,6 @@
                     </div>
                 </td>
                 <td class="text-center">
-                    <button type="button" class="btn" @click="showModalEdit(order.id)">                        
-                        <img src="/images/icon/iconedit.png" alt="">
-                    </button>
                     <button type="button" class="btn">                        
                         <router-link
                             :to="{
@@ -143,11 +140,11 @@ export default {
         getAdmin: { type: Object, required: true },
     },
     computed: {
-        hasRole6() {
-            return this.getAdmin.roleIDs && this.getAdmin.roleIDs.some(id => id === 6);
+        hasRole5() {
+            return this.getAdmin.roleIDs && this.getAdmin.roleIDs.some(id => id === 5);
         },
         ordersList() {
-            if(this.hasRole6) {
+            if(this.hasRole5) {
                 return this.orders.filter(order => {
                     return (order.status.id >= 2 && order.status.id<=8 || order.status.id == 12);
                 });
@@ -473,7 +470,6 @@ export default {
     .shipper {
         color: #ff0000;
         font-weight: bold;
-        text-align: center;
         display: block;
     }
     .current_order {

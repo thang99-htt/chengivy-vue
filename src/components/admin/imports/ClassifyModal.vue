@@ -4,7 +4,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title fw-bold">Phân loại sản phẩm</h4>
-                    <button type="button" class="btn-close" @click="closeModalClassify"></button>
+                    <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="box box-info">
@@ -17,7 +17,7 @@
                                                 <img :src="currentProduct.product_image" width="100" height="100">
                                                 <div class="ms-3 d-flex flex-column">
                                                     <span>{{  currentProduct.product_name }}</span>
-                                                    <span>
+                                                    <span class="text-danger fw-bold">
                                                         Tổng số lượng đã nhập: {{ formattedPrice(currentProduct.quantity) }}
                                                     </span>
                                                 </div>
@@ -39,6 +39,11 @@
                                                 @click="openModalProduct">
                                                     <i class="fa fa-plus"></i>
                                                 </span>
+                                            </div>
+                                            <div class="form-group mt-3 me-3">
+                                                <button type="button" class="btnAdd btn-add" @click.stop="addInventory">
+                                                    <i class="fa fa-plus"></i>Thêm phân loại
+                                                </button>
                                             </div>
                                         </div>  
                                         <div class="form-group">
@@ -71,11 +76,6 @@
                                                 </fieldset>
                                             </div>
                                         </div>  
-                                        <div class="form-group mb-3">
-                                            <button type="button" class="btnAdd btn-add" @click.stop="addInventory">
-                                                <i class="fa fa-plus"></i>Thêm phân loại
-                                            </button>
-                                        </div>
                                     </div>
                                     <div class="col-7">
                                         <div class="form-group">
@@ -110,7 +110,9 @@
                                                                 @keypress="validateKeyPress"/>
                                                         </td>
                                                         <td>
-                                                            <a class="remove-option" @click="removeInventory(inventory)">Xóa</a>
+                                                            <a class="remove-option" @click="removeInventory(inventory)">
+                                                                <img src="/images/icon/btndelete.png" alt="">
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -122,6 +124,11 @@
                                                     </tr>
                                                 </tfoot>
                                             </table>
+                                            <div class="d-flex justify-content-end mt-5">
+                                                <button type="button" class="btnAdd" @click="closeModalClassify">
+                                                    <i class="fa fa-plus"></i>Thực hiện
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +158,8 @@ export default {
     },
     props: {
         stockReceivedDocketLocal: { type: Object, required: true },
-        currentProduct: { type: Object, required: true }
+        currentProduct: { type: Object, required: true },
+        closeModal: { type: Boolean, required: true }
     },
     data() {
         return {
@@ -215,9 +223,6 @@ export default {
                 this.showModal = false;
                 this.productID = null;
             }
-        },
-        closeModal() {
-            this.showModal = false;
         },
         addInventory() {
             if (this.selectedColor && this.selectedSizes.length > 0) {

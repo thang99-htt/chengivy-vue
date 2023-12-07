@@ -30,7 +30,8 @@
                                 <div>
                                     <p class="price">Số tiền hoàn trả: {{ formatPrice(returnLocal.total_price) }}</p>
                                     <p>Phương thức thanh toán: {{ returnLocal.method }}</p>
-                                    <p>Số tài khoản: {{ returnLocal.order.user.profiles[0].bank_account }}</p>
+                                    <p>Ngân hàng: <span class="text-success fw-bold">{{ returnLocal.order.user.profiles[0].bank_account }}</span></p>
+                                    <p>Số tài khoản: <span class="text-success fw-bold">{{ returnLocal.order.user.profiles[0].bank_number }}</span></p>
                                 </div>
                                 <hr>
                                 <div class="form-group">
@@ -176,5 +177,8 @@ export default {
         font-weight: bold;
         margin-bottom: 10px;
         margin-top: 15px;
+    }
+    .text-success {
+        color: rgb(0, 181, 0) !important;
     }
 </style>
