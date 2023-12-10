@@ -184,12 +184,21 @@ const routes = [
                         }
                     },
                     {
+                        path: "shipper",
+                        name: "shipper",
+                        component: () => import("../views/admin/orders/OrderShipper.vue"),
+                        meta: {
+                            description: 'Đơn hàng của tôi',
+                            permissionID: 55
+                        }
+                    },
+                    {
                         path: "returns",
                         name: "return.admin",
                         component: () => import("../views/admin/orders/Return.vue"),
                         meta: {
                             description: 'Hoàn trả',
-                            permissionID: 55
+                            permissionID: 53
                         }
                     },
                     {
@@ -198,7 +207,7 @@ const routes = [
                         component: () => import("../views/admin/orders/SoldAtStore.vue"),
                         meta: {
                             description: 'Bán tại cửa hàng',
-                            permissionID: 55
+                            permissionID: 53
                         }
                     },
                 ]

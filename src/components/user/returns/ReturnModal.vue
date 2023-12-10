@@ -168,11 +168,12 @@ export default {
                             icon: res.success,
                             title: res.message
                         });
-                    });
-    
-                    this.closeModal();
-                    this.$router.push({ name: "return" });
 
+                        if(res.success == 'success') {
+                            this.closeModal();
+                            this.$router.push({ name: "return" });
+                        }
+                    });
                 } catch (error) {
                     console.log(error);
                 }

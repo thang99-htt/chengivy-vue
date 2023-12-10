@@ -15,8 +15,11 @@ class OrderService {
     async get(id) {
         return (await this.api.get(`/${id}`)).data;
     }
-    async getAllShippers(id) {
+    async getAllShippers() {
         return (await this.api.get("get-shippers")).data;
+    }
+    async getOrdersByShipper(data) {
+        return (await this.api.post("/order-by-shipper", data)).data;
     }
     async update(id, data) {
         return (await this.api.put(`/${id}`, data)).data;

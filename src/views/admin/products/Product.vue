@@ -111,7 +111,7 @@ export default {
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.value) {
-                    ProductService.hidden(this.selectedIds);
+                    ProductService.updateHiddens(this.selectedIds);
                     this.refreshList();
                     this.$swal.fire('Đã ẩn thành công!', '', 'success')
                 }

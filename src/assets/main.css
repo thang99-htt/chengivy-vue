@@ -4427,6 +4427,7 @@ blockquote span {
 }
 .brands .brands-logo-wrapper .brands-logo-carousel .brand-logo img {
   width: 100%;
+  height: 100%;
   opacity: 0.8;
   -webkit-transition: all 0.3s ease-out 0s;
   transition: all 0.3s ease-out 0s;

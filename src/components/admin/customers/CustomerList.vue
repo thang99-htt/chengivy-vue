@@ -42,7 +42,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="9" class="text-center text-bold">Chọn tất cả</th>
+                <th colspan="10" class="text-center text-bold">Chọn tất cả</th>
                 <th class="text-center"><input type="checkbox" @change="idAllSelected()"></th>
             </tr>
         </tfoot>

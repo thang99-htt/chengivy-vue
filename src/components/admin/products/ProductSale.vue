@@ -8,11 +8,13 @@
                 <div class="box">
                     <div class="box-body">
                         <div class="group-btn">
-                            <div class="d-flex align-items-center justify-content-end mb-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
                                 <div>
                                     <button type="button" class="btnAdd" @click="openModal">
                                         <i class="fa fa-plus"></i>Thêm mới
                                     </button>
+                                </div>
+                                <div>
                                     <button type="button" class="btnBack" @click="refreshList()">
                                         <i class="fa fa-refresh"></i>Làm mới
                                     </button>
@@ -106,6 +108,9 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
+        refreshList() {
+            this.retrieveProducts();
         },
         idSelected(product) {
             const index = this.selectedProducts.indexOf(product);

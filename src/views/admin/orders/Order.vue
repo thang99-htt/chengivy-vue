@@ -6,7 +6,7 @@
                     :lastUpdate="lastUpdate"
                     @update:startDateFormatted="updateStartDate" @update:endDateFormatted="updateEndDate" />
 
-                <div class="option-filter" v-if="!hasRole6">
+                <div class="option-filter" v-if="!hasRole5">
                     <div>
                         <a @click="selectedOption = 0" :class="{ active: selectedOption == 0 }"> Tất cả
                         </a>
@@ -63,8 +63,8 @@ export default {
     },
     computed: {
         ...mapGetters(['getAdmin']),
-        hasRole6() {
-            return this.getAdmin.roleIDs && this.getAdmin.roleIDs.some(id => id === 6);
+        hasRole5() {
+            return this.getAdmin.roleIDs && this.getAdmin.roleIDs.some(id => id === 5);
         },
         filteredOrders() {
             let filtered = [...this.orders];
@@ -73,7 +73,6 @@ export default {
                     item.status.id == this.selectedOption
                 );
             }
-
             return filtered;
         },
     },

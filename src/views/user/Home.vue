@@ -5,6 +5,7 @@ import { tns } from 'tiny-slider/src/tiny-slider';
 import ProductNew from "@/components/user/products/ProductNew.vue";
 import ProductBestSeller from "@/components/user/products/ProductBestSeller.vue";
 import CategoryService from "@/services/user/category.service";
+import BrandService from "@/services/admin/brand.service";
 
 export default {
     components: {
@@ -15,11 +16,18 @@ export default {
         return {
             products: [],
             categories: [],
+            brands: [],
         };
     },
     async created() {
         await CategoryService.getCategory().then((response) => {
             this.categories = response;
+        });
+        await BrandService.getAll().then((response) => {
+            this.brands = response;
+            this.$nextTick(() => {
+                this.initializeSlider();
+            });
         });
     },
     computed: {
@@ -200,30 +208,14 @@ export default {
                     </div>
                 </div>
                 <div class="brands-logo-wrapper">
-                    <div ref="brand" class="brands-logo-carousel d-flex align-items-center justify-content-between">
-                        <div class="brand-logo">
-                            <img src="/images/brands/levis.svg" alt="#" />
-                        </div>
-                        <div class="brand-logo">
-                            <img src="/images/brands/gap.svg" alt="#" />
-                        </div>
-                        <div class="brand-logo">
-                            <img src="/images/brands/ck.svg" alt="#" />
-                        </div>
-                        <div class="brand-logo">
-                            <img src="/images/brands/tommy.svg" alt="#" />
-                        </div>
-                        <div class="brand-logo">
-                            <img src="/images/brands/coc.svg" alt="#" />
-                        </div>
-                        <div class="brand-logo">
-                            <img src="/images/brands/mango.svg" alt="#" />
-                        </div>
-                        <div class="brand-logo">
-                            <img src="/images/brands/polo.svg" alt="#" />
-                        </div>
-                        <div class="brand-logo">
-                            <img src="/images/brands/br.svg" alt="#" />
+                    <div v-if="brands" ref="brand" class="brands-logo-carousel d-flex align-items-center justify-content-between">
+                        <div class="brand-logo" v-for="brand in brands" :key="brand">
+                            <router-link :to="{
+                                    name: 'product.all',
+                                    query: { brand: brand.name },
+                                }">
+                            <img :src="brand.image" alt="#" />
+                            </router-link>
                         </div>
                     </div>
                 </div>

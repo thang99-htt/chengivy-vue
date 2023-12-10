@@ -575,10 +575,20 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a href="contact.html">Bán chạy nhất</a>
+                                <router-link :to="{
+                                    name: 'product.all',
+                                    query: { best_seller: 'best_seller' },
+                                }">
+                                    Bán chạy nhất
+                                </router-link>
                             </li>
                             <li class="nav-item">
-                                <a href="contact.html">Giảm Giá</a>
+                                <router-link :to="{
+                                    name: 'product.all',
+                                    query: { sales: 'sales' },
+                                }">
+                                    Giảm giá
+                                </router-link>
                             </li>
                             <li class="nav-item">
                                 <a href="contact.html" :class="{ link: $route.path === '/about-us.html' }">Về chúng tôi</a>

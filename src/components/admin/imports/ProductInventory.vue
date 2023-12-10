@@ -4,6 +4,15 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-body">
+                        <div class="group-btn">
+                            <div class="d-flex align-items-center justify-content-end mb-4">
+                                <div>
+                                    <button type="button" class="btnBack" @click="refreshList()">
+                                        <i class="fa fa-refresh"></i>Làm mới
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <table class="example1 table dataTable">
                             <thead>
                                 <tr role="row">
@@ -96,12 +105,18 @@ export default {
                         this.combinedData.push(...selectedProducts);
                     }   
                 }
+                if ($.fn.DataTable.isDataTable('.example1')) {
+                    $('.example1').DataTable().destroy();
+                }
                 this.$nextTick(() => {
                     initializeDataTable();
                 });
             } catch (error) {
                 console.log(error);
             }
+        },
+        refreshList() {
+            this.retrieveInventories();
         },
         toggleAdditionalRow(product) {
             product.visible = !product.visible;

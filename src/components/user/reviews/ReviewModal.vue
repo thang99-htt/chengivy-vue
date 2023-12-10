@@ -19,7 +19,7 @@
     </div>
 </template>
 <script>
-import ReviewForm from "./ReviewForm.vue";
+import ReviewForm from "@/components/user/reviews/ReviewForm.vue";
 import ReviewService from "@/services/admin/review.service";
 import NotificationService from "@/services/admin/notification.service";
 import axios from 'axios';
@@ -67,7 +67,7 @@ export default {
                     await NotificationService.createReview(this.getUser.id);
                 }
 
-                this.closeModal();
+                this.$parent.closeModal();
             } catch (error) {
                 console.log(error);
             }

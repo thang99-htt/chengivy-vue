@@ -187,6 +187,8 @@
                             title: 'Đơn hàng đã được hủy.'
                         })
                     })                  
+                this.$parent.retrievePurchases();
+
 
                 } catch (error) {
                     console.log(error);
@@ -217,7 +219,10 @@
                             icon: 'success',
                             title: 'Cảm ơn bạn đã mua hàng.'
                         })
-                    })                  
+                    })        
+                    
+                this.$parent.retrievePurchases();
+
 
                 } catch (error) {
                     console.log(error);

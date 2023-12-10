@@ -2,7 +2,7 @@
     <div class="profile-info">
         <div class="liveAlert"></div>
         <h3>Danh sách yêu thích ({{ favorites.favoriteCount }})</h3>
-        <div class="profile-item">
+        <div class="profile-item" v-if="favorites.favoriteCount>0">
             <div class="checkbox-all">
                 <div><input type="checkbox" class="m-0 me-2" @change="idAllSelected()">Chọn tất cả</div>
                 <div class="button">
@@ -60,6 +60,14 @@
                             <span @click="deleteFavorite(item.product_id)">Xóa</span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="profile-item" v-else>
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-3"></i>
+                <div>
+                    Bạn không có sản phẩm nào trong danh sách yêu thích.
                 </div>
             </div>
         </div>

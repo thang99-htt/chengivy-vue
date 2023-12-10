@@ -136,7 +136,7 @@
                                         <fieldset class="filters-panel-group-item d-block">
                                             <div class="form-input filters-panel-group-item__value w-100"
                                                 v-for="brand in brands" :key="brand"
-                                                :class="{ 'filters-panel-group-item__value--checked': isBrandSelected(brand.id) }"
+                                                :class="{ 'filters-panel-group-item__value--checked': isBrandSelected(brand.name) }"
                                                 @click="brandProducts(brand)">
                                                 <div class="form-input__wrapper">
                                                     <label class="form-input-checkbox">
@@ -469,6 +469,9 @@ export default {
             minKnob: 0,
             maxKnob: 340,
             category: this.$route.query.category,
+            brand: this.$route.query.brand,
+            sales: this.$route.query.sales,
+            best_seller: this.$route.query.best_seller,
             favoriteProductIds: [],
         };
     },
@@ -487,6 +490,13 @@ export default {
                 const index = this.selectedCategoryValues.indexOf(category.name);
                 this.selectedCategoryValues.splice(index, 1);
             }
+
+            const brand = to.query.brand || '';
+            if (brand !== this.brand) {
+                this.brand = brand;
+                const index = this.selectedBrandValues.indexOf(brand.name);
+                this.selectedBrandValues.splice(index, 1);
+            }
         }
     },
     computed: {
@@ -495,10 +505,19 @@ export default {
             this.currentPage = 1;
 
             let filtered = [...this.products];
+            
+            if(this.sales) {
+                filtered = filtered.filter(product => product.discount_percent > 0);
+            }
+
+            if(this.best_seller) {
+                filtered = filtered.sort((a, b) => b.total_export - a.total_export);
+            }
 
             if (this.category) {
                 this.selectedCategoryValues.push(this.category);
             }
+
 
             if (this.selectedCategoryValues.length != 0) {
                 filtered = filtered.filter(item =>
@@ -620,6 +639,11 @@ export default {
                 // Ngược lại, loại bỏ brand.id khỏi mảng
                 this.selectedBrandIds.splice(index, 1);
                 this.selectedBrandValues.splice(index, 1);
+            }
+
+            // Xóa giá trị truy vấn 'brand' nếu danh sách danh mục đã chọn là rỗng
+            if (this.selectedBrandValues.length === 0) {
+                this.$router.replace({ query: { ...this.$route.query, brand: undefined } });
             }
         },
         sizeProducts(size) {
@@ -802,8 +826,9 @@ export default {
                 this.clickCount = 0; // Đặt lại biến đếm về 0
             }
         },
-        isBrandSelected(selectedBrandIds) {
-            return this.selectedBrandIds.includes(selectedBrandIds);
+        isBrandSelected(selectedId) {
+            const brand = this.$route.query.brand;
+            return this.selectedBrandValues.includes(selectedId) || brand === selectedId;
         },
         isColorSelected(selectedColorIds) {
             return this.selectedColorIds.includes(selectedColorIds);
@@ -856,7 +881,7 @@ export default {
             this.maxKnob = 340;
 
             // Xóa giá trị truy vấn 'category'
-            this.$router.replace({ query: { ...this.$route.query, category: undefined } });
+            this.$router.replace({ query: { ...this.$route.query, category: undefined, brand: undefined } });
             this.selectedCategoryValues = [];
         },
         async isFavorite() {

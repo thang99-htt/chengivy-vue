@@ -136,14 +136,19 @@
             <i class="fa fa-info-circle"></i>Tổng quan
           </a>
         </li>
-        <li>
+        <li v-if="getAdmin.permissionIDs.includes(56)">
           <a href="/admin/orders/returns">
             <i class="fa fa-retweet"></i>Hoàn trả
           </a>
         </li>
-        <li>
+        <li v-if="getAdmin.permissionIDs.includes(53)">
           <a href="/admin/orders/sold-at-store">
             <i class="fa fa-street-view"></i>Bán tại cửa hàng
+          </a>
+        </li>
+        <li v-if="getAdmin.roleIDs.includes(5)">
+          <a href="/admin/orders/shipper">
+            <i class="bi bi-basket-fill me-3"></i>Đơn hàng của tôi
           </a>
         </li>
       </ul>

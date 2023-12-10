@@ -11,7 +11,7 @@
 
         <div class="picker-container">
             <input type="text" class="picker">
-            <button><i class="fa fa-refresh"></i></button>
+            <button @click="refreshList()"><i class="fa fa-refresh"></i></button>
         </div>
     </div>
 </template>
@@ -38,6 +38,9 @@ export default {
             this.$emit('update:endDateFormatted', this.endDate);
             this.$parent.datesUpdated = true;
         },
+        refreshList() {
+            this.$parent.refreshList();
+        }
     },
     async mounted() {
         if(this.startDate=="" && this.endDate=="") {

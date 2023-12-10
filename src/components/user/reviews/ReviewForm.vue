@@ -99,7 +99,9 @@
             </div>
         </div>
         <div class="form-group">
-            <input type="submit" name="btnSave" value="Thực hiện" class="float-end">
+            <button type="button" class="btnAdd" @click="submitReview">
+                <i class="fa fa-plus"></i>Thực hiện
+            </button>
         </div>
     </Form>
 </template>
