@@ -2,22 +2,31 @@
     <table class="example1 table dataTable">
         <thead>
             <tr role="row">
-                <th width="11%">Ngày đánh giá</th>
-                <th width="7%">Sản phẩm</th>
+                <th width="8%">Ngày đánh giá</th>
+                <th width="16%">Sản phẩm</th>
                 <th width="10%">Khách hàng</th>
                 <th width="8%">Đánh giá</th>
-                <th width="18%">Nội dung</th>
-                <th width="16%">Phản hồi</th>
+                <th width="16%">Nội dung</th>
+                <th width="15%">Phản hồi</th>
                 <th width="8%">Trạng thái</th>
-                <th width="7%">Tùy chọn</th>
+                <th width="4%">Sửa</th>
                 <th width="5%">Chọn</th>
             </tr>
         </thead>
         <tbody>
             <tr role="row" v-for="(review, index) in reviewsList" :key="review" >
                 <td>{{ review.date }}</td>
-                <td>{{ review.product.id }}</td>
-                <td>{{ review.user.name }}</td>
+                <td>
+                    <div class="d-flex">
+                        <img :src="review.image" alt="" width="50">
+                        <span class="ms-1">
+                            <span>ID: {{ review.product.id }}</span>
+                            <span>{{ review.product.name }}</span>
+                        </span>
+                    </div>
+                    
+                </td>
+                <td>{{ review.name }} {{ review.user.email }}</td>
                 <td>
                     <span v-if="review.fitted_value==1">Nhỏ</span>
                     <span v-else-if="review.fitted_value==2">Đúng kích cỡ</span>
@@ -33,7 +42,9 @@
                 <td :class="{'bg-neg': review.classification}">
                     {{ review.content.split(' ').slice(0, 20).join(' ') + '.....' }}
                 </td>
-                <td>{{ review.reply }}</td>
+                <td>
+                    <span v-if="review.reply">{{ review.reply.split(' ').slice(0, 20).join(' ') + '.....' }}</span>
+                </td>
                 <td>
                     <button class="btn-sm" :class="[review.status == 1 ? 'btn-show' : 'btn-hide']"
                         @click="statusUpdate(review)">

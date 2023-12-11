@@ -15,7 +15,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr role="row" v-for="(order, index) in ordersList" :key="order">
+            <tr role="row" v-for="(order, index) in orders" :key="order" v-if="!hasRole5">
                 <td class="sorting_1">
                     {{ order.id }}
                 </td>
@@ -46,27 +46,7 @@
                         </ul>
                     </span>
                 </td>
-                <td>
-                    <span v-if="order.staff && !hasRole5">{{ order.staff.name }}</span>
-                    <button v-if="hasRole5 && order.status.id==2" type="button" class="btnAdd btn-receipt" @click="deliveryOrder2(order.id)">
-                        Nhận đơn
-                    </button>
-                    <button v-if="hasRole5 && order.status.id==2 && order.staff_delivery" type="button" class="btnAdd btn-receipt mt-2" @click="deliveryOrder3(order.id)">
-                        Từ chối đơn
-                    </button>
-                    <button v-if="hasRole5 && order.status.id==4" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
-                        Đã lấy hàng
-                    </button>
-                    <button v-if="hasRole5 && order.status.id==5" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
-                        Đang giao hàng
-                    </button>
-                    <button v-if="hasRole5 && order.status.id==6" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order.id)">
-                        Đã giao
-                    </button>
-                    <button v-if="hasRole5 && order.status.id==6" type="button" class="btnAdd btn-receipt mt-2 btn-danger" @click="deliveryOrder1(order.id)">
-                        Khách không nhận
-                    </button>
-                </td>
+                <td>{{ order.staff.name }}</td>
                 <td>
                     <div class="dropdown">
                         <button 
@@ -116,6 +96,97 @@
                     <input type="checkbox" @change="idSelected(order.id)" :checked="selectedIds.includes(order.id)">
                 </td>
             </tr>
+            <tr role="row" v-for="(order1, index) in ordersList" :key="order1" v-else>
+                <td class="sorting_1">
+                    {{ order1.id }}
+                </td>
+                <td>{{ order1.name_receiver }}</td>
+                <td>{{ order1.ordered_at }}</td>
+                <td>{{ formatPrice(order1.total_value) }}</td>
+                <td>
+                    <span v-if="order1.staff_delivery">
+                        <span>{{ order1.staff_delivery.name }} <br> {{ order1.staff_delivery.phone }}</span>
+                        <span class="shipper" v-if="order1.status.id>=3 && order1.status.id<=6 ">Đã nhận đơn</span>
+                    </span>
+                </td>
+                <td>
+                    <span v-if="order1.status.id==2">
+                        <span v-if="order1.staff_delivery && order1.staff_delivery.name==getAdmin.name">
+                            <button type="button" class="btnAdd btn-receipt" @click="deliveryOrder2(order1.id)">
+                                Đồng ý
+                            </button>
+                            <button type="button" class="btnAdd btn-receipt mt-2" @click="deliveryOrder3(order1.id)">
+                                Từ chối đơn
+                            </button>
+                        </span>
+                        <button v-if="!order1.staff_delivery" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order1.id)">
+                            Nhận đơn
+                        </button>
+                    </span>
+                    <span v-if="hasRole5 && order1.staff_delivery && order1.staff_delivery.name==getAdmin.name">
+                        <button v-if="order1.status.id==4" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order1.id)">
+                            Đã lấy hàng
+                        </button>
+                        <button v-if="order1.status.id==5" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order1.id)">
+                            Đang giao hàng
+                        </button>
+                        <button v-if="order1.status.id==6" type="button" class="btnAdd btn-receipt" @click="deliveryOrder(order1.id)">
+                            Đã giao
+                        </button>
+                        <button v-if="order1.status.id==6" type="button" class="btnAdd btn-receipt mt-2 btn-danger" @click="deliveryOrder1(order1.id)">
+                            Khách không nhận
+                        </button>
+                    </span>
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <button 
+                            class="dropdown-toggle btn-order-status" type="button" 
+                            :class="{
+                                'order-status1': order1.status.id==1,
+                                'order-status2': order1.status.id==2,
+                                'order-status3': order1.status.id==3,
+                                'order-status4': order1.status.id==4,
+                                'order-status5': order1.status.id==5,
+                                'order-status6': order1.status.id==6,
+                                'order-status7': order1.status.id==7,
+                                'order-status8': order1.status.id==8,
+                                'order-status9': order1.status.id==9,
+                                'order-status10': order1.status.id==10,
+                                'order-status11': order1.status.id==11,
+                                'order-status12': order1.status.id==12,
+                            }"
+                            id="dropdownMenuButton1" 
+                            :data-bs-toggle="!hasRole5 ? 'dropdown' : ''"
+                            :aria-expanded="!hasRole5 ? 'false' : ''"
+                        >
+                            {{ order1.status.name }}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li v-for="status in statuses" :key="status">
+                                <a @click="statusUpdate(order, status)" :class="`dropdown-item-${status.id}`" href="#">
+                                    {{ status.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn">                        
+                        <router-link
+                            :to="{
+                                name: 'order.view',
+                                params: { id: order1.id },
+                            }" 
+                        >
+                            <img src="/images/icon/icondetail.png" alt="">
+                        </router-link>
+                    </button>
+                </td>
+                <td class="text-center">
+                    <input type="checkbox" @change="idSelected(order1.id)" :checked="selectedIds.includes(order1.id)">
+                </td>
+            </tr>
         </tbody>
         <tfoot>
             <tr>
@@ -144,13 +215,18 @@ export default {
             return this.getAdmin.roleIDs && this.getAdmin.roleIDs.some(id => id === 5);
         },
         ordersList() {
-            if(this.hasRole5) {
-                return this.orders.filter(order => {
-                    return (order.status.id >= 2 && order.status.id<=8 || order.status.id == 12);
-                });
-            } else {
-                return this.orders;
-            }
+            const ordersArray1 = [];
+            const ordersArray2 = []; 
+            this.orders.forEach(order => {
+                if (order.status.id === 2) {
+                    ordersArray1.push(order);
+                } else if ((order.status.id >= 3 && order.status.id <= 8) || order.status.id === 11) {
+                    if (order.staff_delivery && order.staff_delivery.id === this.getAdmin.id) {
+                        ordersArray2.push(order);
+                    }
+                }
+            });
+            return [...ordersArray1, ...ordersArray2];
         },
     },
     data() {
@@ -191,6 +267,7 @@ export default {
                     title: 'Cập nhật trạng thái thành công.'
                 });
                 this.$parent.refreshList();
+                this.retreiveShippers();   
             } catch (error) {
                 console.log(error);
             }
@@ -243,7 +320,9 @@ export default {
                 orderId: orderID
             }
             try {
-                await OrderService.deliveryOrder(data);
+                await OrderService.deliveryOrder(data).then(res=> {
+                    console.log(res)
+                });
                 Toast.fire({
                     icon: 'success',
                     title: 'Cập nhật trạng thái thành công.'
@@ -324,9 +403,10 @@ export default {
             const data = {
                 staff_delivery_id: this.getAdmin.id,
                 orderId: orderID,
-                refuseOrder: false
+                refuseOrder: true
             }
             try { 
+                console.log(data)
                 await OrderService.deliveryOrder(data);
                 Toast.fire({
                     icon: 'success',

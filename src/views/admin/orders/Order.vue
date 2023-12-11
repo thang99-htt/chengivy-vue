@@ -14,6 +14,8 @@
                         </a>
                         <a @click="selectedOption = 6" :class="{ active: selectedOption == 6 }"> Đang giao ({{ orderShipping }})
                         </a>
+                        <a @click="selectedOption = 7" :class="{ active: selectedOption == 7 }"> Đã giao ({{ orderReceipted }})
+                        </a>
                         <a @click="selectedOption = 9" :class="{ active: selectedOption == 9 }"> Hoàn thành ({{ orderCompleted
                         }})
                         </a>
@@ -52,6 +54,7 @@ export default {
             selectedOption: 0,
             orderWaiting: 0,
             orderShipping: 0,
+            orderReceipted: 0,
             orderCompleted: 0,
             orderCanceled: 0,
             orderSoldAtStore: 0,
@@ -101,6 +104,7 @@ export default {
                 };
                 this.orderWaiting = 0;
                 this.orderShipping = 0;
+                this.orderReceipted = 0;
                 this.orderCompleted = 0;
                 this.orderCanceled = 0;
                 this.orderSoldAtStore = 0;
@@ -109,6 +113,7 @@ export default {
                 this.orders.forEach(order => {
                     if (order.status.id == 1) this.orderWaiting = this.orderWaiting + 1;
                     if (order.status.id == 6) this.orderShipping = this.orderShipping + 1;
+                    if (order.status.id == 7) this.orderReceipted = this.orderReceipted + 1;
                     if (order.status.id == 9) this.orderCompleted = this.orderCompleted + 1;
                     if (order.status.id == 10) this.orderCanceled = this.orderCanceled + 1;
                     if (order.status.id == 11) this.orderSoldAtStore = this.orderSoldAtStore + 1;

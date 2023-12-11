@@ -375,10 +375,10 @@
             this.refreshList();
             this.submitOrder();
             this.retrieveAccount();
-            const script = document.createElement("script");
-            script.src = "https://www.paypal.com/sdk/js?client-id=AT5pO4SLjEoDt65gg6gzPGMAp4Ml1XpOkoeWr7_G-qa3moiSJJFkdqDIBxh1ytFYbCLXHRoT1MsJSur1";
-            script.addEventListener("load", this.setLoaded);
-            document.body.appendChild(script);
+            // const script = document.createElement("script");
+            // script.src = "https://www.paypal.com/sdk/js?client-id=AT5pO4SLjEoDt65gg6gzPGMAp4Ml1XpOkoeWr7_G-qa3moiSJJFkdqDIBxh1ytFYbCLXHRoT1MsJSur1";
+            // script.addEventListener("load", this.setLoaded);
+            // document.body.appendChild(script);
 
             // Tạo một trình theo dõi cho phần tử có id là "bill"
             // const billElement = document.getElementById('bill1');
@@ -413,8 +413,6 @@
                 } else {
                     this.orderLocal.total_price = this.cartLocal.total_price;
                 }
-                this.orderLocal.total_discount = this.discountTotal;
-                this.orderLocal.total_value = this.totalValue;
             },
             viewVoucher() {
                 const navbarToggler = document.querySelector(".menu-voucher");
@@ -602,27 +600,50 @@
                 let totalDiscount = 0;
                 if(this.account && (this.account.level == 'GOLD' || this.account.level == 'SILVER')) {
                     if(this.productBuyNow) {
-                        if(this.selectedVoucher)
-                            totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*(this.selectedVoucher.discount/100) + (this.productBuyNow.price_final-this.discountProduct)*0.05 + this.discountProduct + this.discountPoint;
-                        else 
-                            totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*0.05 + this.discountProduct + this.discountPoint;
+                        totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*0.05;
                     } else {
+                        totalDiscount = (this.cartLocal.total_price-this.discountProduct)*0.05;
+                    }
+                } else if(this.account && (this.account.level == 'PLATINUM' || this.account.level == 'DIAMOND')) {
+                    if(this.productBuyNow) {
+                        totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*0.1;
+                    } else {
+                        totalDiscount = (this.cartLocal.total_price-this.discountProduct)*0.1;
+                    }
+                }
+
+                if(this.discountProduct) {
+                    totalDiscount += this.discountProduct;
+                }
+
+                if(this.orderLocal.point)  {
+                    totalDiscount += this.discountPoint;
+                }
+
+                if(this.account && (this.account.level == 'GOLD' || this.account.level == 'SILVER')) {
+                    if(this.productBuyNow) {
                         if(this.selectedVoucher) 
-                            totalDiscount = (this.cartLocal.total_price-this.discountProduct)*(this.selectedVoucher.discount/100) + (this.cartLocal.total_price-this.discountProduct)*0.05 + this.discountProduct + this.discountPoint;
-                        else totalDiscount = (this.cartLocal.total_price-this.discountProduct)*0.05 + this.discountProduct + this.discountPoint;
+                            totalDiscount += (this.productBuyNow.price_final-this.discountProduct)*(this.selectedVoucher.discount/100);
+                    } else {
+                        totalDiscount += (this.cartLocal.total_price-this.discountProduct)*0.05;
                     }
                 } else if(this.account && (this.account.level == 'PLATINUM' || this.account.level == 'DIAMOND')) {
                     if(this.productBuyNow) {
                         if(this.selectedVoucher)
-                            totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*(this.selectedVoucher.discount/100) + (this.productBuyNow.price_final-this.discountProduct)*0.1 + this.discountProduct + this.discountPoint;
-                        else 
-                            totalDiscount = (this.productBuyNow.price_final-this.discountProduct)*0.1 + this.discountProduct + this.discountPoint;
+                            totalDiscount += (this.productBuyNow.price_final-this.discountProduct)*(this.selectedVoucher.discount/100);
                     } else {
                         if(this.selectedVoucher) 
-                            totalDiscount = (this.cartLocal.total_price-this.discountProduct)*(this.selectedVoucher.discount/100) + (this.cartLocal.total_price-this.discountProduct)*0.1 + this.discountProduct + this.discountPoint;
-                        else totalDiscount = (this.cartLocal.total_price-this.discountProduct)*0.1 + this.discountProduct + this.discountPoint;
+                            totalDiscount += (this.cartLocal.total_price-this.discountProduct)*(this.selectedVoucher.discount/100);
                     }
                 }
+
+                this.orderLocal.total_discount = totalDiscount;
+                if(this.productBuyNow) {
+                    this.orderLocal.total_value = this.productBuyNow.price_final + 25000 - totalDiscount;
+                } else {
+                    this.orderLocal.total_value = this.cartLocal.total_price + 25000 - totalDiscount;
+                }
+
                 return totalDiscount;
             },
             totalValue() {

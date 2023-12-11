@@ -44,7 +44,7 @@
                 <p>{{ formatPrice(order.fee) }}</p>
             </div>
             <div class="purchase-price__item">
-                <p>Vourcher từ Chengigy: </p>
+                <p>Voucher từ Chengigy: </p>
                 <p>{{ formatPrice(order.total_discount) }}</p>
             </div>
             <div class="purchase-price__item">

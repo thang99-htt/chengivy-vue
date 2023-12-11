@@ -43,7 +43,7 @@
                 <CheckoutComplete v-if="stepCheck == 2"/>
                 <div class="button-container">
                     <div v-if="stepCheck == 0" class="btn btn-next" @click="payment">Tiếp tục</div>
-                    <div v-if="stepCheck == 1 && order.payment_id != 3" class="btn btn-next" @click="createOrder(order)">Hoàn tất thanh toán</div>
+                    <div v-if="stepCheck == 1 && order.payment_method != 'Thanh toán qua PayPal'" class="btn btn-next" @click="createOrder(order)">Hoàn tất thanh toán</div>
                 </div>
             </div>
         </div>

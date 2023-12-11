@@ -78,7 +78,7 @@
                         Hủy đơn
                     </button>
                     <button
-                        v-if="purchase.status.id == 9 && isCurrentDateLessThanReceiptDate(purchase.receipted_at)"
+                        v-if="purchase.status.id == 9 && isReceiptDateWithin7Days(purchase.receipted_at)"
                         type="button"
                         class="btn btn-warning me-3"
                         @click="openModal(purchase.items)"
@@ -241,19 +241,23 @@
                 this.selectedPurchase = [];
                 this.showModalReturn = false;
             },
-            isCurrentDateLessThanReceiptDate(date) {
+            isReceiptDateWithin7Days(date) {
                 const currentDate = new Date();
-                const newDate = new Date(date);
-                newDate.setDate(newDate.getDate() + 30);
-                const receiptDte = new Date(newDate.toISOString().slice(0, 19).replace('T', ' '));
-                return currentDate < receiptDte;
+                const receiptDate = new Date(date);
+                
+                const sevenDaysLater = new Date(receiptDate);
+                sevenDaysLater.setDate(sevenDaysLater.getDate() + 7);
+
+                return currentDate <= sevenDaysLater;
             },
             isCurrentDateLessThanReturnDate(date) {
                 const currentDate = new Date();
-                const newDate = new Date(date);
-                newDate.setDate(newDate.getDate() + 7);
-                const receiptDte = new Date(newDate.toISOString().slice(0, 19).replace('T', ' '));
-                return currentDate < receiptDte;
+                const returnDate = new Date(date);
+                
+                const sevenDaysLater = new Date(returnDate);
+                sevenDaysLater.setDate(sevenDaysLater.getDate() + 7);
+
+                return currentDate <= sevenDaysLater;
             },
         },
         computed: {

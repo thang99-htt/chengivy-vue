@@ -4,7 +4,7 @@
         <div class="purchase-filter">
             <span :class="{'active': purchaseStatus == 0}" @click="purchaseStatus=0">Tất cả</span>
             <span :class="{'active': purchaseStatus == 1}" @click="purchaseStatus=1">Chờ xác nhận</span>
-            <span :class="{'active': purchaseStatus == 2}" @click="purchaseStatus=2">Vận chuyển</span>
+            <span :class="{'active': purchaseStatus == 5}" @click="purchaseStatus=5">Vận chuyển</span>
             <span :class="{'active': purchaseStatus == 6}" @click="purchaseStatus=6">Đang giao</span>
             <span :class="{'active': purchaseStatus == 9}" @click="purchaseStatus=9">Hoàn thành</span>
             <span :class="{'active': purchaseStatus == 10}" @click="purchaseStatus=10">Đã hủy</span>
