@@ -308,6 +308,7 @@
                                             <span class="total-amount bold">{{ formatPrice(totalValue) }}</span>
                                         </div>
                                     </div>
+                                    <div ref="paypal"></div>
                                     <div v-show="orderLocal.payment_method == 'Thanh toán qua PayPal' && paymentStatus !== 'paid'" class="w-75 mx-auto mt-4 text-center">
                                         <div ref="paypal"></div>
                                     </div>
@@ -375,10 +376,10 @@
             this.refreshList();
             this.submitOrder();
             this.retrieveAccount();
-            // const script = document.createElement("script");
-            // script.src = "https://www.paypal.com/sdk/js?client-id=AT5pO4SLjEoDt65gg6gzPGMAp4Ml1XpOkoeWr7_G-qa3moiSJJFkdqDIBxh1ytFYbCLXHRoT1MsJSur1";
-            // script.addEventListener("load", this.setLoaded);
-            // document.body.appendChild(script);
+            const script = document.createElement("script");
+            script.src = "https://www.paypal.com/sdk/js?client-id=AT5pO4SLjEoDt65gg6gzPGMAp4Ml1XpOkoeWr7_G-qa3moiSJJFkdqDIBxh1ytFYbCLXHRoT1MsJSur1";
+            script.addEventListener("load", this.setLoaded);
+            document.body.appendChild(script);
 
             // Tạo một trình theo dõi cho phần tử có id là "bill"
             // const billElement = document.getElementById('bill1');

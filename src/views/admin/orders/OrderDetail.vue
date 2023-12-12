@@ -8,7 +8,7 @@
                             <h4>Đơn hàng: <span class="order-id">{{ order.id }}</span></h4>
                             <p>
                                 <span>Nhân viên:</span>
-                                <span>{{ order.staff.name }} - {{ order.staff.email }}</span>
+                                <span v-if="order.staff">{{ order.staff.name }} - {{ order.staff.email }}</span>
                             </p>
                             <span class="order-status">{{ order.status.name }}</span>
                         </div>

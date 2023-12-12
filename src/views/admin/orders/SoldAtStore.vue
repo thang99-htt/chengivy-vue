@@ -14,6 +14,9 @@
                 <div class="bill-sale">
                     <h2>HÓA ĐƠN BÁN HÀNG</h2>
                 </div>
+                <div class="ms-5">
+                    <img v-if="qrCodeDataURL" :src="qrCodeDataURL" alt="QR Code" style="width: 100px;height: 100px;" />
+                </div>
             </div>
             <div class="bill-customer">
                 <p>Tên khách hàng: {{ soldAtStore.name_receiver }}</p>
@@ -76,6 +79,7 @@ import { mapGetters } from "vuex";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { formatPrice } from '../../../utils';
+import axios from 'axios';
 
 export default { 
     components: {
@@ -106,6 +110,14 @@ export default {
                 'bill': null
             },
             currentDate: `Ngày ${day} tháng ${month} năm ${year}`,
+            accountInfo: {
+                accountNo: '007704070022438',
+                accountName: 'HUYNH TRUNG QUOC',
+                acqId: '970437',
+                amount: 0,
+                addInfo: 'Chuyen khoan mua hang',
+            },
+            qrCodeDataURL: null,
         };
     },
     methods: {
@@ -163,6 +175,8 @@ export default {
                     console.error(error);
                 }
             }
+
+
         },
         async generatePDF() {
             const pdf = new jsPDF({
@@ -194,6 +208,7 @@ export default {
                     this.soldAtStore.bill = pdfBase64;
                 };
                 reader.readAsDataURL(pdfBlob);
+
         },
         reset () {
             this.soldAtStore.staff_id = "";
@@ -251,6 +266,33 @@ export default {
 
             return result;
         },
+        async generateQRCode() {
+            try {
+                const response = await this.callApi();
+                if (response.code === '00') {
+                this.qrCodeDataURL = response.data.qrDataURL;
+                } else {
+                console.error('Failed to generate QR Code:', response.desc);
+                }
+            } catch (error) {
+                console.error('Error while calling API:', error);
+            }
+
+        },
+        async callApi() {
+            const apiUrl = 'https://api.vietqr.io/v2/generate';
+
+            try {
+                const response = await axios.post(apiUrl, {
+                ...this.accountInfo,
+                    template: 'compact2',
+                });
+
+                return response.data;
+            } catch (error) {
+                throw error;
+            }
+        },
     },
     mounted() {
         // Tạo một trình theo dõi cho phần tử có id là "bill"
@@ -260,6 +302,10 @@ export default {
                 for (const mutation of mutationsList) {
                     if (mutation.type === 'childList' || mutation.type === 'subtree') {
                         // Gọi lại hàm generatePDF khi có thay đổi trong phần tử "bill"
+                    this.accountInfo.amount = this.soldAtStore.total_value;
+
+                        this.generateQRCode();
+
                         this.generatePDF();
                     }
                 }

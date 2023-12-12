@@ -12,7 +12,7 @@
                 </div>
                 <div class="multi-size-selector multi-size-selector--4-columns filters-panel-group-box__value-selector">
                     <div class="form__column" v-for="size in getUniqueSizes(product.inventories[0].items)" :key="size"
-                        @click="sizeProducts(size)">
+                    @click="getOutStock.includes(size.size_id) ? $event.stopPropagation() : sizeProducts(size)">
                         <div class="form-input multi-size-selector__size" :class="{
                             'multi-size-selector__size--is-checked': size.size_id == inventoryLocal.size_id,
                             'multi-size-selector__size--out-stock': getOutStock.includes(size.size_id)

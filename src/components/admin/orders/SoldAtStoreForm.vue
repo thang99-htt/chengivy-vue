@@ -371,15 +371,16 @@ export default {
         computedTotalDiscount() {
             let totalDiscount = 0;
             if(this.customerSelected && (this.customerSelected.user.level == 'GOLD' || this.customerSelected.user.level == 'SILVER')) {
-                if(this.selectedVoucher) 
-                    totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.05 + this.computedTotalDiscountProduct + this.computedDiscountPoint + this.discountVoucher;
-                else totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.05 + this.computedTotalDiscountProduct + this.computedDiscountPoint;
+                totalDiscount += (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.05 + this.computedTotalDiscountProduct;
             } else if(this.customerSelected && (this.customerSelected.user.level == 'PLATINUM' || this.customerSelected.user.level == 'DIAMOND')) {
-                if(this.selectedVoucher) 
-                    totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.1 + this.computedTotalDiscountProduct + this.computedDiscountPoint + this.discountVoucher;
-                else totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.1 + this.computedTotalDiscountProduct + this.computedDiscountPoint;
+                totalDiscount = (this.soldAtStoreLocal.total_price-this.computedTotalDiscountProduct)*0.1 + this.computedTotalDiscountProduct + this.computedDiscountPoint;
             }
+
+            if(this.selectedVoucher) 
+                totalDiscount += this.discountVoucher;
+            
             this.soldAtStore.total_discount = totalDiscount;
+            this.soldAtStore.total_value = this.soldAtStoreLocal.total_price - totalDiscount;
             return totalDiscount;
         },
         computedRemain() {

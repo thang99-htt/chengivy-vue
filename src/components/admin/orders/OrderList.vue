@@ -46,7 +46,9 @@
                         </ul>
                     </span>
                 </td>
-                <td>{{ order.staff.name }}</td>
+                <td>
+                    <span v-if="order.staff">{{ order.staff.name }}</span>
+                </td>
                 <td>
                     <div class="dropdown">
                         <button 
